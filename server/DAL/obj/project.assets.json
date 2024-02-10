@@ -1919,24 +1919,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nigma\\.nuget\\packages\\": {},
-    "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\rar80\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\DAL\\DAL.csproj",
+      "projectUniqueName": "C:\\Tatsvs\\server\\DAL\\DAL.csproj",
       "projectName": "DAL",
-      "projectPath": "D:\\A_TeachTube\\Tatsvs\\DAL\\DAL.csproj",
-      "packagesPath": "C:\\Users\\nigma\\.nuget\\packages\\",
-      "outputPath": "D:\\A_TeachTube\\Tatsvs\\DAL\\obj\\",
+      "projectPath": "C:\\Tatsvs\\server\\DAL\\DAL.csproj",
+      "packagesPath": "C:\\Users\\rar80\\.nuget\\packages\\",
+      "outputPath": "C:\\Tatsvs\\server\\DAL\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\nigma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\rar80\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1944,15 +1939,14 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\A_TeachTube\\Tatsvs\\Domain\\Domain.csproj": {
-              "projectPath": "D:\\A_TeachTube\\Tatsvs\\Domain\\Domain.csproj"
+            "C:\\Tatsvs\\server\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Tatsvs\\server\\Domain\\Domain.csproj"
             }
           }
         }
@@ -1996,7 +1990,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }
