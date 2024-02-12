@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ll9KubmMhSauq8mSvELCqd/Dx3b1N0JIqJitYog2cLmN+nlzmOgYtP8kCcHaNLbgsEipMEXwgJNpqV5MOhSH0A==",
+  "dgSpecHash": "QfZWPhm08mTlt/W8ZUFEy5FEgrtK7hjNi0r8/M7j6jQ+jBuK37yz0a/f02GPQlvJiQWEegDRhzQMCV83MZ+iBg==",
   "success": true,
-  "projectFilePath": "D:\\A_TeachTube\\Tatsvs\\DAL\\DAL.csproj",
+  "projectFilePath": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nigma\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.1.1\\microsoft.aspnetcore.authentication.2.1.1.nupkg.sha512",
     "C:\\Users\\nigma\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.1.1\\microsoft.aspnetcore.authentication.abstractions.2.1.1.nupkg.sha512",

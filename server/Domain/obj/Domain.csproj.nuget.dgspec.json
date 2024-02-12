@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\A_TeachTube\\Tatsvs\\Domain\\Domain.csproj": {}
+    "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "D:\\A_TeachTube\\Tatsvs\\Domain\\Domain.csproj": {
+    "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\Domain\\Domain.csproj",
+        "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "D:\\A_TeachTube\\Tatsvs\\Domain\\Domain.csproj",
+        "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\nigma\\.nuget\\packages\\",
-        "outputPath": "D:\\A_TeachTube\\Tatsvs\\Domain\\obj\\",
+        "outputPath": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages"

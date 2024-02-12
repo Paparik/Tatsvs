@@ -1925,11 +1925,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\DAL\\DAL.csproj",
+      "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj",
       "projectName": "DAL",
-      "projectPath": "D:\\A_TeachTube\\Tatsvs\\DAL\\DAL.csproj",
+      "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj",
       "packagesPath": "C:\\Users\\nigma\\.nuget\\packages\\",
-      "outputPath": "D:\\A_TeachTube\\Tatsvs\\DAL\\obj\\",
+      "outputPath": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages"
@@ -1951,8 +1951,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\A_TeachTube\\Tatsvs\\Domain\\Domain.csproj": {
-              "projectPath": "D:\\A_TeachTube\\Tatsvs\\Domain\\Domain.csproj"
+            "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj": {
+              "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj"
             }
           }
         }
