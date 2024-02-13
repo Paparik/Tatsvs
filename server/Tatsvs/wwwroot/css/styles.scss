@@ -17,15 +17,25 @@ $black: #2E2E2E;
 $mainColor: #FF6A4A;
 $shadow: 0px 8px 22px 1px rgba(0, 0, 0, 0.25);
 body{
-    overflow: hidden;
+    // overflow: hidden;
     background: #EAEAEA;
     font-family: $font;
 }
+::-webkit-scrollbar{
+    width: 10px;
+    background: #00000000;
+}
+::-webkit-scrollbar-thumb{
+    width: 10px;
+    background: #a7a7a7;
+    border-radius: 5px;
+}
+
 .dn{
     display: none !important;
 }
 .container{
-    width: 1600px;
+    width: 83%;
     margin: 0 auto;
 }
 
@@ -119,11 +129,28 @@ body{
             font-size: 20px;
         }
     }
+    &__main{
+        margin-top: 50px;
+        width: 100%;
+        border-radius: 35px;
+        box-shadow: $shadow;
+        overflow: hidden;
+        #map{
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 450px;
+            .leaflet-bottom{
+                display: none;
+            }
+        }
+    }
 }
 .auth{
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 999999999;
     width: 100vw;
     height: 100vh;
     backdrop-filter: blur(10px);
@@ -175,6 +202,170 @@ body{
             width: 48%;
             height: 44px;
             @include font(500, 18);
+        }
+    }
+}
+
+.home-info{
+    width: 100%;
+    margin-top: 30px;
+}
+.info-item_active{
+    .info-item__title{
+        svg{
+            transform: rotate(180deg) !important;
+        }
+    }
+}
+.info-item{
+    width: 100%;
+    padding: 30px;
+    background: #FFFFFF;
+    box-shadow: $shadow;
+    border-radius: 35px;
+    margin-bottom: 20px;
+    &__title{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        p{
+            @include font(700, 25);
+
+        }
+        svg{
+            width: 54px;
+            height: 27px;
+            display: block;
+        }
+    }
+    &__container{
+        // display: none !important; 
+    }
+    &__text{
+        padding-top: 30px;
+        p{
+            @include font(500, 20);
+        }
+    }
+}
+.info-document{
+    margin-top: 20px;
+    &__items{
+        width: 100%;
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+
+    }
+    &__item{
+        width: 130px;
+        height: 130px;
+        border-radius: 16px;
+        box-shadow: $shadow;
+
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        cursor: pointer;
+        margin-right: 30px;
+        &:last-child{
+            margin-left: 0;
+        }
+        svg{
+            width: 64px;
+            height: 64px;
+            display: block;
+            margin-top: 15px;
+        }
+        span{
+            display: block;
+            margin-top: 15px;
+            width: 90%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: #0066FF;
+        }
+    }
+}
+.layout{
+    width: 100%;
+    .layout__container{
+        display: flex;
+        align-items: flex-end;
+    }
+    &__block{
+        margin-top: 75px;
+        // width: 228px;
+        flex-grow: 1;
+        padding-bottom: 55px;
+        position: relative;
+    }
+    &__floor{
+        width: 100%;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        p{
+            color: #fff;
+            @include font(500, 16);
+        }
+
+        border: 1px solid #000;
+    }
+    &__transmitter{
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000000;
+        box-shadow: $shadow;
+        border-radius: 5px;
+        margin-right: 5px;
+        svg{
+            width: 14px;
+            height: 14px;
+        }
+    }
+    &_top{
+        top: -65px;
+        left: 50%;
+        transform: translate(-50%);
+    }
+    &_bottom{
+        bottom: -10px;
+        left: 50%;
+        transform: translate(-50%);
+    }
+    &__closet{
+        position: absolute;
+        width: 60px;
+        height: 45px;
+        background: #3BC171;
+        border-radius: 8px;
+        margin: 10px auto;
+        box-shadow: $shadow;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        a{
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            border-radius: 3px;
+            width: 40px;
+            height: 30px;
+            box-shadow: $shadow;
+            svg{
+                width: 34px;
+                height: 28px;
+            }
         }
     }
 }

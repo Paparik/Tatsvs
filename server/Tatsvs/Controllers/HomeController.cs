@@ -52,8 +52,10 @@ namespace Tatsvs.Controllers
                         ModelState.AddModelError("Password", "Неверные логин или пароль");
                         return View("Index", model);
                     }
+
+                    return RedirectToAction("Index", "Home");
                 }
-                return View("Index", model);
+                return View("Index");
             }
             catch (Exception ex) { return StatusCode(404); }
         }
