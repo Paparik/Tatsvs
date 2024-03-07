@@ -2452,24 +2452,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nigma\\.nuget\\packages\\": {},
-    "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\rar80\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj",
+      "projectUniqueName": "C:\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj",
       "projectName": "Tatsvs",
-      "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj",
-      "packagesPath": "C:\\Users\\nigma\\.nuget\\packages\\",
-      "outputPath": "D:\\A_TeachTube\\Tatsvs\\server\\Tatsvs\\obj\\",
+      "projectPath": "C:\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj",
+      "packagesPath": "C:\\Users\\rar80\\.nuget\\packages\\",
+      "outputPath": "C:\\Tatsvs\\server\\Tatsvs\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\nigma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\rar80\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2477,18 +2472,17 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj": {
-              "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj"
+            "C:\\Tatsvs\\server\\DAL\\DAL.csproj": {
+              "projectPath": "C:\\Tatsvs\\server\\DAL\\DAL.csproj"
             },
-            "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj": {
-              "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj"
+            "C:\\Tatsvs\\server\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Tatsvs\\server\\Domain\\Domain.csproj"
             }
           }
         }
@@ -2535,7 +2529,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }

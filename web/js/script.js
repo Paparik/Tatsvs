@@ -205,13 +205,15 @@ function closeAuth(){
 function removeBoxShadow(event) {
     const input = event.target;
     const parentContainer = input.parentNode;
-    parentContainer.style.boxShadow = 'none';
+    parentContainer.style.boxShadow = '0px 8px 22px 1px rgba(0, 0, 0, 0.25)';
+    parentContainer.style.background = 'rgba(255, 255, 255, 1)';
 }
 
 function restoreBoxShadow(event) {
     const input = event.target;
     const parentContainer = input.parentNode;
-    parentContainer.style.boxShadow = '0px 8px 22px 1px rgba(0, 0, 0, 0.25)';
+    parentContainer.style.boxShadow = 'none';
+    parentContainer.style.background = 'rgba(255, 255, 255, 0.8)';
 }
 
 const inputElements = document.querySelectorAll('input');
