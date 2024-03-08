@@ -16,9 +16,11 @@ namespace Tatsvs
 
         public void ConfigureServices(IServiceCollection services)
         {
+            string conn = Configuration.GetConnectionString("Tatsvs");
+            ServerVersion serverVersion = ServerVersion.AutoDetect(conn);
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlite(Configuration.GetConnectionString("Tatsvs"));
+                options.UseMySql(conn, serverVersion);
                 options.EnableSensitiveDataLogging(true);
             }).AddIdentity<User, Role>(config =>
             {

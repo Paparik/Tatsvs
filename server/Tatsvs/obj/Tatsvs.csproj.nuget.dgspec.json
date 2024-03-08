@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj": {}
+    "D:\\A_TeachTube\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj": {}
   },
   "projects": {
-    "C:\\Tatsvs\\server\\DAL\\DAL.csproj": {
+    "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Tatsvs\\server\\DAL\\DAL.csproj",
+        "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj",
         "projectName": "DAL",
-        "projectPath": "C:\\Tatsvs\\server\\DAL\\DAL.csproj",
-        "packagesPath": "C:\\Users\\rar80\\.nuget\\packages\\",
-        "outputPath": "C:\\Tatsvs\\server\\DAL\\obj\\",
+        "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj",
+        "packagesPath": "C:\\Users\\nigma\\.nuget\\packages\\",
+        "outputPath": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\rar80\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\nigma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,14 +26,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Tatsvs\\server\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Tatsvs\\server\\Domain\\Domain.csproj"
+              "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj": {
+                "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj"
               }
             }
           }
@@ -55,6 +60,10 @@
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.26, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[6.0.1, )"
             }
           },
           "imports": [
@@ -73,21 +82,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Tatsvs\\server\\Domain\\Domain.csproj": {
+    "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Tatsvs\\server\\Domain\\Domain.csproj",
+        "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Tatsvs\\server\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\rar80\\.nuget\\packages\\",
-        "outputPath": "C:\\Tatsvs\\server\\Domain\\obj\\",
+        "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\nigma\\.nuget\\packages\\",
+        "outputPath": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\rar80\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\nigma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -95,6 +108,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -134,21 +148,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj": {
+    "D:\\A_TeachTube\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj",
+        "projectUniqueName": "D:\\A_TeachTube\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj",
         "projectName": "Tatsvs",
-        "projectPath": "C:\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj",
-        "packagesPath": "C:\\Users\\rar80\\.nuget\\packages\\",
-        "outputPath": "C:\\Tatsvs\\server\\Tatsvs\\obj\\",
+        "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\Tatsvs\\Tatsvs.csproj",
+        "packagesPath": "C:\\Users\\nigma\\.nuget\\packages\\",
+        "outputPath": "D:\\A_TeachTube\\Tatsvs\\server\\Tatsvs\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\OTHER\\APPS\\VisualStudio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\rar80\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\nigma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -156,17 +174,18 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Tatsvs\\server\\DAL\\DAL.csproj": {
-                "projectPath": "C:\\Tatsvs\\server\\DAL\\DAL.csproj"
+              "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj": {
+                "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\DAL\\DAL.csproj"
               },
-              "C:\\Tatsvs\\server\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Tatsvs\\server\\Domain\\Domain.csproj"
+              "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj": {
+                "projectPath": "D:\\A_TeachTube\\Tatsvs\\server\\Domain\\Domain.csproj"
               }
             }
           }
@@ -185,13 +204,9 @@
               "target": "Package",
               "version": "[2.1.39, )"
             },
-            "Microsoft.Data.Sqlite": {
+            "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[6.0.26, )"
-            },
-            "Microsoft.EntityFrameworkCore.Sqlite": {
-              "target": "Package",
-              "version": "[6.0.26, )"
+              "version": "[6.0.2, )"
             }
           },
           "imports": [
@@ -213,7 +228,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }

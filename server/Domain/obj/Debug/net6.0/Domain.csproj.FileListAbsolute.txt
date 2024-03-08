@@ -22,15 +22,3 @@ D:\A_TeachTube\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.dll
 D:\A_TeachTube\Tatsvs\server\Domain\obj\Debug\net6.0\refint\Domain.dll
 D:\A_TeachTube\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.pdb
 D:\A_TeachTube\Tatsvs\server\Domain\obj\Debug\net6.0\ref\Domain.dll
-C:\Tatsvs\server\Domain\bin\Debug\net6.0\Domain.deps.json
-C:\Tatsvs\server\Domain\bin\Debug\net6.0\Domain.dll
-C:\Tatsvs\server\Domain\bin\Debug\net6.0\Domain.pdb
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.csproj.AssemblyReference.cache
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.AssemblyInfoInputs.cache
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.AssemblyInfo.cs
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.csproj.CoreCompileInputs.cache
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.dll
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\refint\Domain.dll
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\Domain.pdb
-C:\Tatsvs\server\Domain\obj\Debug\net6.0\ref\Domain.dll
