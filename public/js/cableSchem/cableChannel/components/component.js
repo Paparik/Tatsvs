@@ -1,21 +1,16 @@
 import { computed  } from 'vue'
+import { useStateStore } from '../../../pinia/store.js'
+
 export const kabchannel = {
-    props: {
-        obj: {
-            type: Object
-        },
-        role: {
-            type: String
-        }
-    },
-    setup(props, {emit}){
+    setup(){
+        const store = useStateStore()
         function editButton(){
-            constructorManager.create(2, props.obj.schemaId)
+            constructorManager.create(2, store.state.kabChannelObj.schemaId)
         }
         function getWell(type, finish){
             switch(type){
                 case "well":
-                    let obj1 = cableSchemasManager.cableSchemas.find(x => x.id == props.obj.schemaId).wells.find(x => x.id == finish);
+                    let obj1 = cableSchemasManager.cableSchemas.find(x => x.id == store.state.kabChannelObj.schemaId).wells.find(x => x.id == finish);
                     if(obj1 != null) return obj1.wellObject.numWell;
                 break;
                 case "object":
@@ -24,34 +19,36 @@ export const kabchannel = {
             }
         }
         function openKabLine(lineId){
-            cableSchemasManager.OpenKabLine(props.obj.schemaId, lineId);
+            cableSchemasManager.OpenKabLine(store.state.kabChannelObj.schemaId, lineId);
         }
         const counter = computed(() => {
-            return props.obj.length + " м"
+            return store.state.kabChannelObj.length + " м"
         })
         return{
             editButton,
             getWell,
             openKabLine,
-            counter
+            counter,
+            role: store.role,
+            store,
         }
     },
     template: `
         <div class="items">
             <div class="mainkk-input">
-                <input readonly v-model="obj.schemaName" style="background: #fff;box-shadow:0px 8px 22px 1px rgba(0, 0, 0, 0.25); text-align: center; padding-left: 0;" type="text" placeholder="Название схемы">
+                <input readonly v-model="store.state.kabChannelObj.schemaName" style="background: #fff;box-shadow:0px 8px 22px 1px rgba(0, 0, 0, 0.25); text-align: center; padding-left: 0;" type="text" placeholder="Название схемы">
             </div>
             <div class="item item_active">
                 <div class="item__title">
-                    <p>Кабельный канал <a style="color: #ff6a4a;">№{{this.obj.numKabChannel}}</a></p>                             
+                    <p>Кабельный канал <a style="color: #ff6a4a;">№{{this.store.state.kabChannelObj.numKabChannel}}</a></p>                             
                 </div>
                 <div class="item__content">
                     <div class="table">
-                        <default-column name="Начало" :value="getWell('well', this.obj.start)"></default-column>
-                        <default-column name="Конец" :value="getWell(this.obj.finishtype, this.obj.finish)"></default-column>
+                        <default-column name="Начало" :value="getWell('well', this.store.state.kabChannelObj.start)"></default-column>
+                        <default-column name="Конец" :value="getWell(this.store.state.kabChannelObj.finishtype, this.store.state.kabChannelObj.finish)"></default-column>
                         <default-column name="Длина" :value="counter"></default-column>
-                        <default-column name="Диаметр" :value="this.obj.diameter + ' м'"></default-column>
-                        <default-column name="Материал" :value="this.obj.material"></default-column>
+                        <default-column name="Диаметр" :value="this.store.state.kabChannelObj.diameter + ' м'"></default-column>
+                        <default-column name="Материал" :value="this.store.state.kabChannelObj.material"></default-column>
                         <div class="table__item table_active">
                             <div class="table__title" onclick="setTableActive(this)">
                                 <p>Кабельные линии</p>
@@ -60,13 +57,13 @@ export const kabchannel = {
                                 </svg> 
                             </div>
                             <div class="table__content kl-links">
-                                <span v-for="link in this.obj.KabLines">
+                                <span v-for="link in this.store.state.kabChannelObj.KabLines">
                                     <p class="kl-links__item" v-if="link.numKabLine != ''" @click="openKabLine(link.numKabLine)">КЛ-{{link.numKabLine}};</p>
                                 </span>
                             </div>
                         </div>
-                        <additional-parameters v-if="this.obj.additionalParameters.length">
-                            <default-column v-for="item in this.obj.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
+                        <additional-parameters v-if="this.store.state.kabChannelObj.additionalParameters.length">
+                            <default-column v-for="item in this.store.state.kabChannelObj.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
                         </additional-parameters>
                     </div>
                 </div> 

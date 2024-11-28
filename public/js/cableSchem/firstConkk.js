@@ -1,11 +1,17 @@
 import { ref } from 'vue'
+import { useStateStore } from '../pinia/store.js'
 export const firstkkconstructor = {
-    props:{
-        obj: {
-            type: Object
-        },
-    },
+    // props:{
+    //     obj: {
+    //         type: Object
+    //     },
+    // },
     setup(props,{emit}){
+
+        const store = useStateStore()
+
+
+        
         let key = ref(0);
         let confirmDell = ref(false)
         function wellButtons(type, well){
@@ -32,7 +38,7 @@ export const firstkkconstructor = {
             switch(type){
                 case 0:
                     let objss = {
-                        numKabLine: props.obj.cableLines.length + 1,
+                        numKabLine: store.state.newScheme.cableLines.length + 1,
                         start: '',
                         finish: '',
                         length: '',
@@ -41,20 +47,20 @@ export const firstkkconstructor = {
                         owner: '',
                         additionalParameters: []
                     };
-                    props.obj.cableLines.push(objss);
+                    store.state.newScheme.cableLines.push(objss);
                     break;
                 case 1:
-                    constructorManager.object.EditLine(0, props.obj.cableLines.find(x => x.numKabLine == id));
+                    constructorManager.object.EditLine(0, store.state.newScheme.cableLines.find(x => x.numKabLine == id));
                     break;
                 case 2:
-                    props.obj.cableLines.splice(props.obj.cableLines.findIndex(x => x.numKabLine == id), 1);
+                    store.state.newScheme.cableLines.splice(store.state.newScheme.cableLines.findIndex(x => x.numKabLine == id), 1);
                     break;
             }
         }
         function getWell(type, finish){
             switch(type){
                 case "well":
-                    let obj1 = props.obj.wells.find(x => x.id == finish);
+                    let obj1 = store.state.newScheme.wells.find(x => x.id == finish);
                     if(obj1 != null) return obj1.wellObject.numWell;
                 break;
                 case "object":
@@ -74,31 +80,31 @@ export const firstkkconstructor = {
         async function button(id){
             switch(id){
                 case 0:
-                    if(props.obj.name == "" || props.obj.name == " ") {
+                    if(store.state.newScheme.name == "" || store.state.newScheme.name == " ") {
                         $.notify("Введите название схемы", { type:"toast" });
                         return;
                     }
-                    if(props.obj.wells.length <= 0) {
+                    if(store.state.newScheme.wells.length <= 0) {
                         $.notify("Заполните данные", { type:"toast" });
                         return;
                     }
-                    if(!props.obj.edit){
-                        constructorManager.object.cableSchem.name = props.obj.name;
-                        constructorManager.object.cableSchem.channels = props.obj.kls;
-                        constructorManager.object.cableSchem.cableLines = props.obj.cableLines;
+                    if(!store.state.newScheme.edit){
+                        constructorManager.object.cableSchem.name = store.state.newScheme.name;
+                        constructorManager.object.cableSchem.channels = store.state.newScheme.kls;
+                        constructorManager.object.cableSchem.cableLines = store.state.newScheme.cableLines;
                         constructorManager.LoadingPage(true)
                         await constructorManager.destroy(0);
                     }
                     else{
-                        constructorManager.object.cableSchem.name = props.obj.name;
-                        constructorManager.object.cableSchem.channels = props.obj.kls;
-                        constructorManager.object.cableSchem.cableLines = props.obj.cableLines;
+                        constructorManager.object.cableSchem.name = store.state.newScheme.name;
+                        constructorManager.object.cableSchem.channels = store.state.newScheme.kls;
+                        constructorManager.object.cableSchem.cableLines = store.state.newScheme.cableLines;
                         constructorManager.LoadingPage(true)
                         await constructorManager.destroy(3);
                     }
                 break;
                 case 1:
-                    if(!props.obj.edit){
+                    if(!store.state.newScheme.edit){
                         await constructorManager.destroy(1);
                     }
                     else{
@@ -107,7 +113,7 @@ export const firstkkconstructor = {
                 break;
                 case 2:
                     constructorManager.LoadingPage(true)
-                    await cableSchemasManager.DeleteSchemFull(props.obj.id);
+                    await cableSchemasManager.DeleteSchemFull(store.state.newScheme.id);
                     constructorManager.destroy(1)
                 break;
             }
@@ -121,7 +127,8 @@ export const firstkkconstructor = {
             misterProper3,
             button,
             getWell,
-            confirmDell
+            confirmDell,
+            store,
         }
     },
     template:`
@@ -129,13 +136,13 @@ export const firstkkconstructor = {
 
             <div class="item item_active">
                 <div class="mainkk-input">
-                    <input v-model="obj.name" type="text" placeholder="Название схемы">
+                    <input v-model="store.state.newScheme.name" type="text" placeholder="Название схемы">
                 </div>
                 <div class="item__title">
                     <p>Колодцы</p>
                 </div>
                 <div class="mainkk-items">
-                    <div class="mainkk-item" v-for="(well, indx) in obj.wells" @mouseover="misterProper(1, well)" @mouseleave="misterProper(0, well)">
+                    <div class="mainkk-item" v-for="(well, indx) in store.state.newScheme.wells" @mouseover="misterProper(1, well)" @mouseleave="misterProper(0, well)">
                         <div class="mainkk-item__name">
                             {{well.wellObject.numWell}}
                         </div>
@@ -151,7 +158,7 @@ export const firstkkconstructor = {
                     <p>Кабельные каналы</p>
                 </div>
                 <div class="mainkk-items">
-                    <div class="mainkk-item mainkk-itemKK" v-for="(kl, indx) in obj.kls" @mouseover="misterProper2(1, kl)" @mouseleave="misterProper2(0, kl)">
+                    <div class="mainkk-item mainkk-itemKK" v-for="(kl, indx) in store.state.newScheme.kls" @mouseover="misterProper2(1, kl)" @mouseleave="misterProper2(0, kl)">
                         <div class="mainkk-item__name">
                             {{getWell("well", kl.cableChannelObject.start)}} -> {{getWell(kl.cableChannelObject.finishtype, kl.cableChannelObject.finish)}}
                         </div>
@@ -168,7 +175,7 @@ export const firstkkconstructor = {
                     <div @click="cabLinesButtons(0)" class="button" style="height:40px;">Добавить</div>
                 </div>
                 <div class="mainkk-items">
-                    <div class="mainkk-item" v-for="(cabline, indx) in obj.cableLines" @mouseover="misterProper3(1, cabline.numKabLine)" @mouseleave="misterProper3(0, cabline.numKabLine)">
+                    <div class="mainkk-item" v-for="(cabline, indx) in store.state.newScheme.cableLines" @mouseover="misterProper3(1, cabline.numKabLine)" @mouseleave="misterProper3(0, cabline.numKabLine)">
                         <div class="mainkk-item__name">
                             КЛ - {{cabline.numKabLine}}
                         </div>
@@ -181,7 +188,7 @@ export const firstkkconstructor = {
             </div>
             <div class="save-buttons">
                 <button class="save-buttons__item" @click="button(1)">Отменить</button>
-                <button class="save-buttons__item" v-if="obj.edit" @click="this.confirmDell=true">Удалить</button>
+                <button class="save-buttons__item" v-if="store.state.newScheme.edit" @click="this.confirmDell=true">Удалить</button>
                 <button class="save-buttons__item" @click="button(0)">Сохранить</button>
             </div>
             <div class="users-add" v-if="confirmDell">

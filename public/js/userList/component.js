@@ -1,15 +1,12 @@
-import { ref   } from 'vue'
-
+import { ref } from 'vue'
+import { useStateStore } from '../pinia/store.js'
 export const userlist = {
-    props:{
-        users: {
-            type: Array
-        },
-        newuser: {
-            type: Object
-        }
-    },
-    setup(props,{emit}){
+    setup(){
+        const store = useStateStore()
+        const users = store.state.userList
+        const newuser = store.state.newUser
+
+
         let newuserActive = ref(false)
         let editActive = ref(false)
         let passwordConfirm = ref('')
@@ -20,63 +17,63 @@ export const userlist = {
         ]
 
         function closeModel(){
-            this.newuserActive = false
+            newuserActive.value = false
 
-            props.newuser.id = ""
-            props.newuser.username = ""
-            props.newuser.password = ""
-            props.newuser.role = ""
+            newuser.id = ""
+            newuser.username = ""
+            newuser.password = ""
+            newuser.role = ""
 
-            this.editActive=false
+            editActive.value=false
         }
 
         function openEditUser(indx){
-            this.editActive=true
-            this.newuserActive = true
-            props.newuser.id = props.users[indx].id
-            props.newuser.username = props.users[indx].username
-            props.newuser.password = props.users[indx].password
-            props.newuser.role = roles[props.users[indx].role]
+            editActive.value=true
+            newuserActive.value = true
+            newuser.id = users[indx].id
+            newuser.username = users[indx].username
+            newuser.password = users[indx].password
+            newuser.role = roles[users[indx].role]
         }
 
         function buttons(type){
             switch (type) {
                 case 0: // Добавить пользователя
-                    if (props.newuser.password!= this.passwordConfirm){
+                    if (newuser.password!= this.passwordConfirm){
                         $.notify("Введите корректные данные", { type:"toast" });
                         return;
                     }
-                    if(props.users.find(x => x.username == props.newuser.username) != null){
+                    if(users.find(x => x.username == newuser.username) != null){
                         $.notify("Пользователь с таким логином уже существует", { type:"toast" });
                         return;
                     }
-                    if(props.newuser.username == "" || props.newuser.username == " " || props.newuser.password == "" || props.newuser.password == " "){
+                    if(newuser.username == "" || newuser.username == " " || newuser.password == "" || newuser.password == " "){
                         $.notify("Введите корректные данные", { type:"toast" });
                         return;
                     }
-                    if(props.newuser.role == ""){
+                    if(newuser.role == ""){
                         $.notify("Выберите роль", { type:"toast" });
                         return;
                     }
                     $.notify("Пользователь создан", { type:"toast" });
-                    userManager.CreateUser(props.newuser);
+                    userManager.CreateUser(newuser);
                     this.closeModel();
                     break;
                 case 1: // Отредактировать
                     $.notify("Данные обновлены", { type:"toast" });
-                    userManager.SaveUser(props.newuser);
+                    userManager.SaveUser(newuser);
                     this.closeModel();
                     break;
                 case 2: // Удалить
                     $.notify("Пользователь удалён", { type:"toast" });
-                    userManager.DeleteUser(props.newuser.id);
+                    userManager.DeleteUser(newuser.id);
                     this.closeModel();
                     break;
             }
         }
 
         function exit(){
-            emit('back-to-main')
+            store.state.mainType=0
         }
 
 
@@ -88,7 +85,10 @@ export const userlist = {
             buttons,
             openEditUser,
             editActive,
-            passwordConfirm
+            passwordConfirm,
+            users,
+            newuser,
+            store
 
         }
     },
@@ -135,7 +135,7 @@ export const userlist = {
                         <div class="users-add__input" title="Оставьте поле пустым, если не хотите менять пароль">
                             <input v-model="newuser.password" type="password" placeholder="Пароль">
                         </div>
-                        <p style="margin: -10px 0 10px 0;text-align: center;">Оставьте поле пустым, если не хотите менять пароль</p>
+                        <p v-if="editActive" style="margin: -10px 0 10px 0;text-align: center;">Оставьте поле пустым, если не хотите менять пароль</p>
                         <div v-if="!editActive" class="users-add__input" >
                             <input v-model="passwordConfirm" type="password" placeholder="Подтвердите пароль">
                         </div>

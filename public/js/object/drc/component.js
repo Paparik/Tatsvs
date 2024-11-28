@@ -1,31 +1,24 @@
 import { computed } from 'vue'
+import { useStateStore } from '../../pinia/store.js'
 export const drc = {
-    props:{
-        obj:{
-            type: Object
-        },
-        operators: {
-            type: Array
-        },
-        colors:{
-            type: Object
-        }
-    },
-    setup(props, {emit}){
+
+    setup(){
+        const store = useStateStore()
         function backTo(){
-            emit("func-back")
+            window.vueApp.back()
         }
         const wellImg = computed(() => {
-            if(props.obj.lastPhoto.reader.path != null && props.obj.lastPhoto.reader.path.includes("./php")){
-                return props.obj.lastPhoto.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            if(store.state.drc.lastPhoto.reader.path != null && store.state.drc.lastPhoto.reader.path.includes("./php")){
+                return store.state.drc.lastPhoto.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             }
-            else if(props.obj.lastPhoto.reader.path != null && !props.obj.lastPhoto.reader.path.includes("./php")){
-                return props.obj.lastPhoto.reader.path;
+            else if(store.state.drc.lastPhoto.reader.path != null && !store.state.drc.lastPhoto.reader.path.includes("./php")){
+                return store.state.drc.lastPhoto.reader.path;
             }
         })
         return{
             backTo,
-            wellImg
+            wellImg,
+            store,
         }
     },
     template:`
@@ -36,13 +29,13 @@ export const drc = {
                     <div class="drc-about__title">
                         Последнее фото шкафа:
                     </div>
-                    <div class="item-img" v-if="obj.lastPhoto.reader">
+                    <div class="item-img" v-if="store.state.drc.lastPhoto.reader">
                         <div class="item-img__container">
                             <img :src="wellImg" alt="">
                         </div>
                     </div>
                     <div class="drc-about__desc">
-                       {{obj.desc}}
+                       {{store.state.drc.desc}}
                     </div>
                 </div>
                 <div class="drc-main">
@@ -50,8 +43,8 @@ export const drc = {
                         <p>Операторы</p>
                         <div 
                             class="drc-operList__item" 
-                            v-for="oper in operators"
-                            :style="{background: '#' + colors[oper]}"
+                            v-for="oper in store.operators"
+                            :style="{background: '#' + store.operatorsColors[oper]}"
                         >
                             {{oper}}
                         </div>
@@ -63,8 +56,8 @@ export const drc = {
                             </div>
                             <div 
                                 class="drc-main__item" 
-                                v-for="(oper,i) in obj.closet.opers"
-                                :style="{background: oper.operator!=null ?  '#' + colors[oper.operator]: 'none',color:  oper.operator!=null ? '#fff' : '#000'}"
+                                v-for="(oper,i) in store.state.drc.closet.opers"
+                                :style="{background: oper.operator!=null ?  '#' + store.operatorsColors[oper.operator]: 'none',color:  oper.operator!=null ? '#fff' : '#000'}"
                                 >
                                 <div class="drc-main__number" >
                                     {{i+1}}
@@ -77,7 +70,7 @@ export const drc = {
                                 <p>ДРС</p>
 
                             </div>
-                            <div class="drc-main__item" v-for="(port, i) in obj.closet.ports">
+                            <div class="drc-main__item" v-for="(port, i) in store.state.drc.closet.ports">
                                 <p>{{port.name}}</p>
                                 <div class="drc-main__number" >
                                     {{i+1}}

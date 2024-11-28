@@ -36,13 +36,16 @@ class WellsManager{
         marker.on('click', (e) => { well.MarkerClicked(); });
         marker.on('contextmenu', (e) => { well.ContextClicked(); });
         this.wells.push(well);
-        window.vueApp.state.newScheme.wells.push(well);
+
+        // window.stateStore.state.newScheme.wells.push(well);
+        window.vueApp.pushWell(well)
         return well;
     }
 
     DeleteWell = (id) => {
         let well = this.GetWellById(id);
-        window.vueApp.state.newScheme.wells.splice(this.wells.indexOf(well), 1);
+        // window.stateStore.newScheme.wells.splice(this.wells.indexOf(well), 1);
+        window.vueApp.delWell(this.wells.indexOf(well))
         this.wells.splice(this.wells.indexOf(well), 1);
         well.Destroy();
     }

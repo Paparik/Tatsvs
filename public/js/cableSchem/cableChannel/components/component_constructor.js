@@ -1,47 +1,36 @@
-import { ref, onMounted, watch, computed } from 'vue'
-
+import { onMounted, computed } from 'vue'
+import { useStateStore } from '../../../pinia/store.js'
 export const kkconstructor = {
-    props: {
-        obj: {
-            type: Object
-        },
-        cableLines: {
-            type: Array
-        },
-        promts: {
-            type: Object
-        }
-    },
-    setup(props, {emit}){
-
+    setup(){
+        const store = useStateStore()
 
         function setSlider(objec,key,value){
-            props.obj[objec][key] = value
+            store.state.kkForConstructor[objec][key] = value
         }
         function setSliderCabLine(indx,value){
-            props.obj.KabLines[indx] = value
+            store.state.kkForConstructor.KabLines[indx] = value
         }
         const usedNumKabLines = computed(() => {
-            return props.obj.KabLines.map(line => line.numKabLine);
+            return store.state.kkForConstructor.KabLines.map(line => line.numKabLine);
         })
         function isNumKabLineUsed(numKabLine) {
             return this.usedNumKabLines.includes(numKabLine);
         }
         function button(type) {
-            constructorManager.object.updatePolyline(0, props.obj.numKabChannel);
+            constructorManager.object.updatePolyline(0, store.state.kkForConstructor.numKabChannel);
             switch(type){
                 case 0:
-                    constructorManager.object.EditChannel(1, props.obj);
+                    constructorManager.object.EditChannel(1, store.state.kkForConstructor);
                     break;
                 case 1:
-                    constructorManager.object.EditChannel(1, props.obj);
-                    emit('func-back')
+                    constructorManager.object.EditChannel(1, store.state.kkForConstructor);
+                    window.vueApp.back()
                     break;
             }
         }
         function addCabLine(){
-            if(props.obj.KabLines.length >= props.cableLines.length) return;
-            props.obj.KabLines.push({
+            if(store.state.kkForConstructor.KabLines.length >= store.state.newScheme.cableLines.length) return;
+            store.state.kkForConstructor.KabLines.push({
                 numKabLine: '',
                 start: '',
                 finish: '',
@@ -53,13 +42,13 @@ export const kkconstructor = {
             })
         }
         onMounted(() => {
-            if (props.obj.KabLines.length==0){
+            if (store.state.kkForConstructor.KabLines.length==0){
                 addCabLine()
             }
         })
 
         // function replaceComma(){
-        //     props.obj.length =  props.obj.length.replace(/,/g, '.');;
+        //     store.state.kkForConstructor.length =  store.state.kkForConstructor.length.replace(/,/g, '.');;
         // }; 
 
 
@@ -71,6 +60,8 @@ export const kkconstructor = {
             addCabLine,
             isNumKabLineUsed,
             usedNumKabLines,
+            store
+
         }
     },
     
@@ -92,22 +83,22 @@ export const kkconstructor = {
                     <p>Длина</p>
                     <div class="constructor__input">
                         <input type="number" 
-                        v-model="this.obj.length"
+                        v-model="this.store.state.kkForConstructor.length"
                         placeholder="Введите значение">
                     </div>
                 </div>
             </div>
-            <constructor-input name="Диаметр" v-model:model="this.obj.diameter" myplaceholder='Введите значение'></constructor-input>
+            <constructor-input name="Диаметр" v-model:model="this.store.state.kkForConstructor.diameter" myplaceholder='Введите значение'></constructor-input>
             <constructor-choice
                 name="Материал"
-                v-model:model="this.obj.material"
-                :items="promts.cable_channel_material"
+                v-model:model="this.store.state.kkForConstructor.material"
+                :items="store.promptsOptions.cable_channel_material"
             ></constructor-choice >
-            <div class="table__item" v-for="(kabLine, index) in this.obj.KabLines">
+            <div class="table__item" v-for="(kabLine, index) in this.store.state.kkForConstructor.KabLines">
                 <div class="table__title">
                     <p>Кабельная линия</p>
                     <div class="table__title__items">
-                        <button @click="this.obj.KabLines.splice(index,1)" class="constructor__button" style="margin-right: 0px;">
+                        <button @click="this.store.state.kkForConstructor.KabLines.splice(index,1)" class="constructor__button" style="margin-right: 0px;">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0.382031 17.7734C-0.127344 18.2828 -0.127344 19.1086 0.382031 19.618C0.891406 20.1273 1.71729 20.1273 2.22666 19.618L0.382031 17.7734ZM10.9223 10.9223C11.4317 10.4129 11.4317 9.58715 10.9223 9.07776C10.4129 8.56836 9.58715 8.56836 9.07776 9.07776L10.9223 10.9223ZM9.07776 9.07776C8.56836 9.58715 8.56836 10.4129 9.07776 10.9223C9.58715 11.4317 10.4129 11.4317 10.9223 10.9223L9.07776 9.07776ZM19.618 2.22666C20.1273 1.71729 20.1273 0.891406 19.618 0.382031C19.1086 -0.127344 18.2828 -0.127344 17.7734 0.382031L19.618 2.22666ZM10.9223 9.07776C10.4129 8.56836 9.58715 8.56836 9.07776 9.07776C8.56836 9.58715 8.56836 10.4129 9.07776 10.9223L10.9223 9.07776ZM17.7734 19.618C18.2828 20.1273 19.1086 20.1273 19.618 19.618C20.1273 19.1086 20.1273 18.2828 19.618 17.7734L17.7734 19.618ZM9.07776 10.9223C9.58715 11.4317 10.4129 11.4317 10.9223 10.9223C11.4317 10.4129 11.4317 9.58715 10.9223 9.07776L9.07776 10.9223ZM2.22666 0.382031C1.71729 -0.127344 0.891406 -0.127344 0.382031 0.382031C-0.127344 0.891406 -0.127344 1.71729 0.382031 2.22666L2.22666 0.382031ZM2.22666 19.618L10.9223 10.9223L9.07776 9.07776L0.382031 17.7734L2.22666 19.618ZM10.9223 10.9223L19.618 2.22666L17.7734 0.382031L9.07776 9.07776L10.9223 10.9223ZM9.07776 10.9223L17.7734 19.618L19.618 17.7734L10.9223 9.07776L9.07776 10.9223ZM10.9223 9.07776L2.22666 0.382031L0.382031 2.22666L9.07776 10.9223L10.9223 9.07776Z" fill="#6B6B6B"/>
                             </svg>
@@ -123,7 +114,7 @@ export const kkconstructor = {
                                 <div 
                                     class="slider__item" 
                                     onclick="closeSliderConstructor(this)" 
-                                    v-for="item in this.cableLines"
+                                    v-for="item in store.state.newScheme.cableLines"
                                     @click="setSliderCabLine(index,item)"
                                     v-show="!isNumKabLineUsed(item.numKabLine)"
                                     >

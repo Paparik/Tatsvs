@@ -1,12 +1,17 @@
+import { useStateStore } from '../pinia/store.js'
+
 export const logslist = {
-    props:{
-        logs: {
-            type: Array
-        },
-    },
+    // props:{
+    //     logs: {
+    //         type: Array
+    //     },
+    // },
     setup(props,{emit}){
+        
+        const store = useStateStore()
+        
         function exit(){
-            emit('back-to-main')
+            store.state.mainType=0
         }
 
         function GetDate(log){
@@ -18,8 +23,10 @@ export const logslist = {
         }
 
         return{ 
+            store,
             exit,
-            GetDate
+            GetDate,
+            logs: store.state.logs,
         }
     },
     template:`

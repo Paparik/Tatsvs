@@ -21,8 +21,10 @@ class CableLinesConstructor{
                 window.vueApp.setData(42, obj);
             break;
             case 1:
-                window.vueApp.state.newScheme.cableLines[window.vueApp.state.newScheme.cableLines.findIndex(x => x.id === obj.numKabLine)] = obj;
-                window.vueApp.state.mainType = 72;
+                // window.vueApp.state.newScheme.cableLines[window.vueApp.state.newScheme.cableLines.findIndex(x => x.id === obj.numKabLine)] = obj;
+                // window.vueApp.state.mainType = 72;
+                window.vueApp.cancelEditLine(obj)
+
             break;
         }
     }
@@ -36,8 +38,9 @@ class CableLinesConstructor{
             case 1:
                 let newChannel = this.cableSchem.GetCableChannelsManager().GetChannelById(Number(obj.numKabChannel));
                 newChannel.cableChannelObject = obj;
-                window.vueApp.state.newScheme.kls[window.vueApp.state.newScheme.kls.findIndex(x => x.id === newChannel.id)] = newChannel;
-                window.vueApp.state.mainType = 72;
+                // window.vueApp.state.newScheme.kls[window.vueApp.state.newScheme.kls.findIndex(x => x.id === newChannel.id)] = newChannel;
+                // window.vueApp.state.mainType = 72;
+                window.vueApp.cancelEditChannel(newChannel)
             break;
         }
     }
@@ -51,8 +54,10 @@ class CableLinesConstructor{
             case 1:
                 let newWell = this.cableSchem.GetWellsManager().GetWellById(obj.id);
                 newWell.wellObject = obj;
-                window.vueApp.state.newScheme.wells[window.vueApp.state.newScheme.wells.findIndex(x => x.id === newWell.id)] = newWell;
-                window.vueApp.state.mainType = 72;
+                // window.vueApp.state.newScheme.wells[window.vueApp.state.newScheme.wells.findIndex(x => x.id === newWell.id)] = newWell;
+                // window.vueApp.state.mainType = 72;
+                window.vueApp.cancelEditWell(newWell)
+                
             break;
         }
     }
@@ -76,7 +81,8 @@ class CableLinesConstructor{
         if(type == "object") finish = JSON.stringify(well);
         let data = { numKabChannel: '',schemaName: "",schemaId:"",start: this.selectedPoint.id,finish: finish,finishtype: type,length: '',diameter: '',material: '',KabLines: [],additionalParameters: []}
         let newchannel = this.cableSchem.GetCableChannelsManager().CreateChannel([this.selectedPoint.getMarker().getLatLng(), well.getMarker().getLatLng()], data, this.cableSchem.name); 
-        window.vueApp.state.newScheme.kls.push(newchannel);
+        // window.vueApp.state.newScheme.kls.push(newchannel);
+        window.vueApp.pushNewChannel(newchannel)
     }
 
     addObject = (object) => {

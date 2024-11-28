@@ -1,3 +1,4 @@
+
 class CableSchemasManager{
     constructor(){
         this.cableSchemas = [];
@@ -12,7 +13,8 @@ class CableSchemasManager{
                 data.forEach(el => {
                     let schem = new CableSchema(el.id, el.name, el.wells, el.channels, el.cableLines);
                     this.cableSchemas.push(schem);
-                    window.vueApp.state.countKl += 1;
+                    window.vueApp.incrementCountKL()
+                    // window.stateStore.state.countKl += 1;
                 });
             }
         }
@@ -51,7 +53,8 @@ class CableSchemasManager{
         await this.cableSchemas[index].destroy();
         this.cableSchemas.splice(index, 1);
         constructorManager.LoadingPage(false)
-        window.vueApp.state.countKl -= 1;
+        // window.stateStore.countKl -= 1;
+        window.vueApp.decrementCountKL()
     }
 
     LoadNew = async (id) => {
@@ -115,7 +118,8 @@ class CableSchemasManager{
         let schem = new CableSchema(result.data, object.name, data, object.channels, object.cableLines);
         this.cableSchemas.push(schem);
         constructorManager.LoadingPage(false)
-        window.vueApp.state.countKl += 1;
+        // window.vueApp.state.countKl += 1;
+        window.vueApp.incrementCountKL()
     }
 
     SaveAllImages = async (obj, id) => {

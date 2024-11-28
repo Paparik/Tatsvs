@@ -21,6 +21,10 @@
 */
 
 import { createApp, reactive, computed, onMounted   } from 'vue'
+
+import { createPinia } from 'pinia';
+import { useStateStore } from '../js/pinia/store.js';
+
 import { wellobject } from 'wellcomp'
 import { homeobject } from 'homecomp'
 import { firstpage } from 'firstpage'
@@ -57,59 +61,73 @@ window.callSetData = callSetData;
 
 const app = createApp({
     setup() {
-        const state = reactive({
-            mainType: 0,
-            cabChannelsActive: true,
-            objectHome: {},
-            wellObj: {},
-            kabChannelObj: {},
-            kabLinelObj: {},
-            objectForConstructor: {},
-            wellForConstructor:{},
-            kkForConstructor:{},
-            kabLinelForConstructor: {},
-            newSchemeObject:{ drc: [], entrances: [] },
-            newScheme: { edit: false, id: '', name: '', wells:[], kls:[], cableLines: [] },
-            colors: ['FF5555','3BC171','5194BA','7351BA','C02C61','C18B3B'],
-            newUser: { username: '', password: '', role: '' },
-            closetsColor:{},
-            drc:{},
-            newDrc: {},
-            entrances: [],
-            entrances: [],
-            userList: [],
-            allObjectsAndSchemas:{},
+
+        const store = useStateStore()
 
 
-            username: "",
-            password: "",
-            whereBack: null,
-            chupapiIndex: -1,
-            search: '',
-            loading: false,
-            countObj: 0,
-            countKl: 0,
-
-            logs: []
-        })
-
-        const promptsOptions = {
-            operators: ["МТС", "Таттелеком", "Уфанет", "ЭР-телеком"],
-            management_companies: ["Тулпар"],
-            well_type: ["ККС - 2", "ККС - 4", "ККС - 5", "Ввод в дом"],
-            luke_type: ["Стальной", "Квадратный"],
-            cable_channel_material: ["Пластик", "Медь"],
-            cable_type_in_cable_line: ["Первый", "Второй"],
-            cable_mark_in_cable_line: ["Первый", "Второй"],
-            drc_elements_drc: ["Первый", "Второй"],
-            drc_elements_closet: ["Органайзер", "Оптический кросс", "Коммутатор"]
+        const setAllObjectsAndSchemas = (allObjectNames) => {
+            store.state.allObjectsAndSchemas = allObjectNames
         }
 
+        const incrementCountKL = () => {
+            store.state.countKl++
+        }
+        const incrementCountObj = () => {
+            store.state.countObj++
+        }
+
+        const decrementCountKL = () => {
+            store.state.countKl--
+        }
+        const decrementCountObj = () => {
+            store.state.countObj--
+        }
+
+        const pushWell = (well) => {
+            store.state.newScheme.wells.push(well)
+        }
+
+        const setDrcConstructor = (obj) =>{
+            window.stateStore.state.objectForConstructor.houseschem.drc[window.stateStore.state.chupapiIndex] = obj
+        }
+        const saveObjectSchem = (obj1,obj2) =>{
+            window.stateStore.state.objectForConstructor.houseschem.entrances = obj1;
+            window.stateStore.state.objectForConstructor.houseschem.drc = obj2;
+        }
+
+        const pushNewChannel = (newchannel) =>{
+            window.stateStore.state.newScheme.kls.push(newchannel);
+        }
+
+        const cancelEditWell = (newWell) =>{
+            window.stateStore.state.newScheme.wells[window.stateStore.state.newScheme.wells.findIndex(x => x.id === newWell.id)] = newWell;
+            window.stateStore.state.mainType = 72;
+        }
+
+        const cancelEditChannel = (newChannel) =>{
+            window.stateStore.state.newScheme.kls[window.stateStore.state.newScheme.kls.findIndex(x => x.id === newChannel.id)] = newChannel;
+            window.stateStore.state.mainType = 72;
+        }
+
+        const cancelEditLine = (obj) =>{
+            window.stateStore.state.newScheme.cableLines[window.stateStore.state.newScheme.cableLines.findIndex(x => x.id === obj.numKabLine)] = obj;
+            window.stateStore.state.mainType = 72;
+        }
+
+        const delCableChannel = (cableChannels) => {
+            window.stateStore.state.newScheme.kls.splice(cableChannels, 1);
+        }
+        const delWell = (well) => {
+            window.stateStore.state.newScheme.wells.splice(well, 1);
+        }
+
+
+        
         function kablinesCounter(id){
             let lenght = 0
-            for (let index = 0; index < state.newScheme.cableLines.length; index++) {
-                if (state.newScheme.cableLines[index].KabLines.find(item => item.numKabLine == id) != -1){
-                    lenght +=  Number(state.newScheme.cableLines[index].length)
+            for (let index = 0; index < store.state.newScheme.cableLines.length; index++) {
+                if (store.state.newScheme.cableLines[index].KabLines.find(item => item.numKabLine == id) != -1){
+                    lenght +=  Number(store.state.newScheme.cableLines[index].length)
                 }
                 
             }
@@ -117,11 +135,11 @@ const app = createApp({
         }
 
         function ResetWell(){
-            let obj = cableSchemasManager.cableSchemas.find(x => x.id == state.wellObj.schemaId);
+            let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.state.wellObj.schemaId);
             if(obj){
                 let manager = obj.GetWellsManager();
                 if(manager){
-                    let well = manager.wells.find(x => x.id == state.wellObj.id);
+                    let well = manager.wells.find(x => x.id == store.state.wellObj.id);
                     if(well){
                         if(!well.wellObject.typeWell.includes("Ввод") && !well.wellObject.typeWell.includes("ввод")) well.getMarker().setIcon(constructorManager.GetIcon("Колодец", 0));
                     }
@@ -130,11 +148,11 @@ const app = createApp({
         }
 
         function ResetPolylineCablines(){
-            let schem = cableSchemasManager.cableSchemas.find(x => x.id == state.kabChannelObj.schemaId);
+            let schem = cableSchemasManager.cableSchemas.find(x => x.id == store.state.kabChannelObj.schemaId);
             if(schem){
                 let manager = schem.GetCableChannelsManager();
                 if(manager){
-                    let objects = manager.cableChannels.filter(x => x.cableChannelObject.KabLines.find(x => x.numKabLine == state.kabLinelObj.numKabLine))
+                    let objects = manager.cableChannels.filter(x => x.cableChannelObject.KabLines.find(x => x.numKabLine == store.state.kabLinelObj.numKabLine))
                     objects.forEach(element => {
                         element.GetPolyline().setStyle({ color: 'rgba(105, 105, 105, 0.5)' })
                     });
@@ -143,11 +161,11 @@ const app = createApp({
         }
 
         function ResetPolyline(){
-            let obj = cableSchemasManager.cableSchemas.find(x => x.id == state.kabChannelObj.schemaId);
+            let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.state.kabChannelObj.schemaId);
             if(obj){
                 let manager = obj.GetCableChannelsManager();
                 if(manager){
-                    let channel = manager.cableChannels.find(x => x.id == state.kabChannelObj.numKabChannel);
+                    let channel = manager.cableChannels.find(x => x.id == store.state.kabChannelObj.numKabChannel);
                     if(channel){
                         channel.GetPolyline().setStyle({ color: 'rgba(105, 105, 105, 0.5)' })
                     }
@@ -156,7 +174,7 @@ const app = createApp({
         }
 
         function GetMainPage(){
-            switch(state.mainType){
+            switch(store.state.mainType){
                 case 3:
                 case 2:
                 case 1:
@@ -180,7 +198,7 @@ const app = createApp({
                 case 32:
                 case 42:
                 case 72:
-                    if(state.newScheme.edit == true){
+                    if(store.state.newScheme.edit == true){
                         constructorManager.destroy(4);
                     }
                     else{
@@ -188,7 +206,7 @@ const app = createApp({
                     }
                 break;
                 default:
-                    state.mainType=0
+                    store.state.mainType=0
                     break;
             }
         }
@@ -203,47 +221,34 @@ const app = createApp({
         }
 
         const filteredObjects = computed(() => {
-            const query = state.search.toLowerCase();
+            const query = store.state.search.toLowerCase();
             return Object.fromEntries(
-                Object.entries(state.allObjectsAndSchemas).filter(([key]) =>
+                Object.entries(store.state.allObjectsAndSchemas).filter(([key]) =>
                     key.toLowerCase().includes(query)
                 )
             );
         });
 
-        async function auth(){
-            let result = await apiManager.setData("login", "./php/api/auth/index.php", JSON.stringify([state.username, state.password]));
-            switch(result.code){
-                case 200:
-                    $.notify("Успешный вход", { type:"toast" });
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 700);
-                break;
-                case 201:
-                    $.notify("Неверное имя пользователя или пароль.", { type:"toast" });
-                break;
-            }
-        }
+        
 
         function CabChannelsActiveToggle() {
-            state.cabChannelsActive = !state.cabChannelsActive;
-            mapManager.CableChannelsVisible(state.cabChannelsActive);
+            store.state.cabChannelsActive = !store.state.cabChannelsActive;
+            mapManager.CableChannelsVisible(store.state.cabChannelsActive);
         }
         
         function back(){
-            state.mainType=state.whereBack
-            switch(state.whereBack){
+            store.state.mainType = store.state.whereBack
+            switch(store.state.whereBack){
                 case 52:
-                    state.whereBack = 12;
+                    store.state.whereBack = 12;
                 break;
                 case 3:
                     ResetPolylineCablines();
-                    let obj = cableSchemasManager.cableSchemas.find(x => x.id == state.kabChannelObj.schemaId);
+                    let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.state.kabChannelObj.schemaId);
                     if(obj){
                         let manager = obj.GetCableChannelsManager();
                         if(manager){
-                            let channel = manager.cableChannels.find(x => x.id == state.kabChannelObj.numKabChannel);
+                            let channel = manager.cableChannels.find(x => x.id == store.state.kabChannelObj.numKabChannel);
                             if(channel){
                                 channel.GetPolyline().setStyle({ color: 'rgba(255, 69, 0, 0.7)' })
                             }
@@ -251,7 +256,7 @@ const app = createApp({
                     }
                 break;
                 case 5:
-                    state.whereBack = 1;
+                    store.state.whereBack = 1;
                     setTimeout(() => {
                         $('.owl-carousel').owlCarousel({
                             loop:false,
@@ -265,7 +270,7 @@ const app = createApp({
 
         function setData(type, obj, id = null){
             if(id != null){
-                state.chupapiIndex = id
+                store.state.chupapiIndex = id
             }
             switch (type) {
                 case 0: break;
@@ -273,54 +278,55 @@ const app = createApp({
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    state.objectHome=obj; 
+                    store.setObject(obj)
+                    
                     break;
                 case 2: 
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    state.wellObj=obj;
+                    store.state.wellObj=obj;
                     break;
                 case 3:
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    state.kabChannelObj=obj; 
+                    store.state.kabChannelObj=obj; 
                     break;
                 case 4:
                     ResetWell();
                     ResetPolylineCablines();
-                    state.kabLinelObj=obj;
-                    state.whereBack = 3; 
+                    store.state.kabLinelObj=obj;
+                    store.state.whereBack = 3; 
                     break;
                 case 12:
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    state.objectForConstructor = obj; 
+                    store.state.objectForConstructor = obj; 
                     break;
                 case 72:
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    state.newScheme = obj;
+                    store.state.newScheme = obj;
                     break;
 
                 case 22:
-                    state.wellForConstructor = obj;
-                    state.whereBack = 72;
+                    store.state.wellForConstructor = obj;
+                    store.state.whereBack = 72;
                     break;
                 case 32:
-                    state.kkForConstructor = obj;
-                    state.whereBack = 72;
+                    store.state.kkForConstructor = obj;
+                    store.state.whereBack = 72;
                     break;
                 case 42:
-                    state.kabLinelForConstructor = obj;
-                    state.whereBack = 72;
+                    store.state.kabLinelForConstructor = obj;
+                    store.state.whereBack = 72;
                     break;
                 case 5:
-                    state.entrances=obj;
-                    state.whereBack = 1
+                    store.state.entrances=obj;
+                    store.state.whereBack = 1
                     setTimeout(() => {
                         $('.owl-carousel').owlCarousel({
                             loop:false,
@@ -330,135 +336,70 @@ const app = createApp({
                     }, 200);
                     break;
                 case 6:
-                    state.drc=obj;
-                    state.whereBack = 5
+                    store.state.drc=obj;
+                    store.state.whereBack = 5
                     break;
                 case 8:
-                    state.userList=obj;
+                    store.state.userList=obj;
                     break;
                 case 9:
-                    state.logs=obj;
+                    store.state.logs=obj;
                     break;
                 case 52:
-                    state.newSchemeObject = obj;
-                    state.whereBack = 12
+                    // obj.lenght = 0
+                    store.state.newSchemeObject = obj;
+                    store.state.whereBack = 12
                     break;
                 case 62:
-                    state.newDrc = obj[id];
-                    state.whereBack = 52
+                    store.state.newDrc = obj[id];
+                    store.state.whereBack = 52
                     break;
                 default:
                     break;
             }
-            state.mainType = type
+            store.state.mainType = type
         }
 
         function updateKabLines(newKabLines) {
-            state.kkForConstructor.kabLines = newKabLines;
-        }
-
-        function wellButtonFp(type){
-            if (type){ // редактировать
-
-            }else{ // удалить
-
-            }
-        }
-
-        function klsButtonFp(type){
-            if (type){ // редактировать
-
-            }else{ // удалить
-
-            }
+            store.state.kkForConstructor.kabLines = newKabLines;
         }
 
 
-        function sortColor() {
-            const colorIndexMap = {};
-            let colorIndex = 0;
-        
-            for (const floor in state.entrances) {
-                const floorData = state.entrances[floor];
-                const aparts = floorData.aparts;
-        
-                for (const apart of aparts) {
-                    const id = apart[3];
-                    if (!colorIndexMap.hasOwnProperty(id)) {
-                        colorIndexMap[id] = colorIndex;
-                        colorIndex++;
-                        if (colorIndex >= state.colors.length) {
-                            colorIndex = 0;
-                        }
-                    }
-                    const color = state.colors[colorIndexMap[id]];
-                    state.closetsColor[id]= color;
-                }
-            }
-        }
-        
-        const operators = computed(() => {
-            const uniqueOperators = [];
-            const operatorsSet = new Set();
-        
-            state.drc.closet.opers.forEach(item => {
-                if (item.operator && !operatorsSet.has(item.operator)) {
-                    operatorsSet.add(item.operator);
-                    uniqueOperators.push(item.operator);
-                }
-            });
-            
-            return uniqueOperators;
-        })
 
-        const operatorsColors = computed(() => {
-            let a = {}
-            const colorIndexMap = {};
-            let colorIndex = 0;
-            for (const floor in state.drc.closet.opers) {
-                const floorData = state.drc.closet.opers[floor];
-                const id = floorData.operator;
-                if (!colorIndexMap.hasOwnProperty(id)) {
-                    colorIndexMap[id] = colorIndex;
-                    colorIndex++;
-                    if (colorIndex >= state.colors.length) {
-                        colorIndex = 0;
-                    }
-                }
-                const color = state.colors[colorIndexMap[id]];
-                a[id] = color;
-            }
-            return a
-
-        })
 
 
 
         return {
+            store,
+            setAllObjectsAndSchemas,
+            incrementCountKL,
+            incrementCountObj,
             perehod,
-            state,
             setData,
+            setDrcConstructor,
+            saveObjectSchem,
             updateKabLines,
-            sortColor,
-            wellButtonFp,
-            klsButtonFp,
-            operators,
-            operatorsColors,
+            pushNewChannel,
+            cancelEditWell,
+            cancelEditChannel,
+            cancelEditLine,
+            decrementCountKL,
+            decrementCountObj,
             back,
             CabChannelsActiveToggle,
-            auth,
+            delCableChannel,
+            // auth,
             filteredObjects,
             GetMainPage,
             kablinesCounter,
             ResetPolyline,
             ResetWell,
             ResetPolylineCablines,
-            promptsOptions
+            pushWell,
+            delWell
         };
     },
-    created(){
-        this.sortColor()
-    },
+
     components: {
         wellobject, 
         homeobject,
@@ -479,15 +420,25 @@ const app = createApp({
     },
 })
 
+const pinia = createPinia();
+window.pinia = pinia;
 
+app.use(pinia);
 
 window.vueApp = app.mount('.wrapper');
+
+const stateStore = useStateStore(pinia);
+window.stateStore = stateStore;
 
 $('.owl-carousel').owlCarousel({
     loop:false,
     autoWidth:true,
     items:4
 })
+
+
+
+
 
 
 

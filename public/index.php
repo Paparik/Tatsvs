@@ -36,6 +36,8 @@
     <title>Tatsvs</title>
 </head>
 <body>
+
+
     <div class="wrapper" v-cloak>
         <div id="notifications"></div>
         <div class="container">
@@ -45,23 +47,23 @@
                 </h1>
                 <button class="button">
                     Логин: <?php if($check) echo $username; ?>
-                </button>
+                </button> 
             </header>
-        </div>
+        </div> 
         <div class="container">
             <main class="main" 
-            :style="(state.mainType != 5 && state.mainType != 6 && state.mainType != 52 && state.mainType != 62 && state.mainType != 8 && state.mainType != 9) ? {} : {  position: 'absolute', left: '-9999px' }">
+            :style="(store.state.mainType != 5 && store.state.mainType != 6 && store.state.mainType != 52 && store.state.mainType != 62 && store.state.mainType != 8 && store.state.mainType != 9) ? {} : {  position: 'absolute', left: '-9999px' }">
                 <div class="map" >
                     <div class="map-search">
                         <div class="map-search__input">
                             <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M10.1111 4.41667C13.256 4.41667 15.8056 6.96616 15.8056 10.1111M16.5559 16.5514L21.5 21.5M19.2222 10.1111C19.2222 15.1431 15.1431 19.2222 10.1111 19.2222C5.07918 19.2222 1 15.1431 1 10.1111C1 5.07918 5.07918 1 10.1111 1C15.1431 1 19.2222 5.07918 19.2222 10.1111Z" stroke="black" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            <input v-model="state.search" id="search" type="text" placeholder="Поиск">
+                            <input v-model="store.search" id="search" type="text" placeholder="Поиск">
                         </div>
 
-                        <div class="map-search__items" v-show="state.search!='' && state.search!=' '">
-                            <p v-for="(value, key) in filteredObjects" :key="key" @click="perehod(key, value)">
+                        <div class="map-search__items" v-show="store.search!='' && store.search!=' '">
+                            <p v-for="(value, key) in store.filteredObjects" :key="key" @click="perehod(key, value)">
                                 <img v-if="value.type == 'schema'"  src="./assets/well.png" alt="">
                                 <img v-if="value.type == 'object' && value.objecttype == 'Жилой дом'" src="./assets/home.png" alt="">
                                 <img v-if="value.type == 'object' && value.objecttype == 'Паркинг'" src="./assets/parking.png" alt="">
@@ -72,82 +74,37 @@
                     </div>
                     <div class="map-filter">
                         <button class="map-filter__button" @click="CabChannelsActiveToggle()">
-                            <div v-if="state.cabChannelsActive"></div>
+                            <div v-if="store.cabChannelsActive"></div>
                         </button>
                         <p>Кабельная канализация</p>
                     </div>
                     <div class="map__main">
-                        <div id="map" ></div>
+                        <div id="map" ></div> 
                     </div>
-                </div>
-                <firstpage  
-                    v-if="state.mainType==0" 
-                    :countObjects="state.countObj" 
-                    :countKabLine="state.countKl"
-                    :loading="state.loading"
-                    role="<?php echo $role; ?>">
-                </firstpage>
-                <homeobject v-if="state.mainType==1" :obj="state.objectHome" role="<?php echo $role; ?>"></homeobject>
-                <wellobject v-if="state.mainType==2" :obj="state.wellObj" role="<?php echo $role; ?>"></wellobject>
-                <kabchannel v-if="state.mainType==3" :obj="state.kabChannelObj" role="<?php echo $role; ?>"></kabchannel>
-                <kablines v-if="state.mainType==4" :obj="state.kabLinelObj" :schemaid="state.kabChannelObj.schemaId" @func-back="back"></kablines> 
-                <objectconstructor
-                  :obj="state.objectForConstructor"
-                  v-if="state.mainType==12"
-                  @set-data="setData()"
-                  :promts="promptsOptions"
-                ></objectconstructor>
-                <wellconstructor 
-                    :obj="state.wellForConstructor"  
-                    v-if="state.mainType==22"
-                    @func-back="back"
-                    :promts="promptsOptions"
-                ></wellconstructor>
-                <kkconstructor   
-                    :obj="state.kkForConstructor"  
-                    v-if="state.mainType==32"
-                    :cable-lines="state.newScheme.cableLines"
-                    :promts="promptsOptions"
-                    @func-back="back">
-                </kkconstructor>
-                <kablinesconstructor
-                    v-if="state.mainType==42"
-                    :obj="state.kabLinelForConstructor"  
-                    :kls="state.newScheme.kls"
-                    :scheme="state.newScheme"
-                    @func-back="back"
-                    :prompts="promptsOptions"
-                ></kablinesconstructor>
-                <firstkkconstructor  
-                    v-show="state.mainType==72"
-                    :obj="state.newScheme" 
-                    @well-button-fp="wellButtonFp"
-                    @kls-button-fp="klsButtonFp"
-                 ></firstkkconstructor>
-
+                </div> 
+                <firstpage v-if="store.state.mainType==0" ></firstpage>
+                <homeobject v-if="store.state.mainType==1" ></homeobject>
+                <wellobject v-if="store.state.mainType==2" ></wellobject>
+                <kabchannel v-if="store.state.mainType==3" ></kabchannel>
+                <kablines v-if="store.state.mainType==4" ></kablines> 
+                <objectconstructor v-if="store.state.mainType==12"></objectconstructor>
+                <wellconstructor v-if="store.state.mainType==22"></wellconstructor>
+                <kkconstructor v-if="store.state.mainType==32"></kkconstructor>
+                <kablinesconstructor v-if="store.state.mainType==42"></kablinesconstructor>
+                
+                <firstkkconstructor v-if="store.state.mainType==72"></firstkkconstructor>
+                <!-- v-show store.state.mainType==72-->
             </main>
         </div>
-        <scheme 
-            v-if="state.mainType==5" 
-            :entrances="state.objectHome.houseschem.entrances" 
-            :colors="state.colors"
-            :drc="state.objectHome.houseschem.drc"
-            @func-back="back"
-        ></scheme>
-        <drc @func-back="back" v-if="state.mainType==6" :obj="state.drc" :operators="operators" :colors="operatorsColors" ></drc>
-        <schemeconstructor @func-back="back" v-if="state.mainType==52" :newscheme="state.objectForConstructor.houseschem.entrances" :drc="state.objectForConstructor.houseschem.drc"></schemeconstructor>
-        <drcconstructor :promts="promptsOptions" v-if="state.mainType==62" :obj="state.newDrc" @func-back="back"></drcconstructor>
-        <userlist 
-            :users="state.userList" 
-            :newuser="state.newUser" 
-            v-if="state.mainType==8"
-            @back-to-main="state.mainType=0"
-        ></userlist>
-        <logslist 
-            :logs="state.logs"
-            v-if="state.mainType==9"
-            @back-to-main="state.mainType=0"
-        ></logslist>
+        <scheme v-if="store.state.mainType==5"></scheme>
+        <drc v-if="store.state.mainType==6"></drc>
+
+
+        <schemeconstructor v-if="store.state.mainType==52"></schemeconstructor>
+        <drcconstructor v-if="store.state.mainType==62"></drcconstructor>
+
+        <userlist v-if="store.state.mainType==8"></userlist> 
+        <logslist v-if="store.state.mainType==9"></logslist>
         <?php
             if(!$check){
                 echo '
@@ -157,18 +114,23 @@
                             Авторизация
                         </div>
                         <div class="auth__input">
-                            <input type="text" v-model="state.username" placeholder="Введите логин" required>
+                            <input type="text" v-model="store.state.username" placeholder="Введите логин" required>
                         </div>
                         <div class="auth__input">
-                            <input type="password" v-model="state.password" placeholder="Введите пароль" required>
+                            <input type="password" @keyup.enter="store.auth()" v-model="store.state.password" placeholder="Введите пароль" required>
                         </div>
                         <div class="auth__buttons">
-                            <button @click="auth()" type="submit" class="button">
+                            <button @click="store.auth()" type="submit" class="button">
                                 Войти
                             </button>
                         </div>
                     </div>
                 </div>';
+            }
+        ?>
+        <?php
+            if ($check) {
+                echo "<script>window.appConfig = { role: '" . htmlspecialchars($role, ENT_QUOTES, 'UTF-8') . "' };</script>";
             }
         ?>
     </div>
@@ -177,6 +139,9 @@
         {
             "imports": {
                 "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
+                "vue-demi": "https://unpkg.com/vue-demi/lib/index.mjs",
+                "@vue/devtools-api": "/js/pinia/fake-devtools-api.js",
+                "pinia": "https://unpkg.com/pinia@2.0.28/dist/pinia.esm-browser.js", 
                 "wellcomp": "/js/cableSchem/well/components/component.js",
                 "wellconstructor": "/js/cableSchem/well/components/component_constructor.js",
                 "homecomp": "/js/object/component.js",
@@ -241,9 +206,9 @@
 
     <!-- ==================Main================== -->
     <script src="./js/data.js"></script>
+    <script src="./js/index.js"></script>
     <script type="module" src="./js/main.js"></script>
     <script src="./js/functions.js"></script>
-    <script src="./js/index.js"></script>
     <!-- ======================================== -->
 </body>
 </html>

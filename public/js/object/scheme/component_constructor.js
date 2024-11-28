@@ -1,33 +1,21 @@
 import { ref, watch, reactive } from 'vue'
+import { useStateStore } from '../../pinia/store.js'
 export const schemeconstructor = {
-    props: {
-        newscheme:{
-            type: Array
-        },
-        drc:{
-            type: Array
-        }
-    },
     setup(props,{emit}){
-        let entrancesCount = ref(props.newscheme.length)
-        let drcCount = ref(props.drc.length)
+        const store = useStateStore()
+        const newscheme = store.state.objectForConstructor.houseschem.entrances
+        const drc = store.state.objectForConstructor.houseschem.drc
+
+        let entrancesCount = ref(newscheme.length)
+        let drcCount = ref(drc.length)
         
         const scheme = ref([])
 
         const allClosets = reactive({})
 
-
-        // created(() => {
-
-        // })
-        // onBeforeMount(() => {
-        //     entrancesCount = props.newscheme.length
-        //     drcCount = props.drc.length
-        // })
-
         function setAllClosets(index){
-            for (let i = 0; i < props.newscheme.length; i++) {
-                const element = props.newscheme[i];
+            for (let i = 0; i < newscheme.length; i++) {
+                const element = newscheme[i];
                 let closet = element.closets
                 let pos = 0
                 for (let key in closet) {
@@ -75,11 +63,11 @@ export const schemeconstructor = {
 
         watch(entrancesCount, (count) => {
             if (count=='') {return false}
-            let nowLenght = props.newscheme.length
+            let nowLenght = newscheme.length
             
-            if (count > props.newscheme.length){
+            if (count > newscheme.length){
                 for (let index = nowLenght; index < count; index++) {
-                    props.newscheme.push(
+                    newscheme.push(
                         {
                             countFloors: null,
                             aparts:[
@@ -92,20 +80,20 @@ export const schemeconstructor = {
                         }
                     )
                 }
-            } else if (count< props.newscheme.length){
-                for (let index = props.newscheme.length; index > count; index--) {
-                    props.newscheme.pop()
+            } else if (count< newscheme.length){
+                for (let index = newscheme.length; index > count; index--) {
+                    newscheme.pop()
                 }
             } 
         })
 
         watch(drcCount, (count) => {
             if (count=='') {return false}
-            let nowLenght = props.drc.length
+            let nowLenght = drc.length
             
-            if (count > props.drc.length){
+            if (count > drc.length){
                 for (let index = nowLenght; index < count; index++) {
-                    props.drc.push(
+                    drc.push(
                         {
                             name: '',
                             lastPhoto: { reader: { name: null, path: null }, file: null },
@@ -119,82 +107,82 @@ export const schemeconstructor = {
                         }
                     )
                 }
-            } else if (count< props.drc.length){
-                for (let index = props.drc.length; index > count; index--) {
-                    props.drc.pop()
+            } else if (count< drc.length){
+                for (let index = drc.length; index > count; index--) {
+                    drc.pop()
                 }
             } 
         })
 
         function setDrcToEtrance(indexEtrance,drc){
             if (drc.position==0){
-                props.newscheme[indexEtrance].closets.bottom = drc.name
+                newscheme[indexEtrance].closets.bottom = drc.name
             }else{
-                props.newscheme[indexEtrance].closets.top = drc.name
+                newscheme[indexEtrance].closets.top = drc.name
             }
         }
 
         function setFloors(index,a){
-            let count= props.newscheme[index].countFloors
+            let count= newscheme[index].countFloors
             if (count>50){
-                props.newscheme[index].countFloors = 50
+                newscheme[index].countFloors = 50
                 return
             }
             if (a=="+"){
-                props.newscheme[index].aparts.push(
-                    [ props.newscheme[index].aparts.length+1 ,'',false,'']
+                newscheme[index].aparts.push(
+                    [ newscheme[index].aparts.length+1 ,'',false,'']
                 )
-                props.newscheme[index].countFloors++
+                newscheme[index].countFloors++
                 return
             }else if (a=="-"){
-                props.newscheme[index].aparts.pop()
-                props.newscheme[index].countFloors--
+                newscheme[index].aparts.pop()
+                newscheme[index].countFloors--
                 return
             }
             if (count=='') {return false}
-            let nowLenght = props.newscheme[index].aparts.length
+            let nowLenght = newscheme[index].aparts.length
             
-            if (count > props.newscheme[index].aparts.length){
+            if (count > newscheme[index].aparts.length){
                 for (let i = nowLenght; i < count; i++) {
-                    props.newscheme[index].aparts.push(
+                    newscheme[index].aparts.push(
                        [i+1,'',false,'']
                     )
                 }
-            } else if (count< props.newscheme[index].aparts.length){
-                for (let i = props.newscheme[index].aparts.length; i > count; i--) {
-                    props.newscheme[index].aparts.pop()
+            } else if (count< newscheme[index].aparts.length){
+                for (let i = newscheme[index].aparts.length; i > count; i--) {
+                    newscheme[index].aparts.pop()
                 }
             } 
         }
         function setpatch(inxEtr, indxFloor){
-            props.newscheme[inxEtr].aparts[indxFloor][2]=!props.newscheme[inxEtr].aparts[indxFloor][2]
+            newscheme[inxEtr].aparts[indxFloor][2]=!newscheme[inxEtr].aparts[indxFloor][2]
         }
         function setDrc(inxEtr, pos){
-            let act = props.newscheme[inxEtr].closets[pos] == undefined ? 1 : 0
+            let act = newscheme[inxEtr].closets[pos] == undefined ? 1 : 0
 
             if (act){
-                props.newscheme[inxEtr].closets[pos] = ''
+                newscheme[inxEtr].closets[pos] = ''
                 
             }else{
-                delete props.newscheme[inxEtr].closets[pos] 
+                delete newscheme[inxEtr].closets[pos] 
             }
 
         }
         function setDrcToFloor(inxEtr,indxFloor,drc){
-            props.newscheme[inxEtr].aparts[indxFloor][3] = drc
+            newscheme[inxEtr].aparts[indxFloor][3] = drc
         }
 
         function backTo(){
-            emit('func-back')
+            window.vueApp.back()
         }
 
         function button(id, inx){
             switch(id){
                 case 0:
-                    constructorManager.object.OpenDrcSchem(props.drc, inx);
+                    constructorManager.object.OpenDrcSchem(drc, inx);
                 break;
                 case 1:
-                    constructorManager.object.SaveObjectSchem(props.newscheme, props.drc);
+                    constructorManager.object.SaveObjectSchem(newscheme, drc);
                 break;
             }
         }
@@ -215,7 +203,11 @@ export const schemeconstructor = {
             drcCount,
             setDrcToEtrance,
             button,
-            checkLimitDrc
+            checkLimitDrc,
+            newscheme,
+            drc,
+            store
+            
         }
     },
     template: `
@@ -236,7 +228,7 @@ export const schemeconstructor = {
                             </div>
                         </div>
                         <div class="maket-constructor__entrances">
-                            <div class="maket-entrance-slide" v-for="(etrance,ind) in newscheme">
+                            <div class="maket-entrance-slide" v-for="(etrance,ind) in store.state.objectForConstructor.houseschem.entrances">
                                 <default-item-table :name="'Подъезд '+ (ind+1)">
                                     <div class="maket-entrance-slide__content">
                                         <div class="table">
@@ -271,7 +263,7 @@ export const schemeconstructor = {
                                                                 onclick="closeSliderConstructor(this)" 
                                                                 @click="setDrcToEtrance(ind,item)"
                                                                 v-show="item.position==1"
-                                                                v-for="item in drc"
+                                                                v-for="item in store.state.objectForConstructor.houseschem.drc"
                                                                 >
                                                                 {{item.name}}
                                                             </div>
@@ -299,7 +291,7 @@ export const schemeconstructor = {
                                                                 onclick="closeSliderConstructor(this)" 
                                                                 @click="setDrcToEtrance(ind,item)"
                                                                 v-show="item.position==0"
-                                                                v-for="item in drc"
+                                                                v-for="item in store.state.objectForConstructor.houseschem.drc"
                                                                 >
                                                                 {{item.name}}
                                                             </div>
@@ -315,7 +307,7 @@ export const schemeconstructor = {
                                                
                                             </default-item-scheme>
                                             <default-item-scheme name="Этажи">
-                                                <div class="set-drc" v-for="(floor,i) in newscheme[ind].aparts">
+                                                <div class="set-drc" v-for="(floor,i) in store.state.objectForConstructor.houseschem.entrances[ind].aparts">
                                                     <div class="maket-constructor-floor">
                                                         <div class="maket-constructor-floor__name">
                                                             {{floor[0]}} этаж
@@ -334,7 +326,7 @@ export const schemeconstructor = {
                                                                     <div class="slider__item" onclick="closeSliderConstructor(this)" 
                                                                         v-show="closet!=''" 
                                                                         @click="setDrcToFloor(ind,i,closet.name)" 
-                                                                        v-for="closet in drc">
+                                                                        v-for="closet in store.state.objectForConstructor.houseschem.drc">
                                                                         {{closet.name}}
                                                                     </div>
                                                                 </div>
@@ -369,7 +361,7 @@ export const schemeconstructor = {
                             </div>
                         </div>
                         <div class="maket-constructor__entrances">
-                            <div class="set-drc" v-for="(item,ind) in drc">
+                            <div class="set-drc" v-for="(item,ind) in store.state.objectForConstructor.houseschem.drc">
                                 <input list="drcs"  v-model="item.name" type="text" placeholder="Название">
                                 <div class="slider">
                                     <div class="slider__title" onclick="openSliderConstructor(this)">

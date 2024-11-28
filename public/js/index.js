@@ -13,5 +13,5 @@ setTimeout(async () => {
     cableSchemasManager = new CableSchemasManager();
     objectsManager = new ObjectsManager();
     userManager = new UserManager();
-    window.vueApp.state.allObjectsAndSchemas = allObjectNames;
+    window.vueApp.setAllObjectsAndSchemas(allObjectNames)
 }, 300);

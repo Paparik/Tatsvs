@@ -41,7 +41,8 @@ class CableChannelsManager{
 
     DeleteCableChannel = (id) => {
         let channel = this.cableChannels.find(x => x.id === id);
-        window.vueApp.state.newScheme.kls.splice(this.cableChannels.indexOf(channel), 1);
+        // window.vueApp.state.newScheme.kls.splice(this.cableChannels.indexOf(channel), 1);
+        window.vueApp.delCableChannel(this.cableChannels.indexOf(channel))
         this.cableChannels.splice(this.cableChannels.indexOf(channel), 1);
         channel.Destroy();
     }

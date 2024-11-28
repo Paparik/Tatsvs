@@ -1,61 +1,53 @@
 import { computed  } from 'vue'
+import { useStateStore } from '../../../../pinia/store.js'
 export const kablinesconstructor = {
-    props: {
-        obj: {
-            type: Object
-        },
-        prompts:{
-            type: Object
-        },
-        kls:{
-            type: Object
-        },
-        scheme: {
-            type: Object
-        }
-    },
-    setup(props, {emit}) {
+    setup() {
+        const store = useStateStore()
+
+
         function button(type) {
             switch(type){
                 case 0:
-                    if(props.obj.numKabLine == ""){
+                    if(store.state.kabLinelForConstructor.numKabLine == ""){
                         $.notify("Введите название кабельной линии", { type:"toast" });
                         return;
                     }
-                    constructorManager.object.updatePolylineCabLine(0, props.obj.numKabLine);
-                    constructorManager.object.EditLine(1, props.obj);
+                    constructorManager.object.updatePolylineCabLine(0, store.state.kabLinelForConstructor.numKabLine);
+                    constructorManager.object.EditLine(1, store.state.kabLinelForConstructor);
                 break;
                 case 1:
-                    if(props.obj.numKabLine == ""){
+                    if(store.state.kabLinelForConstructor.numKabLine == ""){
                         $.notify("Введите название кабельной линии", { type:"toast" });
                         return;
                     }
-                    constructorManager.object.updatePolylineCabLine(0, props.obj.numKabLine);
-                    constructorManager.object.EditLine(1, props.obj);
-                    emit('func-back');
+                    constructorManager.object.updatePolylineCabLine(0, store.state.kabLinelForConstructor.numKabLine);
+                    constructorManager.object.EditLine(1, store.state.kabLinelForConstructor);
+                    window.vueApp.back()
                 break;
             }
         }
 
         const counter = computed(() => {
-            if(props.obj.numKabLine == "") return "0.00 м";
+            if(store.state.kabLinelForConstructor.numKabLine == "") return "0.00 м";
             let length = 0
-            for (let index = 0; index < props.kls.length; index++) {
-                if (props.kls[index].cableChannelObject.KabLines.find(item => item.numKabLine == props.obj.numKabLine)){
-                    length +=  Number(props.kls[index].cableChannelObject.length)
+            for (let index = 0; index < store.state.newScheme.kls.length; index++) {
+                if (store.state.newScheme.kls[index].cableChannelObject.KabLines.find(item => item.numKabLine == store.state.kabLinelForConstructor.numKabLine)){
+                    length +=  Number(store.state.newScheme.kls[index].cableChannelObject.length)
                 }
             }
             return length.toFixed(2) + " м"
         })
+        
 
         function setSlider(objec,key,value){
-            this.obj[objec][key] = value
+            store.state.kabLinelForConstructor[objec][key] = value
         }
 
         return {
             setSlider,
             button,
-            counter
+            counter,
+            store,
         }
     },
 
@@ -63,7 +55,7 @@ export const kablinesconstructor = {
         ConstructorInput,
         DefaultItemTable,
         ConstructorChoice,
-        DefaultColumnSlot
+        DefaultColumnSlot,
     },
     template:`
    <div class="item item_active">
@@ -72,7 +64,7 @@ export const kablinesconstructor = {
         </div>
         <constructor-input
          name="Название"
-         v-model:model="this.obj.numKabLine"
+         v-model:model="store.state.kabLinelForConstructor.numKabLine"
          myplaceholder="Введите название"
         ></constructor-input>
         <div class="table">
@@ -82,11 +74,11 @@ export const kablinesconstructor = {
                     <div class="constructor__input">
                         <input type="text" 
                          list="start"
-                         v-model="this.obj.start"
+                         v-model="store.state.kabLinelForConstructor.start"
                          placeholder="Колодец">
 
                         <datalist id="start">
-                            <option v-for="well in scheme.wells" :value="well.wellObject.numWell"></option>
+                            <option v-for="well in store.state.newSchemewells" :value="well.wellObject.numWell"></option>
                         </datalist>
                     </div>
                 </div>
@@ -98,11 +90,11 @@ export const kablinesconstructor = {
 
                         <input type="text" 
                          list="finish"
-                         v-model="this.obj.finish"
+                         v-model="store.state.kabLinelForConstructor.finish"
                          placeholder="Колодец">
 
                         <datalist id="finish">
-                            <option v-for="well in scheme.wells" :value="well.wellObject.numWell"></option>
+                            <option v-for="well in store.state.newSchemewells" :value="well.wellObject.numWell"></option>
                         </datalist>
                     </div>
                 </div>
@@ -120,18 +112,18 @@ export const kablinesconstructor = {
             </div>
             <constructor-choice 
                 name="Тип кабеля"
-                v-model:model="this.obj.type"
-                :items="this.prompts.cable_type_in_cable_line"
+                v-model:model="store.state.kabLinelForConstructor.type"
+                :items="store.promptsOptions.cable_type_in_cable_line"
             ></constructor-choice>
             <constructor-choice 
                 name="Марка Кабеля"
-                v-model:model="this.obj.mark"
-                :items="this.prompts.cable_mark_in_cable_line"
+                v-model:model="store.state.kabLinelForConstructor.mark"
+                :items="store.promptsOptions.cable_mark_in_cable_line"
             ></constructor-choice>
             <constructor-choice 
                 name="Собственник"
-                v-model:model="this.obj.owner"
-                :items="this.prompts.operators"
+                v-model:model="store.state.kabLinelForConstructor.owner"
+                :items="store.promptsOptions.operators"
             ></constructor-choice>
             
         </div>

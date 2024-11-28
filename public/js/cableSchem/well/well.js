@@ -34,7 +34,7 @@ class Well{
     }
 
     MarkerClicked = () => {
-        if(window.vueApp.state.cabChannelsActive){
+        if(window.stateStore.state.cabChannelsActive){
             if(constructorManager.object != null && constructorManager.object.cableSchem != null){
                 if(constructorManager.object.cableSchem.name != this.#schemaName) return;
                 constructorManager.object.selectedPoint = this;

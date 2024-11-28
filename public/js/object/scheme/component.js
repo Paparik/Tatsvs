@@ -1,24 +1,17 @@
 import { computed   } from 'vue'
+import { useStateStore } from '../../pinia/store.js'
 export const scheme = {
-    props:{
-        entrances: {
-            type: Array
-        },
-        colors: {
-            type: Array
-        },
-        drc: {
-            type: Array
-        },
-    },
     setup(props,{emit}){
+        const store = useStateStore()
+
+
         const closetsColor = computed(() => {
             let a = {}
             const colorIndexMap = {};
             let colorIndex = 0;
         
-            for (const floor in props.entrances) {
-                const floorData = props.entrances[floor];
+            for (const floor in store.state.objectHome.houseschem.entrances) {
+                const floorData = store.state.objectHome.houseschem.entrances[floor];
                 const aparts = floorData.aparts;
         
                 for (const apart of aparts) {
@@ -26,11 +19,11 @@ export const scheme = {
                     if (!colorIndexMap.hasOwnProperty(id)) {
                         colorIndexMap[id] = colorIndex;
                         colorIndex++;
-                        if (colorIndex >= props.colors.length) {
+                        if (colorIndex >= store.state.colors.length) {
                             colorIndex = 0;
                         }
                     }
-                    const color = props.colors[colorIndexMap[id]];
+                    const color = store.state.colors[colorIndexMap[id]];
                     a[id] = color;
                 }
             }
@@ -38,16 +31,17 @@ export const scheme = {
 
         })
         function backTo(){
-            emit('func-back')
+            window.vueApp.back()
         }
         function OpenDrc(name){
-            objectsManager.OpenDrc(props.drc.find(x => x.name == name));
+            objectsManager.OpenDrc(store.state.objectHome.houseschem.drc.find(x => x.name == name));
         }
 
         return {
             closetsColor,
             backTo,
-            OpenDrc
+            OpenDrc,
+            store
         }
     },
     template:`
@@ -58,11 +52,11 @@ export const scheme = {
             </div>
             <div class="maket__main">
                 <div class="maket-container owl-carousel owl-theme">
-                    <div class="maket-entrance" v-for="entrance in entrances">
+                    <div class="maket-entrance" v-for="entrance in store.state.objectHome.houseschem.entrances">
                         <div @click="OpenDrc(entrance.closets.top)" class="maket-drc drc_top" 
                         :style="'background: #' + closetsColor[entrance.closets.top]" 
                         :class="{'drc_opac': !entrance.closets.top}">
-                            <img src="./assets/images/drc.svg" alt="">
+                            <img src="./../../../assets/images/drc.svg" alt="">
                         </div>
                         <div class="maket-floors">
                             <div class="maket-floor"  
@@ -80,7 +74,7 @@ export const scheme = {
                          :style="'background: #' + closetsColor[entrance.closets.bottom]"
                          :class="{'drc_opac': !entrance.closets.bottom}"
                         >
-                            <img src="./assets/images/drc.svg" alt="">
+                            <img src="./../../../assets/images/drc.svg" alt="">
                         </div>
                     </div>
                 </div>

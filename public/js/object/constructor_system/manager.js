@@ -20,19 +20,22 @@ class ObjectsConstructor{
     }
 
     SaveObjectSchem = (obj1, obj2) => {
-        window.vueApp.state.objectForConstructor.houseschem.entrances = obj1;
-        window.vueApp.state.objectForConstructor.houseschem.drc = obj2;
+        // window.vueApp.state.objectForConstructor.houseschem.entrances = obj1;
+        // window.vueApp.state.objectForConstructor.houseschem.drc = obj2;
         // this.SaveDocs(obj2);
-        window.vueApp.setData(12, window.vueApp.state.objectForConstructor);
+
+        window.vueApp.saveObjectSchem(obj1,obj2)
+        window.vueApp.setData(12, window.stateStore.state.objectForConstructor);
     }
 
     SaveDrc = (obj) => {
-        window.vueApp.state.objectForConstructor.houseschem.drc[window.vueApp.state.chupapiIndex] = obj;
-        window.vueApp.setData(52, window.vueApp.state.objectForConstructor.houseschem);
+        window.vueApp.setDrcConstructor()
+        // window.vueApp.state.objectForConstructor.houseschem.drc[window.stateStore.state.chupapiIndex] = obj;
+        window.vueApp.setData(52, window.stateStore.state.objectForConstructor.houseschem);
     }
 
     mouseclick = (coords) => {
-        if(window.vueApp.state.mainType == 12) return;
+        if(window.stateStore.state.mainType == 12) return;
         this.marker = mapManager.CreateMarker(coords, {opacity: 1, visible: true, interactive: true, icon: this.customIcon, pane: 'markerPane', schema: false})
 
         $.notify("Заполните и сохраните данные", { type:"toast" });

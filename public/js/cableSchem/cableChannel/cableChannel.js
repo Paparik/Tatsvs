@@ -37,8 +37,8 @@ class CableChannel{
     }
 
     PolylineClick = () => {
-        if(window.vueApp.state.cabChannelsActive){
-            if(window.vueApp.state.mainType == 72) return;
+        if(window.stateStore.state.cabChannelsActive){
+            if(window.stateStore.state.mainType == 72) return;
             window.vueApp.setData(3, this.cableChannelObject);
             this.#polyline.setStyle({ color: 'rgba(255, 69, 0, 0.7)' }) 
         }

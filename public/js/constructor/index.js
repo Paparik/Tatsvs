@@ -129,11 +129,11 @@ class ConstructorManager {
     }
 
     LoadingPage = (toggle) => {
-        window.vueApp.state.loading = toggle;
+        window.stateStore.state.loading = toggle;
     }
 
     destroy = async (id) => {
-        window.vueApp.state.mainType = 0;
+        window.stateStore.state.mainType = 0;
         await this.object.destroy(id);
         this.object = null;
     }

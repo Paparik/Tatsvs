@@ -28,7 +28,7 @@ class Objects{
     }
 
     MarkerClick = async () => {
-        switch(window.vueApp.state.mainType){
+        switch(window.stateStore.state.mainType){
             case 72:
             case 22:
             case 32:
