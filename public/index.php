@@ -74,7 +74,7 @@
                     </div>
                     <div class="map-filter">
                         <button class="map-filter__button" @click="CabChannelsActiveToggle()">
-                            <div v-if="store.cabChannelsActive"></div>
+                            <div v-if="store.state.cabChannelsActive"></div>
                         </button>
                         <p>Кабельная канализация</p>
                     </div>
@@ -129,11 +129,19 @@
             }
         ?>
         <?php
-            if ($check) {
-                echo "<script>window.appConfig = { role: '" . htmlspecialchars($role, ENT_QUOTES, 'UTF-8') . "' };</script>";
-            }
+        if ($check) {
+            echo "
+            <script>
+                window.appConfig = { role: '" . htmlspecialchars($role, ENT_QUOTES, 'UTF-8') . "' };
+                window.onload = function() {
+                    if (window.stateStore) {
+                        window.stateStore.role = window.appConfig.role;
+                    }
+                };
+            </script>";
+        }
         ?>
-    </div>
+            </div>
     <!-- ==================Libraries================== -->
     <script type="importmap">
         {

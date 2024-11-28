@@ -35,7 +35,8 @@ class ObjectsManager{
         await this.objects[index].Destroy();
         this.objects.splice(index, 1);
         constructorManager.LoadingPage(false)
-        window.stateStore.countObj -= 1;
+        // window.stateStore.countObj -= 1;
+        window.vueApp.decrementCountObj()
     }
 
     OpenSchem = (obj) => {
@@ -69,7 +70,8 @@ class ObjectsManager{
         marker.on('click', async (e) => { await obj.MarkerClick(); });
         this.objects.push(obj);
         constructorManager.LoadingPage(false)
-        window.stateStore.countObj += 1;
+        // window.stateStore.countObj += 1;
+        window.vueApp.incrementCountObj()
     }
 
     EditDocs = async (data, id) => {

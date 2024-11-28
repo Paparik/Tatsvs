@@ -40,19 +40,21 @@ export const useStateStore = defineStore('mainState', () => {
     })
 
 
-    // const role = window.appConfig.role
     
-    const role = ""
-    
+    const role = ref("")
+
     async function auth(){
         let result = await apiManager.setData("login", "./php/api/auth/index.php", JSON.stringify([state.username, state.password]));
         switch(result.code){
             case 200:
                 $.notify("Успешный вход", { type:"toast" });
+                
                 setTimeout(() => {
                     window.location.reload();
+                    
                 }, 700);
-                role = window.appConfig.role
+
+
             break;
             case 201:
                 $.notify("Неверное имя пользователя или пароль.", { type:"toast" });
@@ -99,8 +101,8 @@ export const useStateStore = defineStore('mainState', () => {
     });
 
     const CabChannelsActiveToggle = () => {
-        cabChannelsActive.value = !cabChannelsActive.value;
-        mapManager.CableChannelsVisible(cabChannelsActive.value);
+        state.cabChannelsActive = !state.cabChannelsActive;
+        mapManager.CableChannelsVisible(state.cabChannelsActive);
     }
 
     const cabChannelsActive = ref(true);
