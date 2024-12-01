@@ -1,7 +1,7 @@
 import { computed   } from 'vue'
 import { useStateStore } from '../../pinia/store.js'
 export const scheme = {
-    setup(props,{emit}){
+    setup(){
         const store = useStateStore()
 
 
@@ -10,8 +10,8 @@ export const scheme = {
             const colorIndexMap = {};
             let colorIndex = 0;
         
-            for (const floor in store.state.objectHome.houseschem.entrances) {
-                const floorData = store.state.objectHome.houseschem.entrances[floor];
+            for (const floor in store.objectHome.houseschem.entrances) {
+                const floorData = store.objectHome.houseschem.entrances[floor];
                 const aparts = floorData.aparts;
         
                 for (const apart of aparts) {
@@ -34,7 +34,7 @@ export const scheme = {
             window.vueApp.back()
         }
         function OpenDrc(name){
-            objectsManager.OpenDrc(store.state.objectHome.houseschem.drc.find(x => x.name == name));
+            objectsManager.OpenDrc(store.objectHome.houseschem.drc.find(x => x.name == name));
         }
 
         return {
@@ -52,7 +52,7 @@ export const scheme = {
             </div>
             <div class="maket__main">
                 <div class="maket-container owl-carousel owl-theme">
-                    <div class="maket-entrance" v-for="entrance in store.state.objectHome.houseschem.entrances">
+                    <div class="maket-entrance" v-for="entrance in store.objectHome.houseschem.entrances">
                         <div @click="OpenDrc(entrance.closets.top)" class="maket-drc drc_top" 
                         :style="'background: #' + closetsColor[entrance.closets.top]" 
                         :class="{'drc_opac': !entrance.closets.top}">

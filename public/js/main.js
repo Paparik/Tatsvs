@@ -84,50 +84,50 @@ const app = createApp({
         }
 
         const pushWell = (well) => {
-            store.state.newScheme.wells.push(well)
+            store.newScheme.wells.push(well)
         }
 
         const setDrcConstructor = (obj) =>{
-            window.stateStore.state.objectForConstructor.houseschem.drc[window.stateStore.state.chupapiIndex] = obj
+            store.objectForConstructor.houseschem.drc[store.state.chupapiIndex] = obj
         }
         const saveObjectSchem = (obj1,obj2) =>{
-            window.stateStore.state.objectForConstructor.houseschem.entrances = obj1;
-            window.stateStore.state.objectForConstructor.houseschem.drc = obj2;
+            store.objectForConstructor.houseschem.entrances = obj1;
+            store.objectForConstructor.houseschem.drc = obj2;
         }
 
         const pushNewChannel = (newchannel) =>{
-            window.stateStore.state.newScheme.kls.push(newchannel);
+            store.newScheme.kls.push(newchannel);
         }
 
         const cancelEditWell = (newWell) =>{
-            window.stateStore.state.newScheme.wells[window.stateStore.state.newScheme.wells.findIndex(x => x.id === newWell.id)] = newWell;
-            window.stateStore.state.mainType = 72;
+            store.newScheme.wells[store.newScheme.wells.findIndex(x => x.id === newWell.id)] = newWell;
+            store.state.mainType = 72;
         }
 
         const cancelEditChannel = (newChannel) =>{
-            window.stateStore.state.newScheme.kls[window.stateStore.state.newScheme.kls.findIndex(x => x.id === newChannel.id)] = newChannel;
-            window.stateStore.state.mainType = 72;
+            store.newScheme.kls[store.newScheme.kls.findIndex(x => x.id === newChannel.id)] = newChannel;
+            store.state.mainType = 72;
         }
 
         const cancelEditLine = (obj) =>{
-            window.stateStore.state.newScheme.cableLines[window.stateStore.state.newScheme.cableLines.findIndex(x => x.id === obj.numKabLine)] = obj;
-            window.stateStore.state.mainType = 72;
+            store.newScheme.cableLines[store.newScheme.cableLines.findIndex(x => x.id === obj.numKabLine)] = obj;
+            store.state.mainType = 72;
         }
 
         const delCableChannel = (cableChannels) => {
-            window.stateStore.state.newScheme.kls.splice(cableChannels, 1);
+            store.newScheme.kls.splice(cableChannels, 1);
         }
         const delWell = (well) => {
-            window.stateStore.state.newScheme.wells.splice(well, 1);
+            store.newScheme.wells.splice(well, 1);
         }
 
 
         
         function kablinesCounter(id){
             let lenght = 0
-            for (let index = 0; index < store.state.newScheme.cableLines.length; index++) {
-                if (store.state.newScheme.cableLines[index].KabLines.find(item => item.numKabLine == id) != -1){
-                    lenght +=  Number(store.state.newScheme.cableLines[index].length)
+            for (let index = 0; index < store.newScheme.cableLines.length; index++) {
+                if (store.newScheme.cableLines[index].KabLines.find(item => item.numKabLine == id) != -1){
+                    lenght +=  Number(store.newScheme.cableLines[index].length)
                 }
                 
             }
@@ -135,11 +135,11 @@ const app = createApp({
         }
 
         function ResetWell(){
-            let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.state.wellObj.schemaId);
+            let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.wellObj.schemaId);
             if(obj){
                 let manager = obj.GetWellsManager();
                 if(manager){
-                    let well = manager.wells.find(x => x.id == store.state.wellObj.id);
+                    let well = manager.wells.find(x => x.id == store.wellObj.id);
                     if(well){
                         if(!well.wellObject.typeWell.includes("Ввод") && !well.wellObject.typeWell.includes("ввод")) well.getMarker().setIcon(constructorManager.GetIcon("Колодец", 0));
                     }
@@ -148,11 +148,11 @@ const app = createApp({
         }
 
         function ResetPolylineCablines(){
-            let schem = cableSchemasManager.cableSchemas.find(x => x.id == store.state.kabChannelObj.schemaId);
+            let schem = cableSchemasManager.cableSchemas.find(x => x.id == store.kabChannelObj.schemaId);
             if(schem){
                 let manager = schem.GetCableChannelsManager();
                 if(manager){
-                    let objects = manager.cableChannels.filter(x => x.cableChannelObject.KabLines.find(x => x.numKabLine == store.state.kabLinelObj.numKabLine))
+                    let objects = manager.cableChannels.filter(x => x.cableChannelObject.KabLines.find(x => x.numKabLine == store.kabLinelObj.numKabLine))
                     objects.forEach(element => {
                         element.GetPolyline().setStyle({ color: 'rgba(105, 105, 105, 0.5)' })
                     });
@@ -161,11 +161,11 @@ const app = createApp({
         }
 
         function ResetPolyline(){
-            let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.state.kabChannelObj.schemaId);
+            let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.kabChannelObj.schemaId);
             if(obj){
                 let manager = obj.GetCableChannelsManager();
                 if(manager){
-                    let channel = manager.cableChannels.find(x => x.id == store.state.kabChannelObj.numKabChannel);
+                    let channel = manager.cableChannels.find(x => x.id == store.kabChannelObj.numKabChannel);
                     if(channel){
                         channel.GetPolyline().setStyle({ color: 'rgba(105, 105, 105, 0.5)' })
                     }
@@ -198,7 +198,7 @@ const app = createApp({
                 case 32:
                 case 42:
                 case 72:
-                    if(store.state.newScheme.edit == true){
+                    if(store.newScheme.edit == true){
                         constructorManager.destroy(4);
                     }
                     else{
@@ -244,11 +244,11 @@ const app = createApp({
                 break;
                 case 3:
                     ResetPolylineCablines();
-                    let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.state.kabChannelObj.schemaId);
+                    let obj = cableSchemasManager.cableSchemas.find(x => x.id == store.kabChannelObj.schemaId);
                     if(obj){
                         let manager = obj.GetCableChannelsManager();
                         if(manager){
-                            let channel = manager.cableChannels.find(x => x.id == store.state.kabChannelObj.numKabChannel);
+                            let channel = manager.cableChannels.find(x => x.id == store.kabChannelObj.numKabChannel);
                             if(channel){
                                 channel.GetPolyline().setStyle({ color: 'rgba(255, 69, 0, 0.7)' })
                             }
@@ -278,50 +278,49 @@ const app = createApp({
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    store.setObject(obj)
-                    
+                    store.objectHome = obj
                     break;
                 case 2: 
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    store.state.wellObj=obj;
+                    store.wellObj=obj;
                     break;
                 case 3:
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    store.state.kabChannelObj=obj; 
+                    store.kabChannelObj=obj; 
                     break;
                 case 4:
                     ResetWell();
                     ResetPolylineCablines();
-                    store.state.kabLinelObj=obj;
+                    store.kabLinelObj=obj;
                     store.state.whereBack = 3; 
                     break;
                 case 12:
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    store.state.objectForConstructor = obj; 
+                    store.objectForConstructor = obj; 
                     break;
                 case 72:
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    store.state.newScheme = obj;
+                    store.newScheme = obj;
                     break;
 
                 case 22:
-                    store.state.wellForConstructor = obj;
+                    store.wellForConstructor = obj;
                     store.state.whereBack = 72;
                     break;
                 case 32:
-                    store.state.kkForConstructor = obj;
+                    store.kkForConstructor = obj;
                     store.state.whereBack = 72;
                     break;
                 case 42:
-                    store.state.kabLinelForConstructor = obj;
+                    store.kabLinelForConstructor = obj;
                     store.state.whereBack = 72;
                     break;
                 case 5:
@@ -336,22 +335,22 @@ const app = createApp({
                     }, 200);
                     break;
                 case 6:
-                    store.state.drc=obj;
+                    store.drc=obj;
                     store.state.whereBack = 5
                     break;
                 case 8:
-                    store.state.userList=obj;
+                    store.userList=obj;
                     break;
                 case 9:
-                    store.state.logs=obj;
+                    store.logs=obj;
                     break;
                 case 52:
                     // obj.lenght = 0
-                    store.state.newSchemeObject = obj;
+                    store.newSchemeObject = obj;
                     store.state.whereBack = 12
                     break;
                 case 62:
-                    store.state.newDrc = obj[id];
+                    store.newDrc = obj[id];
                     store.state.whereBack = 52
                     break;
                 default:
@@ -361,7 +360,7 @@ const app = createApp({
         }
 
         function updateKabLines(newKabLines) {
-            store.state.kkForConstructor.kabLines = newKabLines;
+            store.kkForConstructor.kabLines = newKabLines;
         }
 
 
@@ -388,7 +387,6 @@ const app = createApp({
             back,
             CabChannelsActiveToggle,
             delCableChannel,
-            // auth,
             filteredObjects,
             GetMainPage,
             kablinesCounter,

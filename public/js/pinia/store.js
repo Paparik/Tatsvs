@@ -1,30 +1,14 @@
 import { defineStore } from 'pinia';
-import { ref, computed, reactive, toRefs, onMounted, nextTick   } from 'vue';
+import { ref, computed, reactive,  onMounted   } from 'vue';
 
 
 export const useStateStore = defineStore('mainState', () => {
     const state = reactive({
         mainType: 0,
         cabChannelsActive: true,
-        objectHome: {},
-        wellObj: {},
-        kabChannelObj: {},
-        kabLinelObj: {},
-        objectForConstructor: {},
-        wellForConstructor:{},
-        kkForConstructor:{},
-        kabLinelForConstructor: {},
-        newSchemeObject:{ drc: [], entrances: [] },
-        newScheme: { edit: false, id: '', name: '', wells:[], kls:[], cableLines: [] },
         colors: ['FF5555','3BC171','5194BA','7351BA','C02C61','C18B3B'],
-        newUser: { username: '', password: '', role: '' },
         closetsColor:{},
-        drc:{},
-        newDrc: {},
-        entrances: [],
-        userList: [],
         allObjectsAndSchemas:{},
-
 
         username: "",
         password: "",
@@ -36,8 +20,36 @@ export const useStateStore = defineStore('mainState', () => {
         countKl: 0,
 
 
-        logs: []
     })
+
+    const objectHome = reactive({})
+    const objectForConstructor = reactive({})
+
+    const wellObj = reactive({})
+    const wellForConstructor = reactive({})
+
+
+    const kabChannelObj = reactive({})
+    const kkForConstructor = reactive({})
+    
+    
+    const kabLinelObj = reactive({})
+    const kabLinelForConstructor = reactive({})
+
+    const drc = reactive({})
+    const newDrc = reactive({})
+
+    const logs = reactive({})
+
+    const userList = reactive({})
+    const newUser = reactive({ username: '', password: '', role: '' })
+
+
+
+    const newScheme = reactive({ edit: false, id: '', name: '', wells:[], kls:[], cableLines: [] })
+    const newSchemeObject = reactive({ drc: [], entrances: []  })
+
+
 
 
     
@@ -85,9 +97,6 @@ export const useStateStore = defineStore('mainState', () => {
         drc_elements_closet: ["Органайзер", "Оптический кросс", "Коммутатор"]
     }
 
-    function setObject(obj){
-        state.objectHome = obj
-    }
 
     
 
@@ -134,7 +143,7 @@ export const useStateStore = defineStore('mainState', () => {
         const uniqueOperators = [];
         const operatorsSet = new Set();
     
-        state.drc.closet.opers.forEach(item => {
+        drc.closet.opers.forEach(item => {
             if (item.operator && !operatorsSet.has(item.operator)) {
                 operatorsSet.add(item.operator);
                 uniqueOperators.push(item.operator);
@@ -148,8 +157,8 @@ export const useStateStore = defineStore('mainState', () => {
         let a = {}
         const colorIndexMap = {};
         let colorIndex = 0;
-        for (const floor in state.drc.closet.opers) {
-            const floorData =  state.drc.closet.opers[floor];
+        for (const floor in drc.closet.opers) {
+            const floorData =  drc.closet.opers[floor];
             const id = floorData.operator;
             if (!colorIndexMap.hasOwnProperty(id)) {
                 colorIndexMap[id] = colorIndex;
@@ -181,7 +190,21 @@ export const useStateStore = defineStore('mainState', () => {
         sortColor,
         operators,
         operatorsColors,
-        setObject
+        objectHome,
+        objectForConstructor,
+        wellObj,
+        wellForConstructor,
+        kabChannelObj,
+        kkForConstructor,
+        kabLinelObj,
+        kabLinelForConstructor,
+        newScheme,
+        newSchemeObject,
+        drc,
+        newDrc,
+        logs,
+        userList,
+        newUser
     };
 
 });

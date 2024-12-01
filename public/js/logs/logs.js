@@ -1,11 +1,7 @@
 import { useStateStore } from '../pinia/store.js'
 
 export const logslist = {
-    // props:{
-    //     logs: {
-    //         type: Array
-    //     },
-    // },
+
     setup(props,{emit}){
         
         const store = useStateStore()
@@ -26,7 +22,7 @@ export const logslist = {
             store,
             exit,
             GetDate,
-            logs: store.state.logs,
+            
         }
     },
     template:`
@@ -41,7 +37,7 @@ export const logslist = {
                     </div>
                 </div>
                 <div class="users-list__items">
-                    <div class="users-list__item" v-for="(log,indx) in logs">
+                    <div class="users-list__item" v-for="(log,indx) in state.logs">
                         <div class="users-list__itemButtons">
                             <div class="users-list__role" style="background-color:rgba(0, 102, 255, 0.616); color: #fff">
                                 {{GetDate(log.date)}}

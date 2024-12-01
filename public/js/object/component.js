@@ -1,28 +1,20 @@
 import { ref, watch, computed  } from 'vue'
 import { useStateStore } from '../pinia/store.js'
 export const homeobject = {
-    setup(props, {emit}){
-        const key = ref(0);
+    setup(){
         const store = useStateStore()
-        const obj = store.state.objectHome
+        const obj = store.objectHome
         const characteristics = ref(obj.characteristics);
         const spd = ref(obj.spd);
         const svn = ref(obj.svn);
         const skud = ref(obj.skud);
         const askue = ref(obj.askue);
         const apartmentAutomation = ref(obj.apartmentAutomation);
+
         function yardAssembly(yard,yardWickets,yardGates){
             return yard ? `${yardWickets}; Калиток ${yardGates} ворот` : `Нет`
         }
-        watch(() => obj, (newObj) => {
-            characteristics.value = newObj.characteristics;
-            spd.value = newObj.spd;
-            svn.value = newObj.svn;
-            skud.value = newObj.skud;
-            askue.value = newObj.askue;
-            apartmentAutomation.value = newObj.apartmentAutomation;
-            console.log(1)
-        }, { deep: true });
+
         function button(id, obj){
             switch(id){
                 case "openSchem":
@@ -58,19 +50,10 @@ export const homeobject = {
             }
         })
 
-        function forceUpdate() {
-            key.value += 1; // Обновляем ключ
-            console.log(123);
-            
-        }
       
 
-        
-        // console.log(obj.name)
 
         return{
-            key,
-            forceUpdate,
             obj,
             characteristics,
             store,
@@ -90,44 +73,44 @@ export const homeobject = {
 
     },
     template: `
-    <div class="items"  :key="key">
+    <div class="items" >
 
-        <div class="mainkk-input" @click="forceUpdate">
-            <input readonly v-model="store.state.objectHome.name" style="background: #fff;box-shadow:0px 8px 22px 1px rgba(0, 0, 0, 0.25); text-align: center; padding-left: 0;" type="text" placeholder="Название объекта">
+        <div class="mainkk-input" >
+            <input readonly v-model="store.objectHome.name" style="background: #fff;box-shadow:0px 8px 22px 1px rgba(0, 0, 0, 0.25); text-align: center; padding-left: 0;" type="text" placeholder="Название объекта">
         </div>
         <default-item-table name="Характеристики объекта">
 
             <div class="table">
-                <default-column name="Тип объекта" :value="store.state.objectHome.characteristics.type"></default-column>
-                <default-column name="Количество этажей" :value="store.state.objectHome.characteristics.floors"></default-column>
-                <default-column name="Количество подъездов" :value="store.state.objectHome.characteristics.entrancesCount"></default-column>
-                <default-column name="Количество квартир" :value="store.state.objectHome.characteristics.apartmentsCount"></default-column>
-                <default-column name="Наличие офисов" :value="store.state.objectHome.characteristics.offices"></default-column>
-                <default-column name="Кладовки" :value="store.state.objectHome.characteristics.storageRooms"></default-column>
-                <default-slider v-if="store.state.objectHome.characteristics.yard" name="Закрытый двор" :operators="false" >
+                <default-column name="Тип объекта" :value="store.objectHome.characteristics.type"></default-column>
+                <default-column name="Количество этажей" :value="store.objectHome.characteristics.floors"></default-column>
+                <default-column name="Количество подъездов" :value="store.objectHome.characteristics.entrancesCount"></default-column>
+                <default-column name="Количество квартир" :value="store.objectHome.characteristics.apartmentsCount"></default-column>
+                <default-column name="Наличие офисов" :value="store.objectHome.characteristics.offices"></default-column>
+                <default-column name="Кладовки" :value="store.objectHome.characteristics.storageRooms"></default-column>
+                <default-slider v-if="store.objectHome.characteristics.yard" name="Закрытый двор" :operators="false" >
                     <div class="number">
-                        Калиток <a>{{store.state.objectHome.characteristics.yardWickets}}</a >
+                        Калиток <a>{{store.objectHome.characteristics.yardWickets}}</a >
                     </div>
                     <div class="number">
-                        Ворот <a>{{store.state.objectHome.characteristics.yardGates}}</a >
+                        Ворот <a>{{store.objectHome.characteristics.yardGates}}</a >
                     </div>
                 </default-slider>
-                <default-column v-if="!store.state.objectHome.characteristics.yard" name="Закрытый двор" :value="yardAssembly(store.state.objectHome.characteristics.yard,store.state.objectHome.characteristics.yardWickets,store.state.objectHome.characteristics.yardGates)"></default-column>
-                <default-slider name="Операторы" :operators="store.state.objectHome.characteristics.operators"></default-slider>
-                <default-slider name="Управляющие компании" :operators="store.state.objectHome.characteristics.managementCompanies"></default-slider>
-                <default-slider name="Полезные контакты" :operators="store.state.objectHome.characteristics.usefulContacts"></default-slider>
+                <default-column v-if="!store.objectHome.characteristics.yard" name="Закрытый двор" :value="yardAssembly(store.objectHome.characteristics.yard,store.objectHome.characteristics.yardWickets,store.objectHome.characteristics.yardGates)"></default-column>
+                <default-slider name="Операторы" :operators="store.objectHome.characteristics.operators"></default-slider>
+                <default-slider name="Управляющие компании" :operators="store.objectHome.characteristics.managementCompanies"></default-slider>
+                <default-slider name="Полезные контакты" :operators="store.objectHome.characteristics.usefulContacts"></default-slider>
             </div>
-            <additional-parameters v-if="store.state.objectHome.characteristics.additionalParameters.length">
-                <default-column v-for="item in store.state.objectHome.characteristics.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
+            <additional-parameters v-if="store.objectHome.characteristics.additionalParameters.length">
+                <default-column v-for="item in store.objectHome.characteristics.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
             </additional-parameters>
         </default-item-table>
         <default-item-table name="Сеть передачи данных (СПД)">
             <div class="item-documents wrap">
-                <div class="item-documents__title" v-if="store.state.objectHome.spd.docs.length">
+                <div class="item-documents__title" v-if="store.objectHome.spd.docs.length">
                     Документы:
                 </div>
                 <div class="item-documents__items">
-                    <div class="item-documents__item" v-for="doc in store.state.objectHome.spd.docs" @click="openFile(doc.path)">
+                    <div class="item-documents__item" v-for="doc in store.objectHome.spd.docs" @click="openFile(doc.path)">
                         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M52.1244 29.0666C51.7843 28.7754 51.3468 28.6232 50.8994 28.6405C50.452 28.6578 50.0276 28.8432 49.7109 29.1599C49.3943 29.4765 49.2089 29.9009 49.1916 30.3483C49.1743 30.7957 49.3265 31.2332 49.6177 31.5733L55.3955 37.3333H46.2222V40.8889H55.4488L49.6177 46.72C49.4316 46.8793 49.2805 47.0755 49.1738 47.296C49.0671 47.5166 49.0071 47.7568 48.9976 48.0017C48.9882 48.2465 49.0294 48.4906 49.1188 48.7188C49.2082 48.9469 49.3438 49.1541 49.517 49.3274C49.6903 49.5006 49.8975 49.6362 50.1256 49.7256C50.3537 49.8149 50.5979 49.8562 50.8427 49.8467C51.0875 49.8373 51.3278 49.7773 51.5483 49.6706C51.7689 49.5639 51.965 49.4127 52.1244 49.2266L62.2222 39.1111L52.1244 29.0666Z" fill="black"/>
                             <path d="M30.2222 39.1111C30.2222 38.6396 30.4095 38.1874 30.7429 37.854C31.0763 37.5206 31.5285 37.3333 32 37.3333H46.2222V21.9378C43.7946 20.4163 41.9249 18.1496 40.893 15.4769C39.8611 12.8042 39.7224 9.86918 40.4978 7.11108H19.3244L7.11108 19.3066V53.3333C7.11108 54.2763 7.48569 55.1807 8.15248 55.8475C8.81928 56.5143 9.72365 56.8889 10.6666 56.8889H42.6666C43.6096 56.8889 44.514 56.5143 45.1808 55.8475C45.8476 55.1807 46.2222 54.2763 46.2222 53.3333V40.8889H32C31.5285 40.8889 31.0763 40.7016 30.7429 40.3682C30.4095 40.0348 30.2222 39.5826 30.2222 39.1111ZM21.3333 21.3333H10.6666V20.7644L20.7822 10.6666H21.3333V21.3333Z" fill="black"/>
@@ -136,7 +119,7 @@ export const homeobject = {
                         <span>{{doc.name}}</span> 
                     </div>
                 </div>
-                <div class="item-slot" v-if="store.state.objectHome.spd.cableDuct.length">
+                <div class="item-slot" v-if="store.objectHome.spd.cableDuct.length">
                     <div class="item-slot__title" onclick="openItemSlot(this)">
                         <p>Кабельная канализация</p>
                         <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -145,7 +128,7 @@ export const homeobject = {
                     </div>
                     <div class="item-slot__content">
                         <div class="item-documents__items">
-                            <div class="item-documents__item" v-for="doc in store.state.objectHome.spd.cableDuct" @click="openFile(doc.path)">
+                            <div class="item-documents__item" v-for="doc in store.objectHome.spd.cableDuct" @click="openFile(doc.path)">
                                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M52.1244 29.0666C51.7843 28.7754 51.3468 28.6232 50.8994 28.6405C50.452 28.6578 50.0276 28.8432 49.7109 29.1599C49.3943 29.4765 49.2089 29.9009 49.1916 30.3483C49.1743 30.7957 49.3265 31.2332 49.6177 31.5733L55.3955 37.3333H46.2222V40.8889H55.4488L49.6177 46.72C49.4316 46.8793 49.2805 47.0755 49.1738 47.296C49.0671 47.5166 49.0071 47.7568 48.9976 48.0017C48.9882 48.2465 49.0294 48.4906 49.1188 48.7188C49.2082 48.9469 49.3438 49.1541 49.517 49.3274C49.6903 49.5006 49.8975 49.6362 50.1256 49.7256C50.3537 49.8149 50.5979 49.8562 50.8427 49.8467C51.0875 49.8373 51.3278 49.7773 51.5483 49.6706C51.7689 49.5639 51.965 49.4127 52.1244 49.2266L62.2222 39.1111L52.1244 29.0666Z" fill="black"/>
                                     <path d="M30.2222 39.1111C30.2222 38.6396 30.4095 38.1874 30.7429 37.854C31.0763 37.5206 31.5285 37.3333 32 37.3333H46.2222V21.9378C43.7946 20.4163 41.9249 18.1496 40.893 15.4769C39.8611 12.8042 39.7224 9.86918 40.4978 7.11108H19.3244L7.11108 19.3066V53.3333C7.11108 54.2763 7.48569 55.1807 8.15248 55.8475C8.81928 56.5143 9.72365 56.8889 10.6666 56.8889H42.6666C43.6096 56.8889 44.514 56.5143 45.1808 55.8475C45.8476 55.1807 46.2222 54.2763 46.2222 53.3333V40.8889H32C31.5285 40.8889 31.0763 40.7016 30.7429 40.3682C30.4095 40.0348 30.2222 39.5826 30.2222 39.1111ZM21.3333 21.3333H10.6666V20.7644L20.7822 10.6666H21.3333V21.3333Z" fill="black"/>
@@ -165,17 +148,17 @@ export const homeobject = {
         </default-item-table>
         <default-item-table name="Система видеонаблюдения (СВН)">
             <div class="table">
-                <default-column name="Видеорегистратор" :value="store.state.objectHome.svn.DVR"></default-column>
-                    <default-column name="Внутренние камеры" :value="store.state.objectHome.svn.internalCameras"></default-column>
-                    <default-column name="Внешние камеры" :value="store.state.objectHome.svn.externalCameras"></default-column>
+                <default-column name="Видеорегистратор" :value="store.objectHome.svn.DVR"></default-column>
+                    <default-column name="Внутренние камеры" :value="store.objectHome.svn.internalCameras"></default-column>
+                    <default-column name="Внешние камеры" :value="store.objectHome.svn.externalCameras"></default-column>
                 </div>
                 <div class="item__columns">
-                    <div class="item-documents grid-2" v-if="store.state.objectHome.svn.docs.length">
+                    <div class="item-documents grid-2" v-if="store.objectHome.svn.docs.length">
                         <div class="item-documents__title">
                             Документы:
                         </div>
                         <div class="item-documents__items">
-                            <div class="item-documents__item" v-for="doc in store.state.objectHome.svn.docs" @click="openFile(doc.path)">
+                            <div class="item-documents__item" v-for="doc in store.objectHome.svn.docs" @click="openFile(doc.path)">
                                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M52.1244 29.0666C51.7843 28.7754 51.3468 28.6232 50.8994 28.6405C50.452 28.6578 50.0276 28.8432 49.7109 29.1599C49.3943 29.4765 49.2089 29.9009 49.1916 30.3483C49.1743 30.7957 49.3265 31.2332 49.6177 31.5733L55.3955 37.3333H46.2222V40.8889H55.4488L49.6177 46.72C49.4316 46.8793 49.2805 47.0755 49.1738 47.296C49.0671 47.5166 49.0071 47.7568 48.9976 48.0017C48.9882 48.2465 49.0294 48.4906 49.1188 48.7188C49.2082 48.9469 49.3438 49.1541 49.517 49.3274C49.6903 49.5006 49.8975 49.6362 50.1256 49.7256C50.3537 49.8149 50.5979 49.8562 50.8427 49.8467C51.0875 49.8373 51.3278 49.7773 51.5483 49.6706C51.7689 49.5639 51.965 49.4127 52.1244 49.2266L62.2222 39.1111L52.1244 29.0666Z" fill="black"/>
                                     <path d="M30.2222 39.1111C30.2222 38.6396 30.4095 38.1874 30.7429 37.854C31.0763 37.5206 31.5285 37.3333 32 37.3333H46.2222V21.9378C43.7946 20.4163 41.9249 18.1496 40.893 15.4769C39.8611 12.8042 39.7224 9.86918 40.4978 7.11108H19.3244L7.11108 19.3066V53.3333C7.11108 54.2763 7.48569 55.1807 8.15248 55.8475C8.81928 56.5143 9.72365 56.8889 10.6666 56.8889H42.6666C43.6096 56.8889 44.514 56.5143 45.1808 55.8475C45.8476 55.1807 46.2222 54.2763 46.2222 53.3333V40.8889H32C31.5285 40.8889 31.0763 40.7016 30.7429 40.3682C30.4095 40.0348 30.2222 39.5826 30.2222 39.1111ZM21.3333 21.3333H10.6666V20.7644L20.7822 10.6666H21.3333V21.3333Z" fill="black"/>
@@ -193,25 +176,25 @@ export const homeobject = {
                     </div>
                 </div>
 
-            <additional-parameters v-if="store.state.objectHome.svn.additionalParameters.length">
-                <default-column v-for="item in store.state.objectHome.svn.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
+            <additional-parameters v-if="store.objectHome.svn.additionalParameters.length">
+                <default-column v-for="item in store.objectHome.svn.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
             </additional-parameters>
         </default-item-table>
         <default-item-table name="СКУД/Домофон">
             <div class="table" onclick="setActive(this)">
-                <default-column name="Вызывные панели" :value="store.state.objectHome.skud.callPanels"></default-column>
-                <default-column name="Калитки" :value="store.state.objectHome.skud.wickets"></default-column>
-                <default-column name="Ворота" :value="store.state.objectHome.skud.gates"></default-column>
-                <default-column name="Шлагбаум " :value="store.state.objectHome.skud.barriers"></default-column>
+                <default-column name="Вызывные панели" :value="store.objectHome.skud.callPanels"></default-column>
+                <default-column name="Калитки" :value="store.objectHome.skud.wickets"></default-column>
+                <default-column name="Ворота" :value="store.objectHome.skud.gates"></default-column>
+                <default-column name="Шлагбаум " :value="store.objectHome.skud.barriers"></default-column>
             </div>
             <div class="item__columns">
                 <div>
-                    <div class="item-documents grid-2" v-if="store.state.objectHome.skud.docs.length">
+                    <div class="item-documents grid-2" v-if="store.objectHome.skud.docs.length">
                         <div class="item-documents__title">
                             Документы:
                         </div>
                         <div class="item-documents__items">
-                            <div class="item-documents__item" v-for="doc in store.state.objectHome.skud.docs" @click="openFile(doc.path)">
+                            <div class="item-documents__item" v-for="doc in store.objectHome.skud.docs" @click="openFile(doc.path)">
                                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M52.1244 29.0666C51.7843 28.7754 51.3468 28.6232 50.8994 28.6405C50.452 28.6578 50.0276 28.8432 49.7109 29.1599C49.3943 29.4765 49.2089 29.9009 49.1916 30.3483C49.1743 30.7957 49.3265 31.2332 49.6177 31.5733L55.3955 37.3333H46.2222V40.8889H55.4488L49.6177 46.72C49.4316 46.8793 49.2805 47.0755 49.1738 47.296C49.0671 47.5166 49.0071 47.7568 48.9976 48.0017C48.9882 48.2465 49.0294 48.4906 49.1188 48.7188C49.2082 48.9469 49.3438 49.1541 49.517 49.3274C49.6903 49.5006 49.8975 49.6362 50.1256 49.7256C50.3537 49.8149 50.5979 49.8562 50.8427 49.8467C51.0875 49.8373 51.3278 49.7773 51.5483 49.6706C51.7689 49.5639 51.965 49.4127 52.1244 49.2266L62.2222 39.1111L52.1244 29.0666Z" fill="black"/>
                                     <path d="M30.2222 39.1111C30.2222 38.6396 30.4095 38.1874 30.7429 37.854C31.0763 37.5206 31.5285 37.3333 32 37.3333H46.2222V21.9378C43.7946 20.4163 41.9249 18.1496 40.893 15.4769C39.8611 12.8042 39.7224 9.86918 40.4978 7.11108H19.3244L7.11108 19.3066V53.3333C7.11108 54.2763 7.48569 55.1807 8.15248 55.8475C8.81928 56.5143 9.72365 56.8889 10.6666 56.8889H42.6666C43.6096 56.8889 44.514 56.5143 45.1808 55.8475C45.8476 55.1807 46.2222 54.2763 46.2222 53.3333V40.8889H32C31.5285 40.8889 31.0763 40.7016 30.7429 40.3682C30.4095 40.0348 30.2222 39.5826 30.2222 39.1111ZM21.3333 21.3333H10.6666V20.7644L20.7822 10.6666H21.3333V21.3333Z" fill="black"/>
@@ -221,12 +204,12 @@ export const homeobject = {
                             </div>
                         </div>
                     </div>
-                    <div class="item-documents grid-2" v-if="store.state.objectHome.skud.backups.length">
+                    <div class="item-documents grid-2" v-if="store.objectHome.skud.backups.length">
                         <div class="item-documents__title">
                             Бэкапы:
                         </div>
                         <div class="item-documents__items">
-                            <div class="item-documents__item" v-for="doc in store.state.objectHome.skud.backups" @click="openFile(doc.path)">
+                            <div class="item-documents__item" v-for="doc in store.objectHome.skud.backups" @click="openFile(doc.path)">
                                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M52.1244 29.0666C51.7843 28.7754 51.3468 28.6232 50.8994 28.6405C50.452 28.6578 50.0276 28.8432 49.7109 29.1599C49.3943 29.4765 49.2089 29.9009 49.1916 30.3483C49.1743 30.7957 49.3265 31.2332 49.6177 31.5733L55.3955 37.3333H46.2222V40.8889H55.4488L49.6177 46.72C49.4316 46.8793 49.2805 47.0755 49.1738 47.296C49.0671 47.5166 49.0071 47.7568 48.9976 48.0017C48.9882 48.2465 49.0294 48.4906 49.1188 48.7188C49.2082 48.9469 49.3438 49.1541 49.517 49.3274C49.6903 49.5006 49.8975 49.6362 50.1256 49.7256C50.3537 49.8149 50.5979 49.8562 50.8427 49.8467C51.0875 49.8373 51.3278 49.7773 51.5483 49.6706C51.7689 49.5639 51.965 49.4127 52.1244 49.2266L62.2222 39.1111L52.1244 29.0666Z" fill="black"/>
                                     <path d="M30.2222 39.1111C30.2222 38.6396 30.4095 38.1874 30.7429 37.854C31.0763 37.5206 31.5285 37.3333 32 37.3333H46.2222V21.9378C43.7946 20.4163 41.9249 18.1496 40.893 15.4769C39.8611 12.8042 39.7224 9.86918 40.4978 7.11108H19.3244L7.11108 19.3066V53.3333C7.11108 54.2763 7.48569 55.1807 8.15248 55.8475C8.81928 56.5143 9.72365 56.8889 10.6666 56.8889H42.6666C43.6096 56.8889 44.514 56.5143 45.1808 55.8475C45.8476 55.1807 46.2222 54.2763 46.2222 53.3333V40.8889H32C31.5285 40.8889 31.0763 40.7016 30.7429 40.3682C30.4095 40.0348 30.2222 39.5826 30.2222 39.1111ZM21.3333 21.3333H10.6666V20.7644L20.7822 10.6666H21.3333V21.3333Z" fill="black"/>
@@ -238,7 +221,7 @@ export const homeobject = {
                     </div>
                 </div>
 
-                <div v-if="store.state.objectHome.svn.photo.reader.path != null" class="item-img">
+                <div v-if="store.objectHome.svn.photo.reader.path != null" class="item-img">
                     <div class="item-documents__title">
                         Фото СКУД/Домофон
                     </div>
@@ -248,16 +231,16 @@ export const homeobject = {
             </div>
 
             <additional-parameters v-if="skud.additionalParameters.length">
-                <default-column v-for="item in store.state.objectHome.skud.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
+                <default-column v-for="item in store.objectHome.skud.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
             </additional-parameters>
         </default-item-table>
         <default-item-table name="АСКУЭ">
-            <div class="item-documents wrap" v-if="store.state.objectHome.askue.docs.length">
+            <div class="item-documents wrap" v-if="store.objectHome.askue.docs.length">
                 <div class="item-documents__title">
                     Документы:
                 </div>
                 <div class="item-documents__items">
-                    <div class="item-documents__item" v-for="doc in store.state.objectHome.askue.docs" @click="openFile(doc.path)">
+                    <div class="item-documents__item" v-for="doc in store.objectHome.askue.docs" @click="openFile(doc.path)">
                         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M52.1244 29.0666C51.7843 28.7754 51.3468 28.6232 50.8994 28.6405C50.452 28.6578 50.0276 28.8432 49.7109 29.1599C49.3943 29.4765 49.2089 29.9009 49.1916 30.3483C49.1743 30.7957 49.3265 31.2332 49.6177 31.5733L55.3955 37.3333H46.2222V40.8889H55.4488L49.6177 46.72C49.4316 46.8793 49.2805 47.0755 49.1738 47.296C49.0671 47.5166 49.0071 47.7568 48.9976 48.0017C48.9882 48.2465 49.0294 48.4906 49.1188 48.7188C49.2082 48.9469 49.3438 49.1541 49.517 49.3274C49.6903 49.5006 49.8975 49.6362 50.1256 49.7256C50.3537 49.8149 50.5979 49.8562 50.8427 49.8467C51.0875 49.8373 51.3278 49.7773 51.5483 49.6706C51.7689 49.5639 51.965 49.4127 52.1244 49.2266L62.2222 39.1111L52.1244 29.0666Z" fill="black"/>
                             <path d="M30.2222 39.1111C30.2222 38.6396 30.4095 38.1874 30.7429 37.854C31.0763 37.5206 31.5285 37.3333 32 37.3333H46.2222V21.9378C43.7946 20.4163 41.9249 18.1496 40.893 15.4769C39.8611 12.8042 39.7224 9.86918 40.4978 7.11108H19.3244L7.11108 19.3066V53.3333C7.11108 54.2763 7.48569 55.1807 8.15248 55.8475C8.81928 56.5143 9.72365 56.8889 10.6666 56.8889H42.6666C43.6096 56.8889 44.514 56.5143 45.1808 55.8475C45.8476 55.1807 46.2222 54.2763 46.2222 53.3333V40.8889H32C31.5285 40.8889 31.0763 40.7016 30.7429 40.3682C30.4095 40.0348 30.2222 39.5826 30.2222 39.1111ZM21.3333 21.3333H10.6666V20.7644L20.7822 10.6666H21.3333V21.3333Z" fill="black"/>
@@ -268,17 +251,17 @@ export const homeobject = {
                 </div>
             </div>
 
-            <additional-parameters v-if="store.state.objectHome.askue.additionalParameters.length">
-                <default-column v-for="item in store.state.objectHome.askue.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
+            <additional-parameters v-if="store.objectHome.askue.additionalParameters.length">
+                <default-column v-for="item in store.objectHome.askue.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
             </additional-parameters>
         </default-item-table>
         <default-item-table name="Автоматизация Квартир">
-            <div class="item-documents wrap" v-if="store.state.objectHome.apartmentAutomation.docs.length">
+            <div class="item-documents wrap" v-if="store.objectHome.apartmentAutomation.docs.length">
                 <div class="item-documents__title">
                     Документы:
                 </div>
                 <div class="item-documents__items">
-                    <div class="item-documents__item" v-for="doc in store.state.objectHome.apartmentAutomation.docs" @click="openFile(doc.path)">
+                    <div class="item-documents__item" v-for="doc in store.objectHome.apartmentAutomation.docs" @click="openFile(doc.path)">
                         <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M52.1244 29.0666C51.7843 28.7754 51.3468 28.6232 50.8994 28.6405C50.452 28.6578 50.0276 28.8432 49.7109 29.1599C49.3943 29.4765 49.2089 29.9009 49.1916 30.3483C49.1743 30.7957 49.3265 31.2332 49.6177 31.5733L55.3955 37.3333H46.2222V40.8889H55.4488L49.6177 46.72C49.4316 46.8793 49.2805 47.0755 49.1738 47.296C49.0671 47.5166 49.0071 47.7568 48.9976 48.0017C48.9882 48.2465 49.0294 48.4906 49.1188 48.7188C49.2082 48.9469 49.3438 49.1541 49.517 49.3274C49.6903 49.5006 49.8975 49.6362 50.1256 49.7256C50.3537 49.8149 50.5979 49.8562 50.8427 49.8467C51.0875 49.8373 51.3278 49.7773 51.5483 49.6706C51.7689 49.5639 51.965 49.4127 52.1244 49.2266L62.2222 39.1111L52.1244 29.0666Z" fill="black"/>
                             <path d="M30.2222 39.1111C30.2222 38.6396 30.4095 38.1874 30.7429 37.854C31.0763 37.5206 31.5285 37.3333 32 37.3333H46.2222V21.9378C43.7946 20.4163 41.9249 18.1496 40.893 15.4769C39.8611 12.8042 39.7224 9.86918 40.4978 7.11108H19.3244L7.11108 19.3066V53.3333C7.11108 54.2763 7.48569 55.1807 8.15248 55.8475C8.81928 56.5143 9.72365 56.8889 10.6666 56.8889H42.6666C43.6096 56.8889 44.514 56.5143 45.1808 55.8475C45.8476 55.1807 46.2222 54.2763 46.2222 53.3333V40.8889H32C31.5285 40.8889 31.0763 40.7016 30.7429 40.3682C30.4095 40.0348 30.2222 39.5826 30.2222 39.1111ZM21.3333 21.3333H10.6666V20.7644L20.7822 10.6666H21.3333V21.3333Z" fill="black"/>
@@ -288,8 +271,8 @@ export const homeobject = {
                     </div>
                 </div>
             </div>
-            <additional-parameters v-if="store.state.objectHome.apartmentAutomation.additionalParameters.length">
-                <default-column v-for="item in store.state.objectHome.apartmentAutomation.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
+            <additional-parameters v-if="store.objectHome.apartmentAutomation.additionalParameters.length">
+                <default-column v-for="item in store.objectHome.apartmentAutomation.additionalParameters" :name="item[0]" :value="item[1]"></default-column>
             </additional-parameters>
         </default-item-table>
         <div class="save-buttons" v-if="role == 'Администратор'">

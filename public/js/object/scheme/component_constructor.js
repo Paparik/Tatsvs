@@ -3,8 +3,8 @@ import { useStateStore } from '../../pinia/store.js'
 export const schemeconstructor = {
     setup(props,{emit}){
         const store = useStateStore()
-        const newscheme = store.state.objectForConstructor.houseschem.entrances
-        const drc = store.state.objectForConstructor.houseschem.drc
+        const newscheme = store.objectForConstructor.houseschem.entrances
+        const drc = store.objectForConstructor.houseschem.drc
 
         let entrancesCount = ref(newscheme.length)
         let drcCount = ref(drc.length)
@@ -228,7 +228,7 @@ export const schemeconstructor = {
                             </div>
                         </div>
                         <div class="maket-constructor__entrances">
-                            <div class="maket-entrance-slide" v-for="(etrance,ind) in store.state.objectForConstructor.houseschem.entrances">
+                            <div class="maket-entrance-slide" v-for="(etrance,ind) in store.objectForConstructor.houseschem.entrances">
                                 <default-item-table :name="'Подъезд '+ (ind+1)">
                                     <div class="maket-entrance-slide__content">
                                         <div class="table">
@@ -263,7 +263,7 @@ export const schemeconstructor = {
                                                                 onclick="closeSliderConstructor(this)" 
                                                                 @click="setDrcToEtrance(ind,item)"
                                                                 v-show="item.position==1"
-                                                                v-for="item in store.state.objectForConstructor.houseschem.drc"
+                                                                v-for="item in store.objectForConstructor.houseschem.drc"
                                                                 >
                                                                 {{item.name}}
                                                             </div>
@@ -291,7 +291,7 @@ export const schemeconstructor = {
                                                                 onclick="closeSliderConstructor(this)" 
                                                                 @click="setDrcToEtrance(ind,item)"
                                                                 v-show="item.position==0"
-                                                                v-for="item in store.state.objectForConstructor.houseschem.drc"
+                                                                v-for="item in store.objectForConstructor.houseschem.drc"
                                                                 >
                                                                 {{item.name}}
                                                             </div>
@@ -307,7 +307,7 @@ export const schemeconstructor = {
                                                
                                             </default-item-scheme>
                                             <default-item-scheme name="Этажи">
-                                                <div class="set-drc" v-for="(floor,i) in store.state.objectForConstructor.houseschem.entrances[ind].aparts">
+                                                <div class="set-drc" v-for="(floor,i) in store.objectForConstructor.houseschem.entrances[ind].aparts">
                                                     <div class="maket-constructor-floor">
                                                         <div class="maket-constructor-floor__name">
                                                             {{floor[0]}} этаж
@@ -326,7 +326,7 @@ export const schemeconstructor = {
                                                                     <div class="slider__item" onclick="closeSliderConstructor(this)" 
                                                                         v-show="closet!=''" 
                                                                         @click="setDrcToFloor(ind,i,closet.name)" 
-                                                                        v-for="closet in store.state.objectForConstructor.houseschem.drc">
+                                                                        v-for="closet in store.objectForConstructor.houseschem.drc">
                                                                         {{closet.name}}
                                                                     </div>
                                                                 </div>
@@ -361,7 +361,7 @@ export const schemeconstructor = {
                             </div>
                         </div>
                         <div class="maket-constructor__entrances">
-                            <div class="set-drc" v-for="(item,ind) in store.state.objectForConstructor.houseschem.drc">
+                            <div class="set-drc" v-for="(item,ind) in store.objectForConstructor.houseschem.drc">
                                 <input list="drcs"  v-model="item.name" type="text" placeholder="Название">
                                 <div class="slider">
                                     <div class="slider__title" onclick="openSliderConstructor(this)">

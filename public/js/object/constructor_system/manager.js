@@ -25,13 +25,13 @@ class ObjectsConstructor{
         // this.SaveDocs(obj2);
 
         window.vueApp.saveObjectSchem(obj1,obj2)
-        window.vueApp.setData(12, window.stateStore.state.objectForConstructor);
+        window.vueApp.setData(12, window.stateStore.objectForConstructor);
     }
 
     SaveDrc = (obj) => {
         window.vueApp.setDrcConstructor()
         // window.vueApp.state.objectForConstructor.houseschem.drc[window.stateStore.state.chupapiIndex] = obj;
-        window.vueApp.setData(52, window.stateStore.state.objectForConstructor.houseschem);
+        window.vueApp.setData(52, window.stateStore.objectForConstructor.houseschem);
     }
 
     mouseclick = (coords) => {

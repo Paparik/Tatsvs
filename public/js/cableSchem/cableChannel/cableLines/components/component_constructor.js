@@ -8,31 +8,31 @@ export const kablinesconstructor = {
         function button(type) {
             switch(type){
                 case 0:
-                    if(store.state.kabLinelForConstructor.numKabLine == ""){
+                    if(store.kabLinelForConstructor.numKabLine == ""){
                         $.notify("Введите название кабельной линии", { type:"toast" });
                         return;
                     }
-                    constructorManager.object.updatePolylineCabLine(0, store.state.kabLinelForConstructor.numKabLine);
-                    constructorManager.object.EditLine(1, store.state.kabLinelForConstructor);
+                    constructorManager.object.updatePolylineCabLine(0, store.kabLinelForConstructor.numKabLine);
+                    constructorManager.object.EditLine(1, store.kabLinelForConstructor);
                 break;
                 case 1:
-                    if(store.state.kabLinelForConstructor.numKabLine == ""){
+                    if(store.kabLinelForConstructor.numKabLine == ""){
                         $.notify("Введите название кабельной линии", { type:"toast" });
                         return;
                     }
-                    constructorManager.object.updatePolylineCabLine(0, store.state.kabLinelForConstructor.numKabLine);
-                    constructorManager.object.EditLine(1, store.state.kabLinelForConstructor);
+                    constructorManager.object.updatePolylineCabLine(0, store.kabLinelForConstructor.numKabLine);
+                    constructorManager.object.EditLine(1, store.kabLinelForConstructor);
                     window.vueApp.back()
                 break;
             }
         }
 
         const counter = computed(() => {
-            if(store.state.kabLinelForConstructor.numKabLine == "") return "0.00 м";
+            if(store.kabLinelForConstructor.numKabLine == "") return "0.00 м";
             let length = 0
-            for (let index = 0; index < store.state.newScheme.kls.length; index++) {
-                if (store.state.newScheme.kls[index].cableChannelObject.KabLines.find(item => item.numKabLine == store.state.kabLinelForConstructor.numKabLine)){
-                    length +=  Number(store.state.newScheme.kls[index].cableChannelObject.length)
+            for (let index = 0; index < store.newScheme.kls.length; index++) {
+                if (store.newScheme.kls[index].cableChannelObject.KabLines.find(item => item.numKabLine == store.kabLinelForConstructor.numKabLine)){
+                    length +=  Number(store.newScheme.kls[index].cableChannelObject.length)
                 }
             }
             return length.toFixed(2) + " м"
@@ -40,7 +40,7 @@ export const kablinesconstructor = {
         
 
         function setSlider(objec,key,value){
-            store.state.kabLinelForConstructor[objec][key] = value
+            store.kabLinelForConstructor[objec][key] = value
         }
 
         return {
@@ -64,7 +64,7 @@ export const kablinesconstructor = {
         </div>
         <constructor-input
          name="Название"
-         v-model:model="store.state.kabLinelForConstructor.numKabLine"
+         v-model:model="store.kabLinelForConstructor.numKabLine"
          myplaceholder="Введите название"
         ></constructor-input>
         <div class="table">
@@ -74,7 +74,7 @@ export const kablinesconstructor = {
                     <div class="constructor__input">
                         <input type="text" 
                          list="start"
-                         v-model="store.state.kabLinelForConstructor.start"
+                         v-model="store.kabLinelForConstructor.start"
                          placeholder="Колодец">
 
                         <datalist id="start">
@@ -90,7 +90,7 @@ export const kablinesconstructor = {
 
                         <input type="text" 
                          list="finish"
-                         v-model="store.state.kabLinelForConstructor.finish"
+                         v-model="store.kabLinelForConstructor.finish"
                          placeholder="Колодец">
 
                         <datalist id="finish">
@@ -112,17 +112,17 @@ export const kablinesconstructor = {
             </div>
             <constructor-choice 
                 name="Тип кабеля"
-                v-model:model="store.state.kabLinelForConstructor.type"
+                v-model:model="store.kabLinelForConstructor.type"
                 :items="store.promptsOptions.cable_type_in_cable_line"
             ></constructor-choice>
             <constructor-choice 
                 name="Марка Кабеля"
-                v-model:model="store.state.kabLinelForConstructor.mark"
+                v-model:model="store.kabLinelForConstructor.mark"
                 :items="store.promptsOptions.cable_mark_in_cable_line"
             ></constructor-choice>
             <constructor-choice 
                 name="Собственник"
-                v-model:model="store.state.kabLinelForConstructor.owner"
+                v-model:model="store.kabLinelForConstructor.owner"
                 :items="store.promptsOptions.operators"
             ></constructor-choice>
             

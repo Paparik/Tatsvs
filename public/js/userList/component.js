@@ -3,8 +3,8 @@ import { useStateStore } from '../pinia/store.js'
 export const userlist = {
     setup(){
         const store = useStateStore()
-        const users = store.state.userList
-        const newuser = store.state.newUser
+        const users = store.userList
+        const newuser = store.newUser
 
 
         let newuserActive = ref(false)
