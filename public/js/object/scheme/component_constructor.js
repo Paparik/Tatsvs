@@ -1,4 +1,4 @@
-import { ref, watch, reactive } from 'vue'
+import { ref, watch, reactive, computed } from 'vue'
 import { useStateStore } from '../../pinia/store.js'
 export const schemeconstructor = {
     setup(props,{emit}){
@@ -70,6 +70,8 @@ export const schemeconstructor = {
                     newscheme.push(
                         {
                             countFloors: null,
+                            countBasementFloors: null,
+
                             aparts:[
     
                             ],
@@ -120,6 +122,48 @@ export const schemeconstructor = {
             }else{
                 newscheme[indexEtrance].closets.top = drc.name
             }
+        }
+
+        function getCountBasementFloors(index){
+            return newscheme[index].aparts.filter(subArray => Array.isArray(subArray) && subArray[0] < 0).length;
+        }
+
+        function setBasementFloors(index,a){
+            let count = newscheme[index].countBasementFloors
+            
+            if (a=="+"){
+                newscheme[index].aparts.unshift(
+                    [ -1 * (count+1) ,'',false,'']
+                )
+
+                newscheme[index].countFloors++
+                newscheme[index].countBasementFloors++
+                return
+            }
+            if (a=="-"){
+                if (count > 0){
+                    newscheme[index].aparts.shift()
+                    newscheme[index].countFloors--
+                    newscheme[index].countBasementFloors--
+                }
+                return
+            }
+            if (count=='') {return false}
+            let nowLenght = getCountBasementFloors(index)
+            
+            if (count > getCountBasementFloors(index)){
+                for (let i = nowLenght; i < count; i++) {
+                    newscheme[index].aparts.unshift(
+                       [-1*(i+1),'',false,'']
+                    )
+                    newscheme[index].countFloors++
+                }
+            } else if (count < getCountBasementFloors(index)){
+                for (let i = getCountBasementFloors(index); i > count; i--) {
+                    newscheme[index].aparts.shift()
+                    newscheme[index].countFloors--
+                }
+            } 
         }
 
         function setFloors(index,a){
@@ -206,7 +250,9 @@ export const schemeconstructor = {
             checkLimitDrc,
             newscheme,
             drc,
-            store
+            store,
+            setBasementFloors,
+            getCountBasementFloors
             
         }
     },
@@ -244,6 +290,21 @@ export const schemeconstructor = {
                                                              :placeholder="'Введите кол-во'">
                                                         </div>
                                                         <button @click="setFloors(ind,'+')">+</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table__item">
+                                                <div class="table__title">
+                                                    <p>Количество подвальных этажей</p>
+                                                    <div class="maket-floor-input">
+                                                        <button @click="setBasementFloors(ind,'-')">-</button>
+                                                        <div class="constructor__input">
+                                                            <input type="text" 
+                                                             @input="setBasementFloors(ind)"
+                                                             v-model="etrance.countBasementFloors"
+                                                             :placeholder="'Введите кол-во'">
+                                                        </div>
+                                                        <button @click="setBasementFloors(ind,'+')">+</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -309,8 +370,11 @@ export const schemeconstructor = {
                                             <default-item-scheme name="Этажи">
                                                 <div class="set-drc" v-for="(floor,i) in store.objectForConstructor.houseschem.entrances[ind].aparts">
                                                     <div class="maket-constructor-floor">
-                                                        <div class="maket-constructor-floor__name">
+                                                        <div class="maket-constructor-floor__name" v-if="floor[0]>0">
                                                             {{floor[0]}} этаж
+                                                        </div>
+                                                        <div class="maket-constructor-floor__name" v-else>
+                                                            Подвальный {{floor[0]}} этаж
                                                         </div>
                                                         <div class="maket-constructor-floor__items">
                                                             <div class="slider">

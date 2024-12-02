@@ -182,7 +182,7 @@ const app = createApp({
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    state.mainType=0
+                    store.state.mainType=0
                     break;
                 case 12:
                 case 52:
