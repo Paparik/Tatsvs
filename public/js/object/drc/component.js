@@ -15,10 +15,51 @@ export const drc = {
                 return store.drc.lastPhoto.reader.path;
             }
         })
+        
+        const operators = computed(() => {
+            const uniqueOperators = [];
+            const operatorsSet = new Set();
+            
+                
+            store.drc.closet.opers.forEach(item => {
+                if (item.operator && !operatorsSet.has(item.operator)) {
+                    operatorsSet.add(item.operator);
+                    uniqueOperators.push(item.operator);
+                }
+            });
+            
+    
+            
+            return uniqueOperators;
+        })
+    
+        const operatorsColors = computed(() => {
+            let a = {}
+            const colorIndexMap = {};
+            let colorIndex = 0;
+            for (const floor in store.drc.closet.opers) {
+                const floorData =  store.drc.closet.opers[floor];
+                const id = floorData.operator;
+                if (!colorIndexMap.hasOwnProperty(id)) {
+                    colorIndexMap[id] = colorIndex;
+                    colorIndex++;
+                    if (colorIndex >=  store.state.colors.length) {
+                        colorIndex = 0;
+                    }
+                }
+                const color =  store.state.colors[colorIndexMap[id]];
+                a[id] = color;
+            }
+            return a
+    
+        })
+        
         return{
             backTo,
             wellImg,
             store,
+            operators,
+            operatorsColors
         }
     },
     template:`
@@ -43,8 +84,8 @@ export const drc = {
                         <p>Операторы</p>
                         <div 
                             class="drc-operList__item" 
-                            v-for="oper in store.operators"
-                            :style="{background: '#' + store.operatorsColors[oper]}"
+                            v-for="oper in operators"
+                            :style="{background: '#' + operatorsColors[oper]}"
                         >
                             {{oper}}
                         </div>
@@ -56,8 +97,8 @@ export const drc = {
                             </div>
                             <div 
                                 class="drc-main__item" 
+                                :style="{background: oper.operator!=null ?  '#' + operatorsColors[oper.operator]: 'none',color:  oper.operator!=null ? '#fff' : '#000'}"
                                 v-for="(oper,i) in store.drc.closet.opers"
-                                :style="{background: oper.operator!=null ?  '#' + store.operatorsColors[oper.operator]: 'none',color:  oper.operator!=null ? '#fff' : '#000'}"
                                 >
                                 <div class="drc-main__number" >
                                     {{i+1}}

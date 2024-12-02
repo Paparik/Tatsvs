@@ -1,7 +1,7 @@
 import { ref, watch, reactive, computed } from 'vue'
 import { useStateStore } from '../../pinia/store.js'
 export const schemeconstructor = {
-    setup(props,{emit}){
+    setup(){
         const store = useStateStore()
         const newscheme = store.objectForConstructor.houseschem.entrances
         const drc = store.objectForConstructor.houseschem.drc

@@ -59,7 +59,7 @@
                             <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M10.1111 4.41667C13.256 4.41667 15.8056 6.96616 15.8056 10.1111M16.5559 16.5514L21.5 21.5M19.2222 10.1111C19.2222 15.1431 15.1431 19.2222 10.1111 19.2222C5.07918 19.2222 1 15.1431 1 10.1111C1 5.07918 5.07918 1 10.1111 1C15.1431 1 19.2222 5.07918 19.2222 10.1111Z" stroke="black" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            <input v-model="store.search" id="search" type="text" placeholder="Поиск">
+                            <input v-model="store.state.search" id="search" type="text" placeholder="Поиск">
                         </div>
 
                         <div class="map-search__items" v-show="store.search!='' && store.search!=' '">
@@ -72,8 +72,8 @@
                             </p>
                         </div>
                     </div>
-                    <div class="map-filter">
-                        <button class="map-filter__button" @click="CabChannelsActiveToggle()">
+                    <div class="map-filter"  @click="CabChannelsActiveToggle()">
+                        <button class="map-filter__button">
                             <div v-if="store.state.cabChannelsActive"></div>
                         </button>
                         <p>Кабельная канализация</p>

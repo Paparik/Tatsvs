@@ -96,11 +96,13 @@ export const useStateStore = defineStore('mainState', () => {
         drc_elements_drc: ["Первый", "Второй"],
         drc_elements_closet: ["Органайзер", "Оптический кросс", "Коммутатор"]
     }
+    
 
 
     
 
     const filteredObjects = computed(() => {
+
         const query = state.search.toLowerCase();
         return Object.fromEntries(
             Object.entries(state.allObjectsAndSchemas || {}).filter(([key]) =>
@@ -139,40 +141,7 @@ export const useStateStore = defineStore('mainState', () => {
         }
     }
     
-    const operators = computed(() => {
-        const uniqueOperators = [];
-        const operatorsSet = new Set();
-    
-        drc.closet.opers.forEach(item => {
-            if (item.operator && !operatorsSet.has(item.operator)) {
-                operatorsSet.add(item.operator);
-                uniqueOperators.push(item.operator);
-            }
-        });
-        
-        return uniqueOperators;
-    })
 
-    const operatorsColors = computed(() => {
-        let a = {}
-        const colorIndexMap = {};
-        let colorIndex = 0;
-        for (const floor in drc.closet.opers) {
-            const floorData =  drc.closet.opers[floor];
-            const id = floorData.operator;
-            if (!colorIndexMap.hasOwnProperty(id)) {
-                colorIndexMap[id] = colorIndex;
-                colorIndex++;
-                if (colorIndex >=  state.colors.length) {
-                    colorIndex = 0;
-                }
-            }
-            const color =  state.colors[colorIndexMap[id]];
-            a[id] = color;
-        }
-        return a
-
-    })
 
     onMounted(() => {
         sortColor()
@@ -188,8 +157,6 @@ export const useStateStore = defineStore('mainState', () => {
         role,
         promptsOptions,
         sortColor,
-        operators,
-        operatorsColors,
         objectHome,
         objectForConstructor,
         wellObj,
@@ -204,7 +171,8 @@ export const useStateStore = defineStore('mainState', () => {
         newDrc,
         logs,
         userList,
-        newUser
+        newUser,
+        
     };
 
 });

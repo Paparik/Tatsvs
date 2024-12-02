@@ -336,6 +336,9 @@ const app = createApp({
                     break;
                 case 6:
                     store.drc=obj;
+                    // console.log(store.drc);
+                    // store.setDrc(obj)
+                    
                     store.state.whereBack = 5
                     break;
                 case 8:
