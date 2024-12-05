@@ -6,6 +6,9 @@ function setActive(elem){
     elem.parentNode.classList.toggle("item_active")
 }
 
+
+
+
 function setSubActive(elem){
     elem.parentNode.classList.toggle("sub-table_active")
 }
