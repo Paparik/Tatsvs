@@ -70,8 +70,7 @@ export const schemeconstructor = {
                     newscheme.push(
                         {
                             countFloors: null,
-                            countBasementFloors: null,
-
+                            firstFloor: 1,
                             aparts:[
     
                             ],
@@ -82,7 +81,7 @@ export const schemeconstructor = {
                         }
                     )
                 }
-            } else if (count< newscheme.length){
+            } else if (count < newscheme.length){
                 for (let index = newscheme.length; index > count; index--) {
                     newscheme.pop()
                 }
@@ -124,80 +123,67 @@ export const schemeconstructor = {
             }
         }
 
-        function getCountBasementFloors(index){
-            return newscheme[index].aparts.filter(subArray => Array.isArray(subArray) && subArray[0] < 0).length;
+
+        function setFloors(index, action = null) {
+            const newscheme = store.objectForConstructor.houseschem.entrances;
+            let entrance = newscheme[index];
+            let count = entrance.countFloors;
+        
+            if (action === "+") {
+                // Добавляем этаж
+                entrance.aparts.push([
+                    null,
+                    null,
+                    null,
+                    false,
+                    '',
+                    null,
+                    'Квартирный'
+                ]);
+                entrance.countFloors++;
+            } else if (action === "-") {
+                // Удаляем последний этаж
+                if (entrance.aparts.length > 0) {
+                    entrance.aparts.pop();
+                    entrance.countFloors--;
+                }
+            } else if (!isNaN(Number(count)) && Number(count) >= 0) {
+                // Если вводится конкретное количество этажей
+                count = Math.min(Number(count), 50); // Ограничиваем до 50 этажей
+                entrance.countFloors = count;
+        
+                const currentLength = entrance.aparts.length;
+                if (count > currentLength) {
+                    // Добавляем недостающие этажи
+                    for (let i = currentLength; i < count; i++) {
+                        entrance.aparts.push([
+                            null,
+                            null,
+                            null,
+                            false,
+                            '',
+                            null,
+                            'Квартирный'
+                        ]);
+                    }
+                } else if (count < currentLength) {
+                    entrance.aparts.splice(count);
+                }
+            } else {
+                entrance.countFloors = '';
+            }
         }
 
-        function setBasementFloors(index,a){
-            let count = newscheme[index].countBasementFloors
+        function updateFloorNumbers(index) {
+            const entrance = store.objectForConstructor.houseschem.entrances[index];
+            const firstFloor = entrance.firstFloor; 
             
-            if (a=="+"){
-                newscheme[index].aparts.unshift(
-                    [ -1 * (count+1) ,null,null,false,'',null]
-                )
-
-                newscheme[index].countFloors++
-                newscheme[index].countBasementFloors++
-                return
-            }
-            if (a=="-"){
-                if (count > 0){
-                    newscheme[index].aparts.shift()
-                    newscheme[index].countFloors--
-                    newscheme[index].countBasementFloors--
-                }
-                return
-            }
-            if (count=='') {return false}
-            let nowLenght = getCountBasementFloors(index)
-            
-            if (count > getCountBasementFloors(index)){
-                for (let i = nowLenght; i < count; i++) {
-                    newscheme[index].aparts.unshift(
-                       [-1*(i+1),null,null,false,'',null]
-                    )
-                    newscheme[index].countFloors++
-                }
-            } else if (count < getCountBasementFloors(index)){
-                for (let i = getCountBasementFloors(index); i > count; i--) {
-                    newscheme[index].aparts.shift()
-                    newscheme[index].countFloors--
-                }
-            } 
+            entrance.aparts.forEach((floor, i) => {
+                floor[0] = firstFloor + i; // Обновляем номера этажей, включая отрицательные значения
+                if(floor[0] == 0){floor[0]=1}
+            });
         }
 
-        function setFloors(index,a){
-            let count= newscheme[index].countFloors
-            if (count>50){
-                newscheme[index].countFloors = 50
-                return
-            }
-            if (a=="+"){
-                newscheme[index].aparts.push(
-                    [ newscheme[index].aparts.length+1 ,null,null,false,'',null]
-                )
-                newscheme[index].countFloors++
-                return
-            }else if (a=="-"){
-                newscheme[index].aparts.pop()
-                newscheme[index].countFloors--
-                return
-            }
-            if (count=='') {return false}
-            let nowLenght = newscheme[index].aparts.length
-            
-            if (count > newscheme[index].aparts.length){
-                for (let i = nowLenght; i < count; i++) {
-                    newscheme[index].aparts.push(
-                       [i+1,null,null,false,'',null]
-                    )
-                }
-            } else if (count< newscheme[index].aparts.length){
-                for (let i = newscheme[index].aparts.length; i > count; i--) {
-                    newscheme[index].aparts.pop()
-                }
-            } 
-        }
         function setpatch(inxEtr, indxFloor){
             newscheme[inxEtr].aparts[indxFloor][3]=!newscheme[inxEtr].aparts[indxFloor][3]
         }
@@ -235,12 +221,16 @@ export const schemeconstructor = {
         const autoDistributeApartments = (entranceIndex) => {
             const entrance = store.objectForConstructor.houseschem.entrances[entranceIndex];
             const aparts = entrance.aparts;
+
+            const firstApart = aparts.findIndex((apart) => apart[6] == "Квартирный" )
         
-            let currentApartment = aparts[0][1] || 1; // Начинаем с "Квартиры от" первого этажа
-            const apartmentsPerFloor = aparts[0][5] || 8; // Используем количество квартир на первом этаже, по умолчанию 8
-        
+            let currentApartment = aparts[firstApart][1] || 1; // Начинаем с "Квартиры от" первого этажа
+            const apartmentsPerFloor = aparts[firstApart][5] || 8; // Используем количество квартир на первом этаже, по умолчанию 8
+            
+
             aparts.forEach((floor, index) => {
-                if (index === 0) {
+                
+                if (index === firstApart) {
                     floor[2] = floor[1] + (apartmentsPerFloor - 1); // Рассчитываем "Квартиры до" для первого этажа
                 } else {
                     const apartmentsOnFloor = floor[5] || apartmentsPerFloor; // Используем значение, если оно задано, иначе берем с первого этажа
@@ -251,24 +241,7 @@ export const schemeconstructor = {
             });
         };
 
-        const autoDistributeDrc = (entranceIndex) => {
-            const entrance = store.objectForConstructor.houseschem.entrances[entranceIndex];
-            const aparts = entrance.aparts;
-        
-            let currentApartment = aparts[0][1] || 1; // Начинаем с "Квартиры от" первого этажа
-            const apartmentsPerFloor = aparts[0][5] || 8; // Используем количество квартир на первом этаже, по умолчанию 8
-        
-            aparts.forEach((floor, index) => {
-                if (index === 0) {
-                    floor[2] = floor[1] + (apartmentsPerFloor - 1); // Рассчитываем "Квартиры до" для первого этажа
-                } else {
-                    const apartmentsOnFloor = floor[5] || apartmentsPerFloor; // Используем значение, если оно задано, иначе берем с первого этажа
-                    floor[1] = currentApartment + 1; // "Квартиры от" начинается с последней квартиры + 1
-                    floor[2] = floor[1] + (apartmentsOnFloor - 1); // "Квартиры до" на этом этаже
-                }
-                currentApartment = floor[2]; // Обновляем текущую квартиру для следующего этажа
-            });
-        };
+
 
 
 
@@ -291,9 +264,8 @@ export const schemeconstructor = {
             newscheme,
             drc,
             store,
-            setBasementFloors,
-            getCountBasementFloors,
-            autoDistributeApartments
+            autoDistributeApartments,
+            updateFloorNumbers
             
         }
     },
@@ -336,19 +308,18 @@ export const schemeconstructor = {
                                             </div>
                                             <div class="table__item">
                                                 <div class="table__title">
-                                                    <p>Количество подвальных этажей</p>
+                                                    <p>Первый этаж</p>
                                                     <div class="maket-floor-input">
-                                                        <button @click="setBasementFloors(ind,'-')">-</button>
                                                         <div class="constructor__input">
                                                             <input type="text" 
-                                                             @input="setBasementFloors(ind)"
-                                                             v-model="etrance.countBasementFloors"
-                                                             :placeholder="'Введите кол-во'">
+                                                             @input="updateFloorNumbers(ind)"
+                                                             v-model.number="etrance.firstFloor"
+                                                             :placeholder="'Введите номер первого этажа'">
                                                         </div>
-                                                        <button @click="setBasementFloors(ind,'+')">+</button>
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                             <default-item-scheme name="Шкафы ДРС">
                                                 <div class="set-drc">
                                                     <div class="slider">
@@ -411,12 +382,23 @@ export const schemeconstructor = {
                                             <default-item-scheme name="Этажи">
                                                 <div class="set-drc" v-for="(floor,i) in store.objectForConstructor.houseschem.entrances[ind].aparts">
                                                     <div class="maket-constructor-floor">
-                                                        <div class="maket-constructor-floor__name" v-if="floor[0]>0">
-                                                            {{floor[0]}} этаж
+                                                        <!-- <div class="maket-constructor-floor__name" v-if="i === 0">
+                                                            <input 
+                                                                type="number" 
+                                                                v-model.number="store.objectForConstructor.houseschem.entrances[ind].aparts[0][0]" 
+                                                                @input="updateFloorNumbers(ind)" 
+                                                                placeholder="Этаж">
+                                                        </div> -->
+                                                        <div class="maket-constructor-floor__name">
+                                                            Этаж: {{ floor[0] }}
                                                         </div>
-                                                        <div class="maket-constructor-floor__name" v-else>
+                                                        <!-- <div class="maket-constructor-floor__name" v-if="floor[0]>0">
+                                                            <input type="number" v-model.number="floor[0]">
+                                                            {floor[0]}} этаж
+                                                        </div> -->
+                                                        <!-- <div class="maket-constructor-floor__name" v-else>
                                                             Подвальный {{floor[0]}} этаж
-                                                        </div>
+                                                        </div> -->
                                                         <div class="maket-constructor-floor__items">
                                                             <div class="slider">
                                                                 <div class="slider__title" onclick="openSliderConstructor(this)">
@@ -436,6 +418,21 @@ export const schemeconstructor = {
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                             <div class="slider">
+                                                                <div class="slider__title" onclick="openSliderConstructor(this)">
+                                                                    <p style="font-size: 20px;">
+                                                                        Тип этажа {{floor[6]}}
+                                                                    </p>
+                                                                    <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#6B6B6B"/>
+                                                                    </svg>                                                    
+                                                                </div>
+                                                                <div class="slider__items">
+                                                                    <div onclick="closeSliderConstructor(this)" class="slider__item" @click="floor[6] = 'Паркинг'; autoDistributeApartments(ind)">Подземный паркинг</div>
+                                                                    <div onclick="closeSliderConstructor(this)" class="slider__item" @click="floor[6] = 'Подвал'; autoDistributeApartments(ind)">Подвал</div>
+                                                                    <div onclick="closeSliderConstructor(this)" class="slider__item" @click="floor[6] = 'Квартирный'; autoDistributeApartments(ind)">Квартирный</div>
+                                                                </div>
+                                                            </div>
                                                             <div class="maket-constructor-floor__patch" @click="setpatch(ind,i)">
                                                                 Патч-панель
                                                                 <button>
@@ -445,7 +442,7 @@ export const schemeconstructor = {
                                                                     </svg>                                                            
                                                                 </button>
                                                             </div>
-                                                            <div class="maket-constructor-floor__kv">
+                                                            <div class="maket-constructor-floor__kv" v-if="floor[6] === 'Квартирный'">
                                                                 <input 
                                                                     v-model.number="floor[1]" 
                                                                     type="text" 
