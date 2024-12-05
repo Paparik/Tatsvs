@@ -133,7 +133,7 @@ export const schemeconstructor = {
             
             if (a=="+"){
                 newscheme[index].aparts.unshift(
-                    [ -1 * (count+1) ,'',false,'']
+                    [ -1 * (count+1) ,null,null,false,'',null]
                 )
 
                 newscheme[index].countFloors++
@@ -154,7 +154,7 @@ export const schemeconstructor = {
             if (count > getCountBasementFloors(index)){
                 for (let i = nowLenght; i < count; i++) {
                     newscheme[index].aparts.unshift(
-                       [-1*(i+1),'',false,'']
+                       [-1*(i+1),null,null,false,'',null]
                     )
                     newscheme[index].countFloors++
                 }
@@ -174,7 +174,7 @@ export const schemeconstructor = {
             }
             if (a=="+"){
                 newscheme[index].aparts.push(
-                    [ newscheme[index].aparts.length+1 ,'',false,'']
+                    [ newscheme[index].aparts.length+1 ,null,null,false,'',null]
                 )
                 newscheme[index].countFloors++
                 return
@@ -189,7 +189,7 @@ export const schemeconstructor = {
             if (count > newscheme[index].aparts.length){
                 for (let i = nowLenght; i < count; i++) {
                     newscheme[index].aparts.push(
-                       [i+1,'',false,'']
+                       [i+1,null,null,false,'',null]
                     )
                 }
             } else if (count< newscheme[index].aparts.length){
@@ -199,7 +199,7 @@ export const schemeconstructor = {
             } 
         }
         function setpatch(inxEtr, indxFloor){
-            newscheme[inxEtr].aparts[indxFloor][2]=!newscheme[inxEtr].aparts[indxFloor][2]
+            newscheme[inxEtr].aparts[indxFloor][3]=!newscheme[inxEtr].aparts[indxFloor][3]
         }
         function setDrc(inxEtr, pos){
             let act = newscheme[inxEtr].closets[pos] == undefined ? 1 : 0
@@ -213,7 +213,7 @@ export const schemeconstructor = {
 
         }
         function setDrcToFloor(inxEtr,indxFloor,drc){
-            newscheme[inxEtr].aparts[indxFloor][3] = drc
+            newscheme[inxEtr].aparts[indxFloor][4] = drc
         }
 
         function backTo(){
@@ -230,6 +230,46 @@ export const schemeconstructor = {
                 break;
             }
         }
+
+
+        const autoDistributeApartments = (entranceIndex) => {
+            const entrance = store.objectForConstructor.houseschem.entrances[entranceIndex];
+            const aparts = entrance.aparts;
+        
+            let currentApartment = aparts[0][1] || 1; // Начинаем с "Квартиры от" первого этажа
+            const apartmentsPerFloor = aparts[0][5] || 8; // Используем количество квартир на первом этаже, по умолчанию 8
+        
+            aparts.forEach((floor, index) => {
+                if (index === 0) {
+                    floor[2] = floor[1] + (apartmentsPerFloor - 1); // Рассчитываем "Квартиры до" для первого этажа
+                } else {
+                    const apartmentsOnFloor = floor[5] || apartmentsPerFloor; // Используем значение, если оно задано, иначе берем с первого этажа
+                    floor[1] = currentApartment + 1; // "Квартиры от" начинается с последней квартиры + 1
+                    floor[2] = floor[1] + (apartmentsOnFloor - 1); // "Квартиры до" на этом этаже
+                }
+                currentApartment = floor[2]; // Обновляем текущую квартиру для следующего этажа
+            });
+        };
+
+        const autoDistributeDrc = (entranceIndex) => {
+            const entrance = store.objectForConstructor.houseschem.entrances[entranceIndex];
+            const aparts = entrance.aparts;
+        
+            let currentApartment = aparts[0][1] || 1; // Начинаем с "Квартиры от" первого этажа
+            const apartmentsPerFloor = aparts[0][5] || 8; // Используем количество квартир на первом этаже, по умолчанию 8
+        
+            aparts.forEach((floor, index) => {
+                if (index === 0) {
+                    floor[2] = floor[1] + (apartmentsPerFloor - 1); // Рассчитываем "Квартиры до" для первого этажа
+                } else {
+                    const apartmentsOnFloor = floor[5] || apartmentsPerFloor; // Используем значение, если оно задано, иначе берем с первого этажа
+                    floor[1] = currentApartment + 1; // "Квартиры от" начинается с последней квартиры + 1
+                    floor[2] = floor[1] + (apartmentsOnFloor - 1); // "Квартиры до" на этом этаже
+                }
+                currentApartment = floor[2]; // Обновляем текущую квартиру для следующего этажа
+            });
+        };
+
 
 
         return {
@@ -252,7 +292,8 @@ export const schemeconstructor = {
             drc,
             store,
             setBasementFloors,
-            getCountBasementFloors
+            getCountBasementFloors,
+            autoDistributeApartments
             
         }
     },
@@ -380,7 +421,7 @@ export const schemeconstructor = {
                                                             <div class="slider">
                                                                 <div class="slider__title" onclick="openSliderConstructor(this)">
                                                                     <p style="font-size: 20px;">
-                                                                    {{floor[3] == "" ? 'Шкаф' : floor[3]}}
+                                                                    {{floor[4] == "" ? 'Шкаф' : floor[4]}}
                                                                     </p>
                                                                     <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#6B6B6B"/>
@@ -398,13 +439,29 @@ export const schemeconstructor = {
                                                             <div class="maket-constructor-floor__patch" @click="setpatch(ind,i)">
                                                                 Патч-панель
                                                                 <button>
-                                                                    <svg v-if="floor[2]" width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <svg v-if="floor[3]" width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <rect x="1.46655" y="9.80762" width="9.00205" height="2" rx="1" transform="rotate(47.16 1.46655 9.80762)" fill="black"/>
                                                                         <rect x="16.5828" y="1.03613" width="19.4554" height="2.0035" rx="1" transform="rotate(121.143 16.5828 1.03613)" fill="black"/>
                                                                     </svg>                                                            
                                                                 </button>
                                                             </div>
-                                                            <input v-model="floor[1]" type="text" placeholder="Квартиры n-n">
+                                                            <div class="maket-constructor-floor__kv">
+                                                                <input 
+                                                                    v-model.number="floor[1]" 
+                                                                    type="text" 
+                                                                    placeholder="Квартиры от" 
+                                                                    @input="autoDistributeApartments(ind)">
+                                                                <input 
+                                                                    v-model.number="floor[2]" 
+                                                                    type="text" 
+                                                                    placeholder="Квартиры до" 
+                                                                    @input="autoDistributeApartments(ind)">
+                                                                <input 
+                                                                    v-model.number="floor[5]" 
+                                                                    type="number" 
+                                                                    placeholder="Квартир на этаже" 
+                                                                    @input="autoDistributeApartments(ind)">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
