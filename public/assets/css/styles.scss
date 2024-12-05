@@ -538,6 +538,9 @@ body{
             border-radius: 15px;
         }
     }
+    .item-slot {
+        padding: 20px 30px !important;
+    }
 }
 .constructor-item{
     display: flex;
@@ -877,6 +880,12 @@ body{
             }
         }
     }
+    .save-buttons__item{
+        margin: 0 !important;
+        width: 170px !important;
+        height: 50px;
+
+    }
 }
 
 .table{  
@@ -1102,7 +1111,17 @@ body{
         margin-top: 30px;
     }
     &__title{
-        @include font(500, 20);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        p{
+            @include font(500, 20);
+        }
+        .button{
+            height: 40px;
+
+        }
+
 
     }
     &__items{
@@ -1110,6 +1129,7 @@ body{
     }
     &_big{
         width: 269px !important;
+        margin: 20px 0;
     }
     &__item{
         width: 130px;
@@ -1492,7 +1512,17 @@ body{
     }
 }
 
-
+.item-img{
+    &__container{
+        margin: 20px 0px;
+        position: relative;
+        svg{
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    }
+}
 
 .drc {
     width: 100%;
