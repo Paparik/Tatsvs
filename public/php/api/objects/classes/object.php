@@ -3,14 +3,14 @@
         public string $id;
         public string $type;
         public array $coords;
-        public object $data;
+        public string $name;
 
 
-        public function __construct(string $id, string $type, array $coords, object $data) {
+        public function __construct(string $id, string $type, array $coords, string $name) {
             $this->id = $id;
             $this->type = $type;
             $this->coords = $coords;
-            $this->data = $data;
+            $this->name = $name;
         }
     }
 ?>

@@ -1,6 +1,7 @@
 <?php
     require_once '../../database/dataBaseManager.php';
     require_once './classes/object.php';
+    require_once './classes/object_data.php';
     require_once '../../encryption/encryption.php';
     require_once '../functions.php';
     require_once '../logs/manager.php';
@@ -35,7 +36,7 @@
                 if(!$access){
                     return ['code' => 400, 'message' => 'No access'];
                 }
-                else $data = create($database, $payload);
+                else $data = createNewObject($database, $payload);
                 break;
             case "delete":
                 if(!$access){
@@ -55,7 +56,7 @@
             if (empty($payload)) {
                 return ['code' => 400, 'message' => 'Bad Request: Missing required parameter'];
             }
-            $result = $database->executeQuery("SELECT * FROM `objects` WHERE `encrypted_id`=:encrypted_id", ['encrypted_id' => $payload]);
+            $result = $database->executeQuery("SELECT * FROM `objects_upd` WHERE `encrypted_id`=:encrypted_id", ['encrypted_id' => $payload]);
 
             if ($result && count($result) > 0) {
                 deleteAll('../../database/uploads/objects/'.$result[0]["id"]);
@@ -84,7 +85,8 @@
                     "UPDATE `objects` SET `data`=:data WHERE `encrypted_id`=:encrypted_id", 
                     ['encrypted_id' => $obj[1], 'data' => json_encode($obj[2])]
                 );
-            } else {
+            } 
+            else {
                 $database->executeNonQuery(
                     "UPDATE `objects` SET `data`=:data, `type`=:type WHERE `encrypted_id`=:encrypted_id", 
                     ['encrypted_id' => $obj[1], 'data' => json_encode($obj[2]), 'type' => $obj[3]]
@@ -104,13 +106,25 @@
             if (empty($payload)) {
                 return ['code' => 400, 'message' => 'Bad Request: Missing required parameter'];
             }
-            $result = $database->executeQuery("SELECT * FROM `objects` WHERE `encrypted_id`=:encrypted_id", ['encrypted_id' => $payload]);
 
-            if ($result && count($result) > 0 && isset($result[0]['data'])) {
-                return ['code' => 200, 'data' => $result[0]['data'], 'message' => 'Success!'];
-            } else {
+            $result = $database->executeQuery("SELECT * FROM `objects_upd` WHERE `encrypted_id`=:encrypted_id", ['encrypted_id' => $payload]);
+            if (!empty($result)) {
+                $row = $result[0];
+                $obj = new MapObjectData(
+                    json_decode($row['characteristics']),
+                    json_decode($row['spd']),
+                    json_decode($row['svn']),
+                    json_decode($row['skud']),
+                    json_decode($row['askue']),
+                    json_decode($row['apartmentAutomation']),
+                    json_decode($row['houseschem'])
+                );
+                return ['code' => 200, 'data' => $obj, 'message' => 'Success!'];
+            }
+            else {
                 return ['code' => 404, 'message' => 'Data not found'];
             }
+            
         } catch (PDOException $e) {
             return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];
         } catch (Exception $e) {
@@ -120,11 +134,16 @@
 
     function getAll($database) {
         try {
-            $result = $database->executeQuery("SELECT * FROM `objects`");
+            $result = $database->executeQuery("SELECT * FROM `objects_upd`");
             $list = [];
             if ($result && count($result) > 0) {
                 foreach ($result as $row) {
-                    $cable = new MapObject($row['encrypted_id'], $row['type'], json_decode($row['coords'], true), json_decode($row['data']));
+                    $cable = new MapObject(
+                        $row['encrypted_id'], 
+                        $row['type'], 
+                        json_decode($row['coords'], true), 
+                        $row['name']
+                    );
                     array_push($list, $cable);
                 }
             }
@@ -139,24 +158,24 @@
     function createNewObject($database, string $payload){
         try {
             $obj = json_decode($payload, true);
-            if (!isset($obj[0], $obj[1], $obj[2], $obj[3])) {
+            if (!isset($obj[0], $obj[1])) {
                 return ['code' => 400, 'message' => 'Bad Request: Missing required parameters'];
             }
             $objectKey = generateKey();
             $database->executeNonQuery(
                 "INSERT INTO `objects_upd` (`type`, `coords`, `name`, `key_for_decrypt`, `characteristics`, `spd`, `svn`, `skud`, `askue`, `apartmentAutomation`, `houseschem`) VALUES (:type, :coords, :name, :key_for_decrypt, :characteristics, :spd, :svn, :skud, :askue, :apartmentAutomation, :houseschem);", 
                 [
-                    'type' => $obj[0],
+                    'type' => $obj[0]['characteristics']['type'],
                     'coords' => json_encode($obj[1]),
-                    'name' => $obj[2],
+                    'name' => $obj[0]['name'],
                     'key_for_decrypt' => $objectKey,
-                    'characteristics' => json_encode($obj[3]->characteristics),
-                    'spd' => json_encode($obj[3]->spd),
-                    'svn' => json_encode($obj[3]->svn),
-                    'skud' => json_encode($obj[3]->skud),
-                    'askue' => json_encode($obj[3]->askue),
-                    'apartmentAutomation' => json_encode($obj[3]->apartmentAutomation),
-                    'houseschem' => json_encode($obj[3]->houseschem)
+                    'characteristics' => json_encode($obj[0]['characteristics']),
+                    'spd' => json_encode($obj[0]['spd']),
+                    'svn' => json_encode($obj[0]['svn']),
+                    'skud' => json_encode($obj[0]['skud']),
+                    'askue' => json_encode($obj[0]['askue']),
+                    'apartmentAutomation' => json_encode($obj[0]['apartmentAutomation']),
+                    'houseschem' => json_encode($obj[0]['houseschem'])
                 ]
             );
             $lastInsertId = $database->db->lastInsertId();
@@ -165,7 +184,7 @@
             
             CreateDirectory('../../database/uploads/objects/'.$lastInsertId);
 
-            LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Создан новый объект ".$obj[0]]);
+            LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Создан новый объект ".$obj[0]['name']]);
             return ['code' => 200, 'data' => $encryptedId, 'message' => 'Success!'];
         } catch (PDOException $e) {
             return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];
@@ -197,7 +216,7 @@
             // CreateDirectory('../../database/uploads/objects/'.$lastInsertId);
 
             // LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Создан новый объект ".$obj[0]]);
-            return ['code' => 200, 'data' => $encryptedId, 'message' => 'Success!'];
+            // return ['code' => 200, 'data' => $encryptedId, 'message' => 'Success!'];
         } catch (PDOException $e) {
             return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];
         } catch (Exception $e) {
