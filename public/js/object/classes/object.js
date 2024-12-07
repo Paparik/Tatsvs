@@ -2,13 +2,14 @@ class Objects{
     id;
     type;
     coords;
+    name;
     #marker;
 
-    constructor(id, type, coords, marker){
+    constructor(id, type, coords, marker, name){
         this.id = id;
         this.type = type;
         this.coords = coords;
-        this.GetName()
+        this.name = name;
         this.#marker = marker;
     }
 
@@ -16,15 +17,20 @@ class Objects{
         return this.#marker;
     }
 
-    GetName = async () => {
-        let data = await this.Get();
-        this.name = this.type + " " + data.name;
-    }
-
     Get = async () => {
         let result = await apiManager.getData("get", "./php/api/objects/index.php", this.id);
-        result = JSON.parse(result.data)
-        return result;
+        let data = {
+            name: this.name,
+            id: this.id,
+            characteristics: result.data.characteristics,
+            spd: result.data.spd,
+            svn: result.data.svn,
+            skud: result.data.skud,
+            askue: result.data.askue,
+            apartmentAutomation: result.data.apartmentAutomation,
+            houseschem: result.data.houseschem,
+        }
+        return data;
     }
 
     MarkerClick = async () => {
@@ -38,8 +44,7 @@ class Objects{
             case 12:
             return;
             default:
-                let data = await this.Get();
-                window.vueApp.setData(1,data);
+                window.vueApp.setData(1, await this.Get());
             break;
         }
     }

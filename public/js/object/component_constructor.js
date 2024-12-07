@@ -13,9 +13,11 @@ export const objectconstructor = {
                 $.notify("Заполните данные", { type:"toast" });
                 return;
             }else{
-                let markerCoords = constructorManager.object.marker.getLatLng();
-                let coords = [markerCoords.lat, markerCoords.lng];
-                apiManager.setData("createNewObject", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor, coords]));
+                if(!constructorManager.object.edit){
+                    let markerCoords = constructorManager.object.marker.getLatLng();
+                    let coords = [markerCoords.lat, markerCoords.lng];
+                    apiManager.setData("createNewObject", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor, coords]));
+                }
                 steps.value++
             }
         }
@@ -62,7 +64,6 @@ export const objectconstructor = {
                     break;
             }
         }
-
 
         let confirmDell = ref(false)
         let operator = reactive({
@@ -145,27 +146,23 @@ export const objectconstructor = {
         async function button(id){
             switch(id){
                 case 0: // Сохранить
-                    // if(store.objectForConstructor.characteristics.type == "" || store.objectForConstructor.name == "" || store.objectForConstructor.name == " "){
-                    //     $.notify("Заполните данные", { type:"toast" });
-                    //     return;
-                    // }
                     if(!constructorManager.object.edit){
-                        constructorManager.LoadingPage(true)
-                        let markerCoords = constructorManager.object.marker.getLatLng();
-                        let coords = [markerCoords.lat, markerCoords.lng];
+                        // constructorManager.LoadingPage(true)
+                        // let markerCoords = constructorManager.object.marker.getLatLng();
+                        // let coords = [markerCoords.lat, markerCoords.lng];
     
-                        let payload = [store.objectForConstructor.characteristics.type, coords,  store.objectForConstructor];
-                        objectsManager.CreateObject(constructorManager.object.marker, payload);
+                        // let payload = [store.objectForConstructor.characteristics.type, coords,  store.objectForConstructor];
+                        // objectsManager.CreateObject(constructorManager.object.marker, payload);
     
-                        await constructorManager.destroy(0);
+                        // await constructorManager.destroy(0);
                     }else{
-                        constructorManager.LoadingPage(true)
-                        let markerCoords = constructorManager.object.marker.getLatLng();
-                        let coords = [markerCoords.lat, markerCoords.lng];
-                        let payload = [store.objectForConstructor.characteristics.type, coords,  store.objectForConstructor];
+                        // constructorManager.LoadingPage(true)
+                        // let markerCoords = constructorManager.object.marker.getLatLng();
+                        // let coords = [markerCoords.lat, markerCoords.lng];
+                        // let payload = [store.objectForConstructor.characteristics.type, coords,  store.objectForConstructor];
 
-                        objectsManager.EditObject(store.objectForConstructor.id, constructorManager.object.marker, payload);
-                        await constructorManager.destroy(0);
+                        // objectsManager.EditObject(store.objectForConstructor.id, constructorManager.object.marker, payload);
+                        // await constructorManager.destroy(0);
                     }
                     steps.value = 0
                     $.notify("Объект успешно сохранён", { type:"toast" });
@@ -180,7 +177,6 @@ export const objectconstructor = {
                     break;
                 case 2:
                     constructorManager.object.OpenObjectSchem(store.objectForConstructor);
-                    
                     break;
                 case 3:
                     constructorManager.LoadingPage(true)
