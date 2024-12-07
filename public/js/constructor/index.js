@@ -44,7 +44,7 @@ class ConstructorManager {
                         DVR: null,
                         internalCameras:null,
                         externalCameras: null,
-                        photo: { reader: { name: null, path: null }, file: null},
+                        photos: [],
                         docs:[],
                         additionalParameters: []
                     },
@@ -54,7 +54,7 @@ class ConstructorManager {
                         gates: null,
                         barriers: null,
                         docs:[],
-                        photo: { reader: {name: null, path: null }, file: null},
+                        photos: [],
                         backups:[],
                         additionalParameters: []
                     },

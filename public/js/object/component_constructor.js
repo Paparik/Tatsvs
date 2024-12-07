@@ -141,14 +141,14 @@ export const objectconstructor = {
             switch(id){
                 case 0: // Сохранить
                     if(!constructorManager.object.edit){
-                        // constructorManager.LoadingPage(true)
-                        // let markerCoords = constructorManager.object.marker.getLatLng();
-                        // let coords = [markerCoords.lat, markerCoords.lng];
+                        constructorManager.LoadingPage(true)
+                        let markerCoords = constructorManager.object.marker.getLatLng();
+                        let coords = [markerCoords.lat, markerCoords.lng];
     
-                        // let payload = [store.objectForConstructor.characteristics.type, coords,  store.objectForConstructor];
-                        // objectsManager.CreateObject(constructorManager.object.marker, payload);
+                        let payload = [store.objectForConstructor.characteristics.type, coords,  store.objectForConstructor];
+                        objectsManager.CreateObject(constructorManager.object.marker, payload);
     
-                        // await constructorManager.destroy(0);
+                        await constructorManager.destroy(0);
                     }else{
                         // constructorManager.LoadingPage(true)
                         // let markerCoords = constructorManager.object.marker.getLatLng();
