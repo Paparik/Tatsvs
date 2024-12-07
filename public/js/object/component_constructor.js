@@ -8,6 +8,10 @@ export const objectconstructor = {
 
         const steps = ref(0)
 
+        if(store.state.whereBack == 12){
+            steps.value = 1
+        }
+
         const nextStep = () => {
             if(store.objectForConstructor.characteristics.type == "" || store.objectForConstructor.name == "" || store.objectForConstructor.name == " "){
                 $.notify("Заполните данные", { type:"toast" });
@@ -22,43 +26,33 @@ export const objectconstructor = {
             }
         }
 
-        const saveFilesPhotos = (index) => {
+        const saveFiles = (index) => {
             switch (index) {
-                case 0: // спд документы
+                case 0: // Характеристики объекта
                     
                     break;
 
-                case 1: // спд Кабельная канализация
+                case 1: // Сеть передачи данных (СПД)
                     
                     break;
                     
-                case 2: // Свн документы
-                    
-                    break;
-
-                case 3: // Свн фото
+                case 2: // Система видеонаблюдения (СВН)
                     
                     break;
 
-                case 4: // СКУД/Домофон документы
+                case 3: // СКУД/Домофон
                     
                     break;
 
-                case 5: // СКУД/Домофон Бэкапы
+                case 4: // АСКУЭ
                     
                     break;
 
-                case 6: // СКУД/Домофон фото
+                case 5: // Автоматизация Квартир
                     
                     break;
 
-                case 7: // АСКУЭ документы
-                    
-                    break;
 
-                case 8: // Автоматизация  документы
-                    
-                    break;
             
                 default:
                     break;
@@ -177,6 +171,7 @@ export const objectconstructor = {
                     break;
                 case 2:
                     constructorManager.object.OpenObjectSchem(store.objectForConstructor);
+                    steps.value = 1
                     break;
                 case 3:
                     constructorManager.LoadingPage(true)
@@ -313,7 +308,7 @@ export const objectconstructor = {
             confirmDell,
             steps,
             nextStep,
-            saveFilesPhotos
+            saveFiles
         }
     },
     components:{
@@ -422,6 +417,11 @@ export const objectconstructor = {
                         </div>
                     </div>
                 </div>
+                <div class="save-files-button" @click="saveFiles(0)">
+                    <div class="item-slot__title centerdf">
+                        <p>Сохранить</p>
+                    </div>
+                </div>
             </default-item-table>
             <default-item-table name="Сеть передачи данных (СПД)">
                 <div class="item-documents wrap">
@@ -454,7 +454,6 @@ export const objectconstructor = {
                                 </div>
                             </div>
                         </div>
-                        <button class="save-buttons__item" @click="saveFilesPhotos(0)">Сохранить</button>
                     </div>
                     <div class="item-slot item-slot_active">
                         <div class="item-slot__title" onclick="openItemSlot(this)">
@@ -485,13 +484,14 @@ export const objectconstructor = {
                                 </div>
                             </div>
                         </div>
-                        <button class="save-buttons__item" @click="saveFilesPhotos(1)">Сохранить</button>
                     </div>
 
-
-                    <div class="item-slot item-slot_active" @click="button(2)">
-                        <div class="item-slot__title centerdf">
+                    <div class="item-slot item-slot_active"  @click="button(2)">
+                        <div class="item-slot__title">
                             <p>Схема дома</p>
+                            <svg style="transform: rotate(-90deg);" width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -515,6 +515,11 @@ export const objectconstructor = {
                                 </svg>                                
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="save-files-button" @click="saveFiles(1)">
+                    <div class="item-slot__title centerdf">
+                        <p>Сохранить</p>
                     </div>
                 </div>
             </default-item-table>
@@ -554,7 +559,7 @@ export const objectconstructor = {
                                 </div>
                             </div>
                         </div>
-                        <button class="save-buttons__item" @click="saveFilesPhotos(2)">Сохранить</button>
+                        
                     </div>
                     <div class="item-slot item-slot_active item-img">
                         <div class="item-slot__title" onclick="openItemSlot(this)">
@@ -578,7 +583,7 @@ export const objectconstructor = {
                                 <img :src="svnphoto">
                             </div>
                         </div>
-                        <button class="save-buttons__item" @click="saveFilesPhotos(3)">Сохранить</button>
+                        
                     </div>
                 </div>
                 <div class="additionalParameters-constructor">
@@ -601,6 +606,11 @@ export const objectconstructor = {
                                 </svg>                                
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="save-files-button" @click="saveFiles(2)">
+                    <div class="item-slot__title centerdf">
+                        <p>Сохранить</p>
                     </div>
                 </div>
             </default-item-table>
@@ -641,7 +651,7 @@ export const objectconstructor = {
                                 </div>
                             </div>
                         </div>
-                        <button class="save-buttons__item" @click="saveFilesPhotos(4)">Сохранить</button>
+                       
                     </div>
                     <div class="item-slot item-slot_active">
                         <div class="item-slot__title" onclick="openItemSlot(this)">
@@ -672,7 +682,7 @@ export const objectconstructor = {
                                 </div>
                             </div>
                         </div>
-                        <button class="save-buttons__item" @click="saveFilesPhotos(5)">Сохранить</button>
+                        
                     </div>
                     <div class="item-slot item-slot_active item-img">
                         <div class="item-slot__title" onclick="openItemSlot(this)">
@@ -696,7 +706,7 @@ export const objectconstructor = {
                                 <img :src="skudphoto" alt="">
                             </div>
                         </div>
-                        <button class="save-buttons__item" @click="saveFilesPhotos(6)">Сохранить</button>
+                       
                     </div>
                 </div>
                 <div class="additionalParameters-constructor">
@@ -719,6 +729,11 @@ export const objectconstructor = {
                                 </svg>                                
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="save-files-button" @click="saveFiles(3)">
+                    <div class="item-slot__title centerdf">
+                        <p>Сохранить</p>
                     </div>
                 </div>
             </default-item-table>
@@ -752,9 +767,7 @@ export const objectconstructor = {
                             </div>
                         </div>
                     </div>
-                    <button class="save-buttons__item" @click="saveFilesPhotos(7)">Сохранить</button>
                 </div>
-                
                 <div class="additionalParameters-constructor">
                     <div class="additional-parameters__title">
                         Дополнительные параметры
@@ -775,6 +788,11 @@ export const objectconstructor = {
                                 </svg>                                
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="save-files-button" @click="saveFiles(4)">
+                    <div class="item-slot__title centerdf">
+                        <p>Сохранить</p>
                     </div>
                 </div>
             </default-item-table>
@@ -808,7 +826,6 @@ export const objectconstructor = {
                             </div>
                         </div>
                     </div>
-                    <button class="save-buttons__item" @click="saveFilesPhotos(8)">Сохранить</button>
                 </div>
                 <div class="additionalParameters-constructor">
                     <div class="additional-parameters__title">
@@ -830,6 +847,11 @@ export const objectconstructor = {
                                 </svg>                                
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="save-files-button" @click="saveFiles(5)">
+                    <div class="item-slot__title centerdf">
+                        <p>Сохранить</p>
                     </div>
                 </div>
             </default-item-table>
