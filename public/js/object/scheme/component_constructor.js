@@ -70,7 +70,7 @@ export const schemeconstructor = {
                     newscheme.push(
                         {
                             countFloors: null,
-                            firstFloor: 1,
+                            firstFloor: null,
                             aparts:[
     
                             ],
@@ -199,7 +199,17 @@ export const schemeconstructor = {
 
         }
         function setDrcToFloor(inxEtr,indxFloor,drc){
-            newscheme[inxEtr].aparts[indxFloor][4] = drc
+            const entrance = store.objectForConstructor.houseschem.entrances[inxEtr];
+            const aparts = entrance.aparts;
+
+            aparts.forEach((floor, index) => {
+                if (indxFloor<=index){
+                    floor[4] = drc
+                    console.log("done");
+                    
+                }
+            });
+
         }
 
         function backTo(){
@@ -382,23 +392,9 @@ export const schemeconstructor = {
                                             <default-item-scheme name="Этажи">
                                                 <div class="set-drc" v-for="(floor,i) in store.objectForConstructor.houseschem.entrances[ind].aparts">
                                                     <div class="maket-constructor-floor">
-                                                        <!-- <div class="maket-constructor-floor__name" v-if="i === 0">
-                                                            <input 
-                                                                type="number" 
-                                                                v-model.number="store.objectForConstructor.houseschem.entrances[ind].aparts[0][0]" 
-                                                                @input="updateFloorNumbers(ind)" 
-                                                                placeholder="Этаж">
-                                                        </div> -->
                                                         <div class="maket-constructor-floor__name">
                                                             Этаж: {{ floor[0] }}
                                                         </div>
-                                                        <!-- <div class="maket-constructor-floor__name" v-if="floor[0]>0">
-                                                            <input type="number" v-model.number="floor[0]">
-                                                            {floor[0]}} этаж
-                                                        </div> -->
-                                                        <!-- <div class="maket-constructor-floor__name" v-else>
-                                                            Подвальный {{floor[0]}} этаж
-                                                        </div> -->
                                                         <div class="maket-constructor-floor__items">
                                                             <div class="slider">
                                                                 <div class="slider__title" onclick="openSliderConstructor(this)">

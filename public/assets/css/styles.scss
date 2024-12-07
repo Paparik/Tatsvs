@@ -837,6 +837,9 @@ body{
     .item-slot__content{
         display: block !important;
     }
+    .save-buttons__item{
+        display: flex !important;
+    }
 }
 .centerdf{
     justify-content: center !important;
@@ -884,7 +887,7 @@ body{
         margin: 0 !important;
         width: 170px !important;
         height: 50px;
-
+        display: none;
     }
 }
 
