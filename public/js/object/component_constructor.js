@@ -13,10 +13,11 @@ export const objectconstructor = {
                 $.notify("Заполните данные", { type:"toast" });
                 return;
             }else{
+                let markerCoords = constructorManager.object.marker.getLatLng();
+                let coords = [markerCoords.lat, markerCoords.lng];
+                apiManager.setData("createNewObject", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor, coords]));
                 steps.value++
-
             }
-
         }
 
 
