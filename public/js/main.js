@@ -174,6 +174,7 @@ const app = createApp({
         }
 
         function GetMainPage(){
+            store.state.whereBack = 0;
             switch(store.state.mainType){
                 case 3:
                 case 2:

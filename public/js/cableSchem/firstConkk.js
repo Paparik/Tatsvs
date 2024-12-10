@@ -6,10 +6,43 @@ export const firstkkconstructor = {
 
         const store = useStateStore()
 
+        const steps = ref(0)
+
+        if(store.state.whereBack == 72){
+            steps.value = 1
+        }
+
+        const nextStep = () => {
+            if(store.newScheme.name == "" || store.newScheme.name == " ") {
+                $.notify("Введите название схемы", { type:"toast" });
+                return;
+            }else{
+
+                steps.value++
+            }
+        }
 
         
-        let key = ref(0);
         let confirmDell = ref(false)
+
+        const saveFiles = (index) => {
+            switch (index) {
+                case 0: // Колодцы
+                
+                    break;
+                case 1: // Кабельные каналы
+
+                    break;
+                case 2: // Кабельные линии
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        
+
         function wellButtons(type, well){
             switch(type){
                 case 0:
@@ -125,13 +158,19 @@ export const firstkkconstructor = {
             getWell,
             confirmDell,
             store,
+            steps,
+            nextStep,
+            saveFiles
         }
+    },
+    components:{
+        DefaultItemTable,
     },
     template:`
 
         <div class="items mainkk constructor">
-            <div class="item wrap">
-                <div class="mainkk-input">
+            <default-item-table name="Начальные параметры схемы" :active="true" v-if="steps==0">
+                <div class="mainkk-input" v-if="steps==0">
                     <input v-model="store.newScheme.name" style="background: #fff;box-shadow:0px 8px 22px 1px rgba(0, 0, 0, 0.25);" type="text" placeholder="Название схемы">
                 </div>
                 <div class="item-slot">
@@ -162,80 +201,100 @@ export const firstkkconstructor = {
                                 </svg>
                             </div> -->
                         </div>
-                        <button class="save-buttons__item">Сохранить</button>
                     </div>
                 </div>
-            </div>
-
-            <div class="item item_active">
-                <div class="item__title">
-                    <p>Колодцы</p>
+                <div class="save-buttons">
+                    <button class="save-buttons__item" @click="button(1)">Отменить</button>
+                    <button class="save-buttons__item" @click="nextStep()">Далее</button>
                 </div>
-                <div class="mainkk-items">
-                    <div class="mainkk-item" v-for="(well, indx) in store.newScheme.wells" @mouseover="misterProper(1, well)" @mouseleave="misterProper(0, well)">
-                        <div class="mainkk-item__name">
-                            {{well.wellObject.numWell}}
-                        </div>
-                        <div class="mainkk-item__buttons">
-                            <button class="mainkk-item__button" @click="wellButtons(1, well.id)">Редактировать</button>
-                            <button class="mainkk-item__button" @click="wellButtons(0, well)">Удалить</button>
+            </default-item-table>
+            <span v-else>
+                <div class="item item_active">
+                    <div class="item__title">
+                        <p>Колодцы</p>
+                    </div>
+                    <div class="mainkk-items">
+                        <div class="mainkk-item" v-for="(well, indx) in store.newScheme.wells" @mouseover="misterProper(1, well)" @mouseleave="misterProper(0, well)">
+                            <div class="mainkk-item__name">
+                                {{well.wellObject.numWell}}
+                            </div>
+                            <div class="mainkk-item__buttons">
+                                <button class="mainkk-item__button" @click="wellButtons(1, well.id)">Редактировать</button>
+                                <button class="mainkk-item__button" @click="wellButtons(0, well)">Удалить</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="item item_active">
-                <div class="item__title">
-                    <p>Кабельные каналы</p>
-                </div>
-                <div class="mainkk-items">
-                    <div class="mainkk-item mainkk-itemKK" v-for="(kl, indx) in store.newScheme.kls" @mouseover="misterProper2(1, kl)" @mouseleave="misterProper2(0, kl)">
-                        <div class="mainkk-item__name">
-                            {{getWell("well", kl.cableChannelObject.start)}} -> {{getWell(kl.cableChannelObject.finishtype, kl.cableChannelObject.finish)}}
-                        </div>
-                        <div class="mainkk-item__buttons">
-                            <button class="mainkk-item__button" @click="klsButtons(1, kl.id)">Редактировать</button>
-                            <button class="mainkk-item__button" @click="klsButtons(0, kl.id)">Удалить</button>
+                    <div class="save-files-button" @click="saveFiles(0)">
+                        <div class="item-slot__title centerdf">
+                            <p>Сохранить</p>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="item item_active">
-                <div class="item__title">
-                    <p>Кабельные линии</p>
-                    <div @click="cabLinesButtons(0)" class="button" style="height:40px;">Добавить</div>
-                </div>
-                <div class="mainkk-items">
-                    <div class="mainkk-item" v-for="(cabline, indx) in store.newScheme.cableLines" @mouseover="misterProper3(1, cabline.numKabLine)" @mouseleave="misterProper3(0, cabline.numKabLine)">
-                        <div class="mainkk-item__name">
-                            КЛ - {{cabline.numKabLine}}
+                <div class="item item_active">
+                    <div class="item__title">
+                        <p>Кабельные каналы</p>
+                    </div>
+                    <div class="mainkk-items">
+                        <div class="mainkk-item mainkk-itemKK" v-for="(kl, indx) in store.newScheme.kls" @mouseover="misterProper2(1, kl)" @mouseleave="misterProper2(0, kl)">
+                            <div class="mainkk-item__name">
+                                {{getWell("well", kl.cableChannelObject.start)}} -> {{getWell(kl.cableChannelObject.finishtype, kl.cableChannelObject.finish)}}
+                            </div>
+                            <div class="mainkk-item__buttons">
+                                <button class="mainkk-item__button" @click="klsButtons(1, kl.id)">Редактировать</button>
+                                <button class="mainkk-item__button" @click="klsButtons(0, kl.id)">Удалить</button>
+                            </div>
                         </div>
-                        <div class="mainkk-item__buttons">
-                            <button class="mainkk-item__button" @click="cabLinesButtons(1, cabline.numKabLine)">Редактировать</button>
-                            <button class="mainkk-item__button" @click="cabLinesButtons(2, cabline.numKabLine)">Удалить</button>
+                    </div>
+                    <div class="save-files-button" @click="saveFiles(1)">
+                        <div class="item-slot__title centerdf">
+                            <p>Сохранить</p>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="save-buttons">
-                <button class="save-buttons__item" @click="button(1)">Отменить</button>
-                <button class="save-buttons__item" v-if="store.newScheme.edit" @click="this.confirmDell=true">Удалить</button>
-                <button class="save-buttons__item" @click="button(0)">Сохранить</button>
-            </div>
-            <div class="users-add" v-if="confirmDell">
-                <div class="users-add__container">
-                    <div class="users-add__title">
-                        Вы уверенны что хотите удалить схему?
+                <div class="item item_active">
+                    <div class="item__title">
+                        <p>Кабельные линии</p>
+                        <div @click="cabLinesButtons(0)" class="button" style="height:40px;">Добавить</div>
                     </div>
-                    <div class="users-add__buttons">
-                        <div class="button" @click="confirmDell = false">
-                            Отменить
+                    <div class="mainkk-items">
+                        <div class="mainkk-item" v-for="(cabline, indx) in store.newScheme.cableLines" @mouseover="misterProper3(1, cabline.numKabLine)" @mouseleave="misterProper3(0, cabline.numKabLine)">
+                            <div class="mainkk-item__name">
+                                КЛ - {{cabline.numKabLine}}
+                            </div>
+                            <div class="mainkk-item__buttons">
+                                <button class="mainkk-item__button" @click="cabLinesButtons(1, cabline.numKabLine)">Редактировать</button>
+                                <button class="mainkk-item__button" @click="cabLinesButtons(2, cabline.numKabLine)">Удалить</button>
+                            </div>
                         </div>
-                        <div class="button"  @click="button(2)">
-                            Удалить
+                    </div>
+                    <div class="save-files-button" @click="saveFiles(2)">
+                        <div class="item-slot__title centerdf">
+                            <p>Сохранить</p>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="save-buttons">
+                    <!-- <button class="save-buttons__item" @click="button(1)">Отменить</button> -->
+                    <button class="save-buttons__item" v-if="store.newScheme.edit" @click="this.confirmDell=true">Удалить</button>
+                    <!-- <button class="save-buttons__item" @click="button(0)">Сохранить</button> -->
+                </div>
+                <div class="users-add" v-if="confirmDell">
+                    <div class="users-add__container">
+                        <div class="users-add__title">
+                            Вы уверенны что хотите удалить схему?
+                        </div>
+                        <div class="users-add__buttons">
+                            <div class="button" @click="confirmDell = false">
+                                Отменить
+                            </div>
+                            <div class="button"  @click="button(2)">
+                                Удалить
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </span>
+            
         </div>
     `
 }
