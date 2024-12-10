@@ -19,47 +19,65 @@
 
         $id = getDecryptedId(getTypeFromAction($act), $payload[0]);
         if ($id['code'] != 200) {
-            return $id;
+            return ['code' => 400, 'message' => 'Invalid'];
         }
-
         $id = $id["data"];
-        $uploadDir = getUploadDir($act, $id, $payload);
-        if ($uploadDir === null) {
-            return ['code' => 400, 'message' => 'Invalid action'];
-        }
 
         switch ($act) {
-            case "saveObject":
-            case "saveDrc":
-            case "saveWells":
-            case "saveWellsSchemas":
-                $data = UploadImages($files, $uploadDir);
-                break;
-            case "deleteWell":
-            case "deleteWellSchema":
-            case "deleteDrc":
-            case "deleteObject":
-                deleteFilesOnly($uploadDir);
-                $data = ['code' => 200];
-                break;
-            case "editWell":
-            case "editWellSchema":
-            case "editObjectPhoto":
-            case "editDrc":
-                deleteFilesOnly($uploadDir);
-                $data = UploadImages($files, $uploadDir);
-                break;
-            case "editObjectFiles":
-            case "deleteUnnecessaryFiles":
-                deleteFilesOnlyByOld($uploadDir, $payload[3]);
-                if ($act == "editObjectFiles") {
-                    $data = UploadImages($files, $uploadDir);
+            case "saveObjectFiles":
+                if($payload[1] == "object"){
+                    $uploadDir = "../../database/uploads/objects/".$id."/".$payload[2]."/".$payload[3];
+                    deleteFilesOnlyByOld($uploadDir, $payload[4]);
+                    if(count($files) !== 0){
+                        $data = UploadImages($files, $uploadDir);
+                    }
+                    else{
+                        $data = ['code' => 200]; 
+                    }
                 }
                 break;
             default:
                 $data = ['code' => 400, 'message' => 'Invalid action'];
                 break;
         }
+
+        // $uploadDir = getUploadDir($act, $id, $payload);
+        // if ($uploadDir === null) {
+        //     return ['code' => 400, 'message' => 'Invalid action'];
+        // }
+
+        // switch ($act) {
+        //     case "saveObject":
+        //     case "saveDrc":
+        //     case "saveWells":
+        //     case "saveWellsSchemas":
+        //         $data = UploadImages($files, $uploadDir);
+        //         break;
+        //     case "deleteWell":
+        //     case "deleteWellSchema":
+        //     case "deleteDrc":
+        //     case "deleteObject":
+        //         deleteFilesOnly($uploadDir);
+        //         $data = ['code' => 200];
+        //         break;
+        //     case "editWell":
+        //     case "editWellSchema":
+        //     case "editObjectPhoto":
+        //     case "editDrc":
+        //         deleteFilesOnly($uploadDir);
+        //         $data = UploadImages($files, $uploadDir);
+        //         break;
+        //     case "editObjectFiles":
+        //     case "deleteUnnecessaryFiles":
+        //         deleteFilesOnlyByOld($uploadDir, $payload[3]);
+        //         if ($act == "editObjectFiles") {
+        //             $data = UploadImages($files, $uploadDir);
+        //         }
+        //         break;
+        //     default:
+        //         $data = ['code' => 400, 'message' => 'Invalid action'];
+        //         break;
+        // }
         return $data;
     }
 
@@ -75,20 +93,7 @@
 
     function getTypeFromAction(string $action): string {
         $actionToTypeMap = [
-            "saveObject" => "objects",
-            "saveDrc" => "objects",
-            "saveWells" => "cable_schemas",
-            "saveWellsSchemas" => "cable_schemas",
-            "deleteWell" => "cable_schemas",
-            "deleteWellSchema" => "cable_schemas",
-            "editWell" => "cable_schemas",
-            "editWellSchema" => "cable_schemas",
-            "editObjectPhoto" => "objects",
-            "editObjectFiles" => "objects",
-            "deleteUnnecessaryFiles" => "objects",
-            "editDrc" => "objects",
-            "deleteDrc" => "objects",
-            "deleteObject" => "objects"
+            "saveObjectFiles" => "objects_upd",
         ];
         return $actionToTypeMap[$action] ?? '';
     }

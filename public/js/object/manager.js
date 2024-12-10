@@ -74,9 +74,42 @@ class ObjectsManager{
         // window.vueApp.incrementCountObj()
     }
 
-    SaveObjectSection = async (section, data) => {
+    SetData = async (obj, section, type) => {
+        let oldDocsNames = [];
+        let oldDocs = [];
+        let newDocs = [];
+        obj.forEach(async (element) => {
+            if (element instanceof File) 
+                newDocs.push(element)
+            else{
+                oldDocsNames.push(element.name)
+                oldDocs.push(element)
+            }
+        });
+
+        let result = await apiManager.setDataWithFiles(
+            "saveObjectFiles", 
+            "./php/api/files/index.php", 
+            JSON.stringify([id, "object", section, type, oldDocsNames]),
+            newDocs
+        );
+        if('files' in result){
+            return JSON.parse(result.files).concat(oldDocs);
+        }
+    }
+
+    SaveObjectSection = async (id, section, data) => {
         if('docs' in data){
-            console.log("true");
+            data.docs = await this.SetData(data.docs, section, "docs");
+        }
+        if('cableDuct' in data){
+            data.cableDuct = await this.SetData(data.cableDuct, section, "cableDuct");
+        }
+        if('photos' in data){
+            data.photos = await this.SetData(data.photos, section, "photos");
+        }
+        if('backups' in data){
+            data.backups = await this.SetData(data.backups, section, "backups");
         }
     }
 }
