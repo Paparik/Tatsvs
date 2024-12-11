@@ -38,6 +38,12 @@
                 }
                 else $data = createNewObject($database, $payload);
                 break;
+            case "setObjectMainParams":
+                if(!$access){
+                    return ['code' => 400, 'message' => 'No access'];
+                }
+                else $data = setObjectMainParams($database, $payload);
+                break;
             case "delete":
                 if(!$access){
                     return ['code' => 400, 'message' => 'No access'];
@@ -74,25 +80,51 @@
         }
     }
 
+    function setObjectMainParams($database, string $payload){
+        try {
+            $obj = json_decode($payload, true);
+            if (empty($obj) || !isset($obj[0], $obj[1], $obj[2])) {
+                return ['code' => 400, 'message' => 'Bad Request: Missing required parameter'];
+            }
+            $database->executeNonQuery(
+                "UPDATE `objects_upd` SET `type`=:type, `name`=:name WHERE `encrypted_id`=:encrypted_id", 
+                [
+                    'encrypted_id' => $obj[0], 
+                    'name' => $obj[1],
+                    'type' => $obj[2]
+                ]
+            );
+
+            return ['code' => 200, 'message' => 'Success!'];
+        } catch (PDOException $e) {
+            return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];
+        } catch (Exception $e) {
+            return ['code' => 500, 'message' => 'Internal Server Error set', 'error' => $e->getMessage()];
+        }
+    }
+
     function set($database, string $payload) {
         try {
             $obj = json_decode($payload, true);
             if (empty($obj) || !isset($obj[0], $obj[1], $obj[2])) {
                 return ['code' => 400, 'message' => 'Bad Request: Missing required parameter'];
             }
-            if($obj[0] == "true"){
-                $database->executeNonQuery(
-                    "UPDATE `objects` SET `data`=:data WHERE `encrypted_id`=:encrypted_id", 
-                    ['encrypted_id' => $obj[1], 'data' => json_encode($obj[2])]
-                );
-            } 
-            else {
-                $database->executeNonQuery(
-                    "UPDATE `objects` SET `data`=:data, `type`=:type WHERE `encrypted_id`=:encrypted_id", 
-                    ['encrypted_id' => $obj[1], 'data' => json_encode($obj[2]), 'type' => $obj[3]]
-                );
-                LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Отредактирован объект ".$obj[3]]);
+            $allowedColumns = ['characteristics', 'spd', 'svn', 'skud', 'askue', 'apartmentAutomation', 'houseschem']; 
+            $column = $obj[2];
+            if (!in_array($column, $allowedColumns)) {
+                return ['code' => 400, 'message' => 'Bad Request: Invalid column name'];
             }
+
+            $sql = "UPDATE `objects_upd` SET `".$column."`=:value WHERE `encrypted_id` = :encrypted_id";
+
+            $database->executeNonQuery($sql, 
+                [
+                    'encrypted_id' => $obj[0], 
+                    'value' => json_encode($obj[1])
+                ]
+            );
+
+            // LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Отредактирован объект ".$obj[3]]);
             return ['code' => 200, 'message' => 'Success!'];
         } catch (PDOException $e) {
             return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];

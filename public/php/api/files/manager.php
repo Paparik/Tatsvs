@@ -25,15 +25,13 @@
 
         switch ($act) {
             case "saveObjectFiles":
-                if($payload[1] == "object"){
-                    $uploadDir = "../../database/uploads/objects/".$id."/".$payload[2]."/".$payload[3];
-                    deleteFilesOnlyByOld($uploadDir, $payload[4]);
-                    if(count($files) !== 0){
-                        $data = UploadImages($files, $uploadDir);
-                    }
-                    else{
-                        $data = ['code' => 200]; 
-                    }
+                $uploadDir = "../../database/uploads/objects/".$id."/".$payload[2]."/".$payload[3];
+                deleteFilesOnlyByOld($uploadDir, $payload[4]);
+                if(count($files) !== 0){
+                    $data = UploadImages($files, $uploadDir);
+                }
+                else{
+                    $data = ['code' => 200]; 
                 }
                 break;
             default:
@@ -94,35 +92,8 @@
     function getTypeFromAction(string $action): string {
         $actionToTypeMap = [
             "saveObjectFiles" => "objects_upd",
+            "saveObjectSchemFiles" => "objects_upd",
         ];
         return $actionToTypeMap[$action] ?? '';
-    }
-
-    function getUploadDir(string $action, string $id, array $payload): ?string {
-        $baseDir = "../../database/uploads/";
-
-        switch ($action) {
-            case "saveObject":
-            case "editObjectPhoto":
-            case "deleteObject":
-                return $baseDir . "objects/$id/{$payload[1]}/{$payload[2]}";
-            case "saveDrc":
-            case "editDrc":
-            case "deleteDrc":
-                return $baseDir . "objects/$id/houseschem/drc/{$payload[1]}";
-            case "saveWells":
-            case "editWell":
-            case "deleteWell":
-                return $baseDir . "schemas/$id/well/{$payload[1]}/well";
-            case "saveWellsSchemas":
-            case "editWellSchema":
-            case "deleteWellSchema":
-                return $baseDir . "schemas/$id/well/{$payload[1]}/wellSchem";
-            case "editObjectFiles":
-            case "deleteUnnecessaryFiles":
-                return $baseDir . "objects/$id/{$payload[1]}/{$payload[2]}";
-            default:
-                return null;
-        }
     }
 ?>

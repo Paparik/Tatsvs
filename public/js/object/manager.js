@@ -47,15 +47,11 @@ class ObjectsManager{
         window.vueApp.setData(6, obj);
     }
 
-    EditObject = async (id, marker, payload) => {
-        // let data = payload[2];
-        // data.id = id;
-        // data = await this.EditDocs(data, id);
-        // await apiManager.setData("set", "./php/api/objects/index.php", JSON.stringify(["", id, data, payload[0]]));
-        // let obj = new Objects(id, payload[0], payload[1], marker);
-        // obj.getMarker().setIcon(constructorManager.GetIcon(payload[0]));
-        // this.objects[this.objects.findIndex(x => x.id == id)] = obj;
-        // constructorManager.LoadingPage(false)
+    EditObject = async (id, marker) => {
+        let objj = this.objects[this.objects.findIndex(x => x.id == id)];
+
+        mapManager.Remove();
+        objj.marker = mapManager.CreateMarker(objj.coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(store.objectForConstructor.characteristics.type, 0), pane: 'markerPane', schema: false})
     }
 
     CreateObject = async (marker, payload) => {
@@ -70,11 +66,11 @@ class ObjectsManager{
         // marker.on('click', async (e) => { await obj.MarkerClick(); });
         // this.objects.push(obj);
         // constructorManager.LoadingPage(false)
-        // // window.stateStore.countObj += 1;
+        // // window.stateStore.countObj += 1;  
         // window.vueApp.incrementCountObj()
     }
 
-    SetData = async (obj, section, type) => {
+    SetData = async (id, obj, section, type) => {
         let oldDocsNames = [];
         let oldDocs = [];
         let newDocs = [];
@@ -93,23 +89,30 @@ class ObjectsManager{
             JSON.stringify([id, "object", section, type, oldDocsNames]),
             newDocs
         );
-        if('files' in result){
+
+        if('files' in result)
             return JSON.parse(result.files).concat(oldDocs);
+        else{
+            return oldDocs;
         }
     }
 
     SaveObjectSection = async (id, section, data) => {
         if('docs' in data){
-            data.docs = await this.SetData(data.docs, section, "docs");
+            data.docs = await this.SetData(id, data.docs, section, "docs");
         }
         if('cableDuct' in data){
-            data.cableDuct = await this.SetData(data.cableDuct, section, "cableDuct");
+            data.cableDuct = await this.SetData(id, data.cableDuct, section, "cableDuct");
         }
         if('photos' in data){
-            data.photos = await this.SetData(data.photos, section, "photos");
+            data.photos = await this.SetData(id, data.photos, section, "photos");
         }
         if('backups' in data){
-            data.backups = await this.SetData(data.backups, section, "backups");
+            data.backups = await this.SetData(id, data.backups, section, "backups");
         }
+
+        apiManager.setData("set", "./php/api/objects/index.php", JSON.stringify([id, data, section]));
+
+        await constructorManager.LoadingPage(false)
     }
 }

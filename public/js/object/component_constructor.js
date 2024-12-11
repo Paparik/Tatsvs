@@ -31,37 +31,67 @@ export const objectconstructor = {
                 if(!constructorManager.object.edit){
                     let markerCoords = constructorManager.object.marker.getLatLng();
                     let coords = [markerCoords.lat, markerCoords.lng];
+
+                    mapManager.Remove(constructorManager.object.marker);
+                    constructorManager.object.marker = mapManager.CreateMarker(coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(store.objectForConstructor.characteristics.type, 1), pane: 'markerPane', schema: false});
+
                     apiManager.setData("createNewObject", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor, coords]));
+                }
+                else{
+                    apiManager.setData("setObjectMainParams", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor.id, store.objectForConstructor.name, store.objectForConstructor.characteristics.type]));
                 }
                 steps.value++
             }
         }
 
-        const saveFiles = (index) => {
+        const saveFiles = async (index) => {
             switch (index) {
                 case 0: // Характеристики объекта
+                    constructorManager.LoadingPage(true)
                     objectsManager.SaveObjectSection(store.objectForConstructor.id, "characteristics", store.objectForConstructor.characteristics);
+                    
+                    $.notify("Характеристики объекта успешно сохранены", { type:"toast" });
                     break;
 
                 case 1: // Сеть передачи данных (СПД)
+                    constructorManager.LoadingPage(true)
+
                     objectsManager.SaveObjectSection(store.objectForConstructor.id, "spd", store.objectForConstructor.spd);
-                    // objectsManager.SaveObjectSection("houseschem", store.objectForConstructor.houseschem);
+                    objectsManager.SaveObjectSection(store.objectForConstructor.id, "houseschem", store.objectForConstructor.houseschem);
+                    
+                    $.notify("Сеть передачи данных объекта успешно сохранена", { type:"toast" });
                     break;
                     
                 case 2: // Система видеонаблюдения (СВН)
+                    constructorManager.LoadingPage(true)
+
                     objectsManager.SaveObjectSection(store.objectForConstructor.id, "svn", store.objectForConstructor.svn);
+                    
+                    $.notify("Система видеонаблюдения объекта успешно сохранена", { type:"toast" });
                     break;
 
                 case 3: // СКУД/Домофон
+                    constructorManager.LoadingPage(true)
+
                     objectsManager.SaveObjectSection(store.objectForConstructor.id, "skud", store.objectForConstructor.skud);
+                    
+                    $.notify("СКУД/Домофон объекта успешно сохранены", { type:"toast" });
                     break;
 
                 case 4: // АСКУЭ
+                    constructorManager.LoadingPage(true)
+
                     objectsManager.SaveObjectSection(store.objectForConstructor.id, "askue", store.objectForConstructor.askue);
+                    
+                    $.notify("АСКУЭ объекта успешно сохранен", { type:"toast" });
                     break;
 
                 case 5: // Автоматизация Квартир
+                    constructorManager.LoadingPage(true)
+
                     objectsManager.SaveObjectSection(store.objectForConstructor.id, "apartmentAutomation", store.objectForConstructor.apartmentAutomation);
+                    
+                    $.notify("Автоматизация квартир объекта успешно сохранена", { type:"toast" });
                     break;
                 default:
                     break;
@@ -148,25 +178,24 @@ export const objectconstructor = {
 
         async function button(id){
             switch(id){
-                case 0: // Сохранить
-                    if(!constructorManager.object.edit){
-                        // constructorManager.LoadingPage(true)
-                        // let markerCoords = constructorManager.object.marker.getLatLng();
-                        // let coords = [markerCoords.lat, markerCoords.lng];
-    
-                        // let payload = [store.objectForConstructor.characteristics.type, coords,  store.objectForConstructor];
-                        // objectsManager.CreateObject(constructorManager.object.marker, payload);
-    
-                        // await constructorManager.destroy(0);
-                    }else{
-                        // constructorManager.LoadingPage(true)
-                        // let markerCoords = constructorManager.object.marker.getLatLng();
-                        // let coords = [markerCoords.lat, markerCoords.lng];
-                        // let payload = [store.objectForConstructor.characteristics.type, coords,  store.objectForConstructor];
+                case 0: // Сохранить\
+                    let markerCoords = constructorManager.object.marker.getLatLng();
+                    let coords = [markerCoords.lat, markerCoords.lng];
+                    mapManager.Remove(constructorManager.object.marker);
+                    mapManager.CreateMarker(coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(store.objectForConstructor.characteristics.type, 0), pane: 'markerPane', schema: false})
 
-                        // objectsManager.EditObject(store.objectForConstructor.id, constructorManager.object.marker, payload);
-                        // await constructorManager.destroy(0);
+                    if(!constructorManager.object.edit){
+                        let markerCoords = constructorManager.object.marker.getLatLng();
+    
+                    }else{
+                        let markerCoords = constructorManager.object.marker.getLatLng();
+                        let coords = [markerCoords.lat, markerCoords.lng];
+                        
+
+                        objectsManager.EditObject(store.objectForConstructor.id, constructorManager.object.marker);
                     }
+
+                    await constructorManager.destroy(0);
                     steps.value = 0
                     $.notify("Объект успешно сохранён", { type:"toast" });
                     break;
@@ -199,21 +228,21 @@ export const objectconstructor = {
         })
 
         const svnphoto = computed(() => {
-            if(store.objectForConstructor.svn.photo.reader.path != null && store.objectForConstructor.svn.photo.reader.path.includes("./php")){
-                return store.objectForConstructor.svn.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            }
-            else if(store.objectForConstructor.svn.photo.reader.path != null && !store.objectForConstructor.svn.photo.reader.path.includes("./php")){
-                return store.objectForConstructor.svn.photo.reader.path;
-            }
+            // if(store.objectForConstructor.svn.photo.reader.path != null && store.objectForConstructor.svn.photo.reader.path.includes("./php")){
+            //     return store.objectForConstructor.svn.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            // }
+            // else if(store.objectForConstructor.svn.photo.reader.path != null && !store.objectForConstructor.svn.photo.reader.path.includes("./php")){
+            //     return store.objectForConstructor.svn.photo.reader.path;
+            // }
         })
 
         const skudphoto = computed(() => {
-            if(store.objectForConstructor.skud.photo.reader.path != null && store.objectForConstructor.skud.photo.reader.path.includes("./php")){
-                return store.objectForConstructor.skud.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            }
-            else if(store.objectForConstructor.skud.photo.reader.path != null && !store.objectForConstructor.skud.photo.reader.path.includes("./php")){
-                return store.objectForConstructor.skud.photo.reader.path;
-            }
+            // if(store.objectForConstructor.skud.photo.reader.path != null && store.objectForConstructor.skud.photo.reader.path.includes("./php")){
+            //     return store.objectForConstructor.skud.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            // }
+            // else if(store.objectForConstructor.skud.photo.reader.path != null && !store.objectForConstructor.skud.photo.reader.path.includes("./php")){
+            //     return store.objectForConstructor.skud.photo.reader.path;
+            // }
         })
 
         function SelectFiles(id){
@@ -240,12 +269,12 @@ export const objectconstructor = {
                         });
                     break;
                     case "svnphoto":
-                        store.objectForConstructor.svn.photo.file = files[0];
-                        reader.onload = e => {
-                            store.objectForConstructor.svn.photo.reader.path = e.target.result;
-                        };
-                        reader.readAsDataURL(files[0]);
-                        nextTick();
+                        // store.objectForConstructor.svn.photo.file = files[0];
+                        // reader.onload = e => {
+                        //     store.objectForConstructor.svn.photo.reader.path = e.target.result;
+                        // };
+                        // reader.readAsDataURL(files[0]);
+                        // nextTick();
                     break;
                     case "skud":
                         files.forEach(element => {
@@ -258,12 +287,12 @@ export const objectconstructor = {
                         });
                     break;
                     case "skudphoto":
-                        store.objectForConstructor.skud.photo.file = files[0];
-                        reader.onload = e => {
-                            store.objectForConstructor.skud.photo.reader.path = e.target.result;
-                        };
-                        reader.readAsDataURL(files[0]);
-                        nextTick();
+                        // store.objectForConstructor.skud.photo.file = files[0];
+                        // reader.onload = e => {
+                        //     store.objectForConstructor.skud.photo.reader.path = e.target.result;
+                        // };
+                        // reader.readAsDataURL(files[0]);
+                        // nextTick();
                     break;
                     case "askue":
                         files.forEach(element => {
@@ -281,12 +310,12 @@ export const objectconstructor = {
         function dellPhoto(id){
             switch (id) {
                 case 0: // Фото СВН
-                    store.objectForConstructor.svn.photo.reader = { name: null, path: null };
-                    store.objectForConstructor.svn.photo.file = null;
+                    // store.objectForConstructor.svn.photo.reader = { name: null, path: null };
+                    // store.objectForConstructor.svn.photo.file = null;
                     break;
                 case 1: // Фото СКУД/Домофон
-                    store.objectForConstructor.skud.photo.reader = { name: null, path: null };
-                    store.objectForConstructor.skud.photo.file = null;
+                    // store.objectForConstructor.skud.photo.reader = { name: null, path: null };
+                    // store.objectForConstructor.skud.photo.file = null;
                     break;
                 default:
                     break;
@@ -344,7 +373,7 @@ export const objectconstructor = {
                 ></constructor-choice>
                 <div class="save-buttons">
                     <button class="save-buttons__item" @click="button(1)">Отменить</button>
-                    <button class="save-buttons__item" @click="nextStep()">Далее</button>
+                    <button class="save-buttons__item" @click="nextStep()">Сохранить и продолжить</button>
                 </div>
             </default-item-table>
             <span v-else>
@@ -579,7 +608,7 @@ export const objectconstructor = {
                             </svg>
                         </div>
                         <div class="item-slot__content">
-                            <div v-if="store.objectForConstructor.svn.photo.reader.path == null" class="item-documents__item item-documents_big" @click="SelectFiles('svnphoto')">
+                            <!-- <div v-if="store.objectForConstructor.svn.photo.reader.path == null" class="item-documents__item item-documents_big" @click="SelectFiles('svnphoto')">
                                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect x="20" width="10" height="50" rx="3" fill="black"/>
                                     <rect y="30" width="10" height="50" rx="3" transform="rotate(-90 0 30)" fill="black"/>
@@ -591,7 +620,7 @@ export const objectconstructor = {
                                     <path d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z" fill="#0F0F0F"/>
                                 </svg>
                                 <img :src="svnphoto">
-                            </div>
+                            </div> -->
                         </div>
                         
                     </div>
@@ -702,7 +731,7 @@ export const objectconstructor = {
                             </svg>
                         </div>
                         <div class="item-slot__content">
-                            <div v-if="store.objectForConstructor.skud.photo.reader.path == null" class="item-documents__item item-documents_big" @click="SelectFiles('skudphoto')">
+                            <!-- <div v-if="store.objectForConstructor.skud.photo.reader.path == null" class="item-documents__item item-documents_big" @click="SelectFiles('skudphoto')">
                                 <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect x="20" width="10" height="50" rx="3" fill="black"/>
                                     <rect y="30" width="10" height="50" rx="3" transform="rotate(-90 0 30)" fill="black"/>
@@ -714,7 +743,7 @@ export const objectconstructor = {
                                     <path d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z" fill="#0F0F0F"/>
                                 </svg>
                                 <img :src="skudphoto" alt="">
-                            </div>
+                            </div> -->
                         </div>
                        
                     </div>
