@@ -33,21 +33,21 @@ export const homeobject = {
         }
 
         const svnimage = computed(() => {
-            if(obj.svn.photo.reader.path != null && obj.svn.photo.reader.path.includes("./php")){
-                return obj.svn.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            }
-            else if(obj.svn.photo.reader.path != null && !obj.svn.photo.reader.path.includes("./php")){
-                return obj.svn.photo.reader.path;
-            }
+            // if(obj.svn.photo.reader.path != null && obj.svn.photo.reader.path.includes("./php")){
+            //     return obj.svn.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            // }
+            // else if(obj.svn.photo.reader.path != null && !obj.svn.photo.reader.path.includes("./php")){
+            //     return obj.svn.photo.reader.path;
+            // }
         })
 
         const skudimage = computed(() => {
-            if(obj.skud.photo.reader.path != null && obj.skud.photo.reader.path.includes("./php")){
-                return obj.skud.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            }
-            else if(obj.skud.photo.reader.path != null && !obj.skud.photo.reader.path.includes("./php")){
-                return obj.skud.photo.reader.path;
-            }
+            // if(obj.skud.photo.reader.path != null && obj.skud.photo.reader.path.includes("./php")){
+            //     return obj.skud.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            // }
+            // else if(obj.skud.photo.reader.path != null && !obj.skud.photo.reader.path.includes("./php")){
+            //     return obj.skud.photo.reader.path;
+            // }
         })
 
       
@@ -168,12 +168,12 @@ export const homeobject = {
                             </div>
                         </div>
                     </div>
-                    <div v-if="svn.photo.reader.path != null" class="item-img">
+                    <!-- <div v-if="svn.photo.reader.path != null" class="item-img">
                         <div class="item-documents__title">
                             Фото СВН
                         </div>
                         <img :src="svnimage" alt="">
-                    </div>
+                    </div> -->
                 </div>
 
             <additional-parameters v-if="store.objectHome.svn.additionalParameters.length">
@@ -220,13 +220,13 @@ export const homeobject = {
                         </div>
                     </div>
                 </div>
-
+<!-- 
                 <div v-if="store.objectHome.svn.photo.reader.path != null" class="item-img">
                     <div class="item-documents__title">
                         Фото СКУД/Домофон
                     </div>
                     <img :src="skudimage" alt="">
-                </div>
+                </div> -->
                 
             </div>
 
