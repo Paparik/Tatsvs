@@ -64,6 +64,33 @@ class ObjectsManager{
         marker.on('click', async (e) => { await obj.MarkerClick(); });
     }
 
+    SetPhotos = async (id, obj, section, type) => {
+        let oldDocsNames = [];
+        let oldDocs = [];
+        let newDocs = [];
+        obj.forEach(async (element) => {
+            if('file' in element)
+                newDocs.push(element.file)
+            else{
+                oldDocsNames.push(element.name)
+                oldDocs.push(element)
+            }
+        });
+
+        let result = await apiManager.setDataWithFiles(
+            "saveObjectFiles", 
+            "./php/api/files/index.php", 
+            JSON.stringify([id, "object", section, type, oldDocsNames]),
+            newDocs
+        );
+
+        if('files' in result)
+            return JSON.parse(result.files).concat(oldDocs);
+        else{
+            return oldDocs;
+        }
+    }
+
     SetData = async (id, obj, section, type) => {
         let oldDocsNames = [];
         let oldDocs = [];
@@ -99,7 +126,7 @@ class ObjectsManager{
             data.cableDuct = await this.SetData(id, data.cableDuct, section, "cableDuct");
         }
         if('photos' in data){
-            data.photos = await this.SetData(id, data.photos, section, "photos");
+            data.photos = await this.SetPhotos(id, data.photos, section, "photos");
         }
         if('backups' in data){
             data.backups = await this.SetData(id, data.backups, section, "backups");
@@ -108,5 +135,15 @@ class ObjectsManager{
         apiManager.setData("set", "./php/api/objects/index.php", JSON.stringify([id, data, section]));
 
         await constructorManager.LoadingPage(false)
+    }
+
+    SaveObjectSchem = async (id, section, data) => {
+        for(let i = 0; i < data.drc.length; i++){
+            if(data.drc[i].photos.length > 0) {
+                data.drc[i].photos = await this.SetPhotos(id, data.drc[i].photos, section, "drc/" + i);
+            }
+        }
+
+        apiManager.setData("set", "./php/api/objects/index.php", JSON.stringify([id, data, section]));
     }
 }

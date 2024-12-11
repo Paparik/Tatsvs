@@ -17,7 +17,10 @@ export const drcconstructor = {
         };
 
         const drcImg = computed(() => {
-            return store.newDrc.photos[indexPhoto.value].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            if(!store.newDrc.photos[indexPhoto.value].path.includes("data:image/")){
+                return store.newDrc.photos[indexPhoto.value].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+            return store.newDrc.photos[indexPhoto.value].path;
         })
 
 
@@ -45,29 +48,32 @@ export const drcconstructor = {
         }
 
         function SelectPhoto(id){
-            const reader = new FileReader();
+            var currentdate = new Date()
             let fileManager = new FilesManager(true);
             fileManager.selectFiles().then(files => {
                 switch(id){
                     case "lastphoto":
-                        store.newDrc.lastPhoto.file = files;
-                        reader.onload = e => {
-                            store.newDrc.lastPhoto.reader.path = e.target.result;
-                        };
-                        reader.readAsDataURL(files[0]);
-                        nextTick();
+                        files.forEach(element => {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                const path = event.target.result;
+                                const obj = { 
+                                    name: element.name, 
+                                    date: currentdate.toLocaleDateString(), 
+                                    path: path,
+                                    file: element
+                                };
+                                store.newDrc.photos.unshift(obj);
+                            };
+                            reader.readAsDataURL(element);
+                        });
                     break;
                 }
             });
         }
 
         function dellPhoto(){
-            //indexPhoto
-
-
-
-
-            // store.newDrc.lastPhoto = { reader: { name: null, path: null }, file: null };
+            store.newDrc.photos.splice(indexPhoto, 1)
         }
 
         return{

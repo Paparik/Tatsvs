@@ -92,7 +92,7 @@
     function getTypeFromAction(string $action): string {
         $actionToTypeMap = [
             "saveObjectFiles" => "objects_upd",
-            "saveObjectSchemFiles" => "objects_upd",
+            "saveObjectSchemFiles" => "objects_upd"
         ];
         return $actionToTypeMap[$action] ?? '';
     }
