@@ -86,6 +86,8 @@ class ConstructorManager {
             case 4:
                 if(id != null){
                     let object = objectsManager.objects.find(x => x.id == id);
+                    object.getMarker().setIcon(this.GetIcon(object.type, 1));
+
                     this.object = new ObjectsConstructor(await object.Get(), object.getMarker(), true);
                     window.vueApp.setData(12, this.object.default);
                 }

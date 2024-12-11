@@ -7,17 +7,6 @@ export const objectconstructor = {
         const store = useStateStore()
 
         const steps = ref(0)
-        
-        let docss = reactive({
-            spdDocs: [],
-            spdCableDuct: [],
-            svnDocs: [],
-            skudDocs: [],
-            skudBackups: [],
-            askueDocs: [],
-            apartmentAutomationDocs: [],
-        });
-        
 
         if(store.state.whereBack == 12){
             steps.value = 1
@@ -39,22 +28,25 @@ export const objectconstructor = {
         };
 
 
-        const nextStep = () => {
+        const nextStep = async () => {
             if(store.objectForConstructor.characteristics.type == "" || store.objectForConstructor.name == "" || store.objectForConstructor.name == " "){
                 $.notify("Заполните данные", { type:"toast" });
                 return;
-            }else{
+            }
+            else {
+                let markerCoords = constructorManager.object.marker.getLatLng();
+                let coords = [markerCoords.lat, markerCoords.lng];
+                mapManager.Remove(constructorManager.object.marker);
+                constructorManager.object.marker = mapManager.CreateMarker(coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(store.objectForConstructor.characteristics.type, 1), pane: 'markerPane', schema: false});
+
+
                 if(!constructorManager.object.edit){
-                    let markerCoords = constructorManager.object.marker.getLatLng();
-                    let coords = [markerCoords.lat, markerCoords.lng];
 
-                    mapManager.Remove(constructorManager.object.marker);
-                    constructorManager.object.marker = mapManager.CreateMarker(coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(store.objectForConstructor.characteristics.type, 1), pane: 'markerPane', schema: false});
-
-                    apiManager.setData("createNewObject", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor, coords]));
+                    let result = await apiManager.setData("createNewObject", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor, coords]));
+                    store.objectForConstructor.id = result.data;
                 }
                 else{
-                    apiManager.setData("setObjectMainParams", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor.id, store.objectForConstructor.name, store.objectForConstructor.characteristics.type]));
+                    await apiManager.setData("setObjectMainParams", "./php/api/objects/index.php", JSON.stringify([store.objectForConstructor.id, store.objectForConstructor.name, store.objectForConstructor.characteristics.type]));
                 }
                 steps.value++
             }
@@ -194,31 +186,51 @@ export const objectconstructor = {
 
         async function button(id){
             switch(id){
-                case 0: // Сохранить\
+                case 0: // Сохранить
                     let markerCoords = constructorManager.object.marker.getLatLng();
                     let coords = [markerCoords.lat, markerCoords.lng];
-                    mapManager.Remove(constructorManager.object.marker);
-                    mapManager.CreateMarker(coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(store.objectForConstructor.characteristics.type, 0), pane: 'markerPane', schema: false})
 
                     if(!constructorManager.object.edit){
-                        let markerCoords = constructorManager.object.marker.getLatLng();
-    
-                    }else{
-                        let markerCoords = constructorManager.object.marker.getLatLng();
-                        let coords = [markerCoords.lat, markerCoords.lng];
-                        
+                        let newMarker = mapManager.CreateMarker(coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(store.objectForConstructor.characteristics.type, 0), pane: 'markerPane', schema: false})
 
-                        objectsManager.EditObject(store.objectForConstructor.id, constructorManager.object.marker);
+                        await objectsManager.CreateObject(
+                            store.objectForConstructor.id,
+                            newMarker,
+                            store.objectForConstructor.characteristics.type,
+                            coords,
+                            store.objectForConstructor.name
+                        );
+                    }
+                    else {
+                        let newMarker = mapManager.CreateMarker(coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(store.objectForConstructor.characteristics.type, 0), pane: 'markerPane', schema: false})
+
+                        await objectsManager.UpdateObject(
+                            store.objectForConstructor.id,
+                            newMarker,
+                            store.objectForConstructor.characteristics.type,
+                            coords,
+                            store.objectForConstructor.name
+                        );
                     }
 
                     await constructorManager.destroy(0);
-                    steps.value = 0
+                    steps.value = 0;
                     $.notify("Объект успешно сохранён", { type:"toast" });
                     break;
                 case 1:
                     if(!constructorManager.object.edit){
+                        if(steps.value == 1){
+                            await apiManager.setData("delete", "./php/api/objects/index.php", store.objectForConstructor.id);
+                        }
+
                         await constructorManager.destroy(1);
-                    }else{
+                    }
+                    else{
+                        let object = objectsManager.objects.find(x => x.id == store.objectForConstructor.id);
+                        let newMarker = mapManager.CreateMarker(object.coords, {opacity: 1, visible: true, interactive: true, icon: constructorManager.GetIcon(object.type, 0), pane: 'markerPane', schema: false})
+                        newMarker.on('click', async (e) => { await object.MarkerClick(); });
+                        object.setMarker(newMarker);
+
                         await constructorManager.destroy(2);
                     }
                     steps.value = 0
@@ -360,7 +372,6 @@ export const objectconstructor = {
             steps,
             nextStep,
             saveFiles,
-            docss,
             indexPhotoSliders,
             prevImage,
             nextImage,
@@ -504,7 +515,7 @@ export const objectconstructor = {
                                         <path d="M53.3332 19.5556C58.2424 19.5556 62.2221 15.5759 62.2221 10.6667C62.2221 5.75752 58.2424 1.77783 53.3332 1.77783C48.424 1.77783 44.4443 5.75752 44.4443 10.6667C44.4443 15.5759 48.424 19.5556 53.3332 19.5556Z" fill="black"/>
                                     </svg>
                                     <span>{{file.name}}</span>
-                                    <svg @click="docss.spdDocs.push(file); store.objectForConstructor.spd.docs.splice(indx, 1);" class="item-documents__del" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <svg @click="store.objectForConstructor.spd.docs.splice(indx, 1);" class="item-documents__del" width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z" fill="#0F0F0F"/>
                                     </svg>
                                 </div>  
@@ -956,7 +967,7 @@ export const objectconstructor = {
             <div class="users-add" v-if="confirmDell">
                 <div class="users-add__container">
                     <div class="users-add__title">
-                        Вы уверенны что хотите удалить схему?
+                        Вы уверенны что хотите удалить объект?
                     </div>
                     <div class="users-add__buttons">
                         <div class="button" @click="confirmDell = false">

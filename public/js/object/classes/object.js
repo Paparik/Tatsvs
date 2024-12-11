@@ -17,6 +17,10 @@ class Objects{
         return this.#marker;
     }
 
+    setMarker = (marker) => {
+        this.#marker = marker;
+    }
+
     Get = async () => {
         let result = await apiManager.getData("get", "./php/api/objects/index.php", this.id);
         let data = {

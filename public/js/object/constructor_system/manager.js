@@ -43,18 +43,8 @@ class ObjectsConstructor{
     }
 
     destroy = async (id) => {
-        switch(id){
-            case 0:
-
-            break;
-            case 1:
-                if(this.marker != null){
-                    mapManager.Remove(this.marker);
-                }
-            break;
-            case 2:
-                
-            break;
+        if(this.marker != null){
+            mapManager.Remove(this.marker);
         }
         this.marker = null;
         this.default = null;

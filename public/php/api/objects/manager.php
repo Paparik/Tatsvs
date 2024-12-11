@@ -65,10 +65,11 @@
             $result = $database->executeQuery("SELECT * FROM `objects_upd` WHERE `encrypted_id`=:encrypted_id", ['encrypted_id' => $payload]);
 
             if ($result && count($result) > 0) {
-                deleteAll('../../database/uploads/objects/'.$result[0]["id"]);
-                $database->executeNonQuery("DELETE FROM `objects` WHERE `encrypted_id`=:encrypted_id", ['encrypted_id' => $payload]);
+                LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Удалён объект ".$result[0]["name"]]);
 
-                LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Удалён объект"]);
+                deleteAll('../../database/uploads/objects/'.$result[0]["id"]);
+                $database->executeNonQuery("DELETE FROM `objects_upd` WHERE `encrypted_id`=:encrypted_id", ['encrypted_id' => $payload]);
+
                 return ['code' => 200, 'message' => 'Success!'];
             } else {
                 return ['code' => 404, 'message' => 'Data not found'];
