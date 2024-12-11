@@ -1,4 +1,4 @@
-import { ref, watch, computed  } from 'vue'
+import { ref, watch, computed, reactive  } from 'vue'
 import { useStateStore } from '../pinia/store.js'
 export const homeobject = {
     setup(){
@@ -32,22 +32,31 @@ export const homeobject = {
             constructorManager.create(4, obj.id)
         }
 
-        const svnimage = computed(() => {
-            // if(obj.svn.photo.reader.path != null && obj.svn.photo.reader.path.includes("./php")){
-            //     return obj.svn.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            // }
-            // else if(obj.svn.photo.reader.path != null && !obj.svn.photo.reader.path.includes("./php")){
-            //     return obj.svn.photo.reader.path;
-            // }
+        
+        const indexPhotoSliders = reactive([0,0]);
+
+        const getlength = (indx) => {
+            return indx ? store.objectHome.skud.photos.length : store.objectHome.svn.photos.length
+        }
+
+        const nextImage = (indx) => {
+            indexPhotoSliders[indx] = (indexPhotoSliders[indx] + 1) % getlength(indx);
+        };
+  
+        const prevImage = (indx) => {
+            indexPhotoSliders[indx] =
+                (indexPhotoSliders[indx] - 1 + getlength(indx)) % getlength(indx);
+        };
+
+
+
+        const svnphoto = computed(() => {
+            return store.objectHome.svn.photos[indexPhotoSliders[0]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+
         })
 
-        const skudimage = computed(() => {
-            // if(obj.skud.photo.reader.path != null && obj.skud.photo.reader.path.includes("./php")){
-            //     return obj.skud.photo.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            // }
-            // else if(obj.skud.photo.reader.path != null && !obj.skud.photo.reader.path.includes("./php")){
-            //     return obj.skud.photo.reader.path;
-            // }
+        const skudphoto = computed(() => {
+            return store.objectHome.skud.photos[indexPhotoSliders[1]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         })
 
       
@@ -64,11 +73,14 @@ export const homeobject = {
             apartmentAutomation,
             yardAssembly,
             button,
-            svnimage,
-            skudimage,
             editButton,
             openFile,
-            role: store.role
+            role: store.role,
+            svnphoto,
+            skudphoto,
+            prevImage,
+            nextImage,
+            indexPhotoSliders
         }
 
     },
@@ -168,12 +180,34 @@ export const homeobject = {
                             </div>
                         </div>
                     </div>
-                    <!-- <div v-if="svn.photo.reader.path != null" class="item-img">
-                        <div class="item-documents__title">
-                            Фото СВН
+                </div>
+                <div class="item-slot item-slot_active" v-if="store.objectHome.svn.photos.length">
+                    <div class="item-slot__title" onclick="openItemSlot(this)">
+                        <p>Фото СВН:</p>
+                        <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
+                        </svg>
+                    </div>
+                    <div class="item-slot__content">
+                        <div class="photos-slider">
+                            <div class="photos-slider__btn" @click="prevImage(0)">
+                                <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
+                                </svg>
+                            </div>
+                            <div class="photos-slider__content">                                
+                                <div class="photos-slider__date" v-if="store.objectHome.svn.photos[indexPhotoSliders[0]]">
+                                    {{store.objectHome.svn.photos[indexPhotoSliders[0]].date}}
+                                </div>
+                                <img :src="svnphoto" :alt="indexPhotoSliders[0]" v-if="store.objectHome.svn.photos[indexPhotoSliders[0]]">
+                            </div>
+                            <div class="photos-slider__btn" @click="nextImage(0)">
+                                <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
+                                </svg>
+                            </div>
                         </div>
-                        <img :src="svnimage" alt="">
-                    </div> -->
+                    </div>
                 </div>
 
             <additional-parameters v-if="store.objectHome.svn.additionalParameters.length">
@@ -220,13 +254,35 @@ export const homeobject = {
                         </div>
                     </div>
                 </div>
-<!-- 
-                <div v-if="store.objectHome.svn.photo.reader.path != null" class="item-img">
-                    <div class="item-documents__title">
-                        Фото СКУД/Домофон
+
+                <div class="item-slot item-slot_active" v-if="store.objectHome.skud.photos.length">
+                    <div class="item-slot__title" onclick="openItemSlot(this)">
+                        <p>Фото СКУД/Домофон:</p>
+                        <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
+                        </svg>
                     </div>
-                    <img :src="skudimage" alt="">
-                </div> -->
+                    <div class="item-slot__content">
+                        <div class="photos-slider">
+                            <div class="photos-slider__btn" @click="prevImage(1)">
+                                <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
+                                </svg>
+                            </div>
+                            <div class="photos-slider__content">      
+                                <div class="photos-slider__date" v-if="store.objectHome.skud.photos[indexPhotoSliders[1]]">
+                                    {{store.objectHome.skud.photos[indexPhotoSliders[1]].date}}
+                                </div>
+                                <img :src="skudphoto" :alt="indexPhotoSliders[1]" v-if="store.objectHome.skud.photos[indexPhotoSliders[1]]">
+                            </div>
+                            <div class="photos-slider__btn" @click="nextImage(1)">
+                                <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
             </div>
 

@@ -8,8 +8,10 @@ class Well{
         numWell: '',
         typeWell: '',
         typeLuke: '',
-        imgWell: { reader: {name: null, path: null }, file: null},
-        imgWellSchem: { reader: {name: null, path: null }, file: null},
+        wellPhotos: [],
+        wellSchemPhotos: [],
+        // imgWell: { reader: {name: null, path: null }, file: null},
+        // imgWellSchem: { reader: {name: null, path: null }, file: null},
         desc: '',
         additionalParameters: []
     };

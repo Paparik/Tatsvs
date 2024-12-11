@@ -97,7 +97,7 @@ export const schemeconstructor = {
                     drc.push(
                         {
                             name: '',
-                            lastPhoto: { reader: { name: null, path: null }, file: null },
+                            photos: [],
                             desc: '',
                             operList: [['']],
                             position: null,

@@ -1,9 +1,21 @@
-import { nextTick,computed,onMounted } from 'vue'
+import { nextTick,computed,onMounted,reactive } from 'vue'
 import { useStateStore } from '../../../pinia/store.js'
 export const wellconstructor = {
     setup() {
         const store = useStateStore()
-
+        
+        store.wellForConstructor.wellPhotos.push(
+            {date: '123', path: '/maga/'}
+        )
+        store.wellForConstructor.wellPhotos.push(
+            {date: '123', path: '/maga/'}
+        )
+        store.wellForConstructor.wellSchemPhotos.push(
+            {date: '123', path: '/maga/'}
+        )
+        store.wellForConstructor.wellSchemPhotos.push(
+            {date: '123', path: '/maga/'}
+        )
 
         // СДЕЛАТЬ НАХУ
         
@@ -37,24 +49,45 @@ export const wellconstructor = {
         //         addCabLine()
         //     }
         // })
+
+        const indexPhotoSliders = reactive([0,0]);
+
+        const getlength = (indx) => {
+            return indx ? store.wellForConstructor.wellPhotos.length : store.wellForConstructor.wellSchemPhotos.length
+        }
+
+        const nextImage = (indx) => {
+            indexPhotoSliders[indx] = (indexPhotoSliders[indx] + 1) % getlength(indx);
+        };
+  
+        const prevImage = (indx) => {
+            indexPhotoSliders[indx] =
+                (indexPhotoSliders[indx] - 1 + getlength(indx)) % getlength(indx);
+        };
+
+
         
 
         const wellImg = computed(() => {
-            if(store.wellForConstructor.imgWell.reader.path != null && store.wellForConstructor.imgWell.reader.path.includes("./php")){
-                return store.wellForConstructor.imgWell.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            }
-            else if(store.wellForConstructor.imgWell.reader.path != null && !store.wellForConstructor.imgWell.reader.path.includes("./php")){
-                return store.wellForConstructor.imgWell.reader.path;
-            }
+            return store.wellForConstructor.wellPhotos[indexPhotoSliders[0]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // if(store.wellForConstructor.imgWell.reader.path != null && store.wellForConstructor.imgWell.reader.path.includes("./php")){
+            //     return store.wellForConstructor.imgWell.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            // }
+            // else if(store.wellForConstructor.imgWell.reader.path != null && !store.wellForConstructor.imgWell.reader.path.includes("./php")){
+            //     return store.wellForConstructor.imgWell.reader.path;
+            // }
         })
 
         const wellSchemImg = computed(() => {
-            if(store.wellForConstructor.imgWellSchem.reader.path != null && store.wellForConstructor.imgWellSchem.reader.path.includes("./php")){
-                return store.wellForConstructor.imgWellSchem.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            }
-            else if(store.wellForConstructor.imgWellSchem.reader.path != null && !store.wellForConstructor.imgWellSchem.reader.path.includes("./php")){
-                return store.wellForConstructor.imgWellSchem.reader.path;
-            }
+            return store.wellForConstructor.wellPhotos[indexPhotoSliders[0]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // if(store.wellForConstructor.imgWellSchem.reader.path != null && store.wellForConstructor.imgWellSchem.reader.path.includes("./php")){
+            //     return store.wellForConstructor.imgWellSchem.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            // }
+            // else if(store.wellForConstructor.imgWellSchem.reader.path != null && !store.wellForConstructor.imgWellSchem.reader.path.includes("./php")){
+            //     return store.wellForConstructor.imgWellSchem.reader.path;
+            // }
         })
 
         function button(type) {
@@ -122,7 +155,9 @@ export const wellconstructor = {
             setLineToWell,
             usedNumKabLines,
             addCabLine,
-            isNumKabLineUsed
+            isNumKabLineUsed,
+            nextImage,
+            prevImage
             
         }
     },
