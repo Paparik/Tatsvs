@@ -51,6 +51,7 @@ exit;
 
 // Функция для отправки JSON ответов
 function respondWithJson($code, $message) {
+    header('Content-Type: application/json');
     http_response_code($code);
     echo json_encode(['code' => $code, 'message' => $message]);
     exit;

@@ -205,8 +205,6 @@ export const schemeconstructor = {
             aparts.forEach((floor, index) => {
                 if (indxFloor<=index){
                     floor[4] = drc
-                    console.log("done");
-                    
                 }
             });
 

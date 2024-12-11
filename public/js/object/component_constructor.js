@@ -65,7 +65,7 @@ export const objectconstructor = {
                     constructorManager.LoadingPage(true)
 
                     objectsManager.SaveObjectSection(store.objectForConstructor.id, "spd", store.objectForConstructor.spd);
-                    objectsManager.SaveObjectSection(store.objectForConstructor.id, "houseschem", store.objectForConstructor.houseschem);
+                    objectsManager.SaveObjectSchem(store.objectForConstructor.id, "houseschem", store.objectForConstructor.houseschem);
                     
                     $.notify("Сеть передачи данных объекта успешно сохранена", { type:"toast" });
                     break;
@@ -256,16 +256,21 @@ export const objectconstructor = {
         })
 
         const svnphoto = computed(() => {
-            return store.objectForConstructor.svn.photos[indexPhotoSliders[0]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-
+            if(!store.objectForConstructor.svn.photos[indexPhotoSliders[0]].path.includes("data:image/")){
+                return store.objectForConstructor.svn.photos[indexPhotoSliders[0]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+            return store.objectForConstructor.svn.photos[indexPhotoSliders[0]].path;
         })
 
         const skudphoto = computed(() => {
-            return store.objectForConstructor.skud.photos[indexPhotoSliders[1]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            if(!store.objectForConstructor.skud.photos[indexPhotoSliders[1]].path.includes("data:image/")){
+                return store.objectForConstructor.skud.photos[indexPhotoSliders[1]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+            return store.objectForConstructor.skud.photos[indexPhotoSliders[1]].path;
         })
 
         function SelectFiles(id){
-            const reader = new FileReader();
+            var currentdate = new Date()
             let fileManager = new FilesManager(false);
             if(id.includes("photo")){
                 fileManager = new FilesManager(true);
@@ -274,53 +279,70 @@ export const objectconstructor = {
                 switch(id){
                     case "spd":
                         files.forEach(element => {
-                            store.objectForConstructor.spd.docs.push(element); 
+                            store.objectForConstructor.spd.docs.unshift(element); 
                         });
                     break;
                     case "spdcab":
                         files.forEach(element => {
-                            store.objectForConstructor.spd.cableDuct.push(element);
+                            store.objectForConstructor.spd.cableDuct.unshift(element);
                         });
                     break;
                     case "svn":
                         files.forEach(element => {
-                            store.objectForConstructor.svn.docs.push(element); 
+                            store.objectForConstructor.svn.docs.unshift(element); 
                         });
                     break;
                     case "svnphoto":
-                        // store.objectForConstructor.svn.photo.file = files[0];
-                        // reader.onload = e => {
-                        //     store.objectForConstructor.svn.photo.reader.path = e.target.result;
-                        // };
-                        // reader.readAsDataURL(files[0]);
-                        // nextTick();
+                        files.forEach(element => {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                const path = event.target.result;
+                                const obj = { 
+                                    name: element.name, 
+                                    date: currentdate.toLocaleDateString(), 
+                                    path: path,
+                                    file: element
+                                };
+                                store.objectForConstructor.svn.photos.unshift(obj);
+                            };
+                            reader.readAsDataURL(element);
+                        });
                     break;
                     case "skud":
                         files.forEach(element => {
-                            store.objectForConstructor.skud.docs.push(element); 
+                            store.objectForConstructor.skud.docs.unshift(element); 
                         });
                     break;
                     case "skudbackups":
                         files.forEach(element => {
-                            store.objectForConstructor.skud.backups.push(element); 
+                            store.objectForConstructor.skud.backups.unshift(element); 
                         });
                     break;
                     case "skudphoto":
-                        // store.objectForConstructor.skud.photo.file = files[0];
-                        // reader.onload = e => {
-                        //     store.objectForConstructor.skud.photo.reader.path = e.target.result;
-                        // };
-                        // reader.readAsDataURL(files[0]);
-                        // nextTick();
+                        files.forEach(element => {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                const path = event.target.result;
+                                const obj = { 
+                                    name: element.name, 
+                                    date: currentdate.toLocaleDateString(), 
+                                    path: path,
+                                    file: element
+                                };
+            
+                                store.objectForConstructor.skud.photos.unshift(obj);
+                            };
+                            reader.readAsDataURL(element);
+                        });
                     break;
                     case "askue":
                         files.forEach(element => {
-                            store.objectForConstructor.askue.docs.push(element); 
+                            store.objectForConstructor.askue.docs.unshift(element); 
                         });
                     break;
                     case "auto":
                         files.forEach(element => {
-                            store.objectForConstructor.apartmentAutomation.docs.push(element); 
+                            store.objectForConstructor.apartmentAutomation.docs.unshift(element); 
                         });
                     break;
                 }
@@ -329,18 +351,10 @@ export const objectconstructor = {
         function dellPhoto(id){
             switch (id) {
                 case 0: // Фото СВН
-                    // indexPhotoSliders[0]
-
-
-                    // store.objectForConstructor.svn.photo.reader = { name: null, path: null };
-                    // store.objectForConstructor.svn.photo.file = null;
+                    store.objectForConstructor.svn.photos.splice(indexPhotoSliders[0], 1)
                     break;
                 case 1: // Фото СКУД/Домофон
-                    // indexPhotoSliders[1]
-
-
-                    // store.objectForConstructor.skud.photo.reader = { name: null, path: null };
-                    // store.objectForConstructor.skud.photo.file = null;
+                    store.objectForConstructor.skud.photos.splice(indexPhotoSliders[1], 1)
                     break;
                 default:
                     break;
