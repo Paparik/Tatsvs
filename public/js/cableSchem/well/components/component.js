@@ -1,4 +1,4 @@
-import { computed  } from 'vue'
+import { computed, reactive  } from 'vue'
 import { useStateStore } from '../../../pinia/store.js'
 
 
