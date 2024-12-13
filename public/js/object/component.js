@@ -49,10 +49,8 @@ export const homeobject = {
         };
 
 
-
         const svnphoto = computed(() => {
             return store.objectHome.svn.photos[indexPhotoSliders[0]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-
         })
 
         const skudphoto = computed(() => {

@@ -10,14 +10,6 @@ export const drc = {
 
         const indexPhoto = ref(0);
 
-        store.drc.photos.push(
-            {date:'11.12.2024',path:'/maga/'}
-        )
-
-        store.drc.photos.push(
-            {date:'11.12.2024',path:'/maga/'}
-        )
-
         const nextImage = () => {
             indexPhoto.value = (indexPhoto.value + 1) % store.drc.photos.length;
         };
@@ -81,6 +73,7 @@ export const drc = {
         return{
             backTo,
             drcImg,
+            indexPhoto,
             store,
             operators,
             operatorsColors,
@@ -118,10 +111,10 @@ export const drc = {
                                         c-0.085-0.029-0.172-0.047-0.262-0.053C30.54,8.312,30.522,8.301,30.5,8.301H14c-0.552,0-1,0.447-1,1v30c0,0.553,0.448,1,1,1H36z
                                         M31.5,11.685l2.054,2.017H31.5V11.685z M15,10.301h14.5v4.4c0,0.553,0.448,1,1,1H35v22.6H15V10.301z"/>
                                     </svg>                                    
-                                    <div class="photos-slider__date" >
+                                    <div class="photos-slider__date">
                                         {{store.drc.photos[indexPhoto].date}}
                                     </div>
-                                    <img src="https://media.discordapp.net/attachments/860200935653769288/1316413604957786243/image.png?ex=675af535&is=6759a3b5&hm=02ac1847c823ced039df16442b8310f4bf99ff6e1f7bb6c1dd6205f28948079e&=&format=webp&quality=lossless&width=503&height=671" :alt="indexPhoto">
+                                    <img :src="drcImg" :alt="indexPhoto">
                                 </div>
                                 <div class="photos-slider__btn" @click="nextImage()">
                                     <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -130,7 +123,6 @@ export const drc = {
                                 </div>
                             </div>
                         </div>
-                        <button class="add-photo">Добавить фото</button>
                     </div>
 
                     <div class="drc-about__desc">

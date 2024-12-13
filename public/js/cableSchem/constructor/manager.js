@@ -70,8 +70,8 @@ class CableLinesConstructor{
                 id: '',
                 schemaName: "",
                 schemaId: "", 
-                numWell: '№' + (this.cableSchem.GetWellsManager().wells.length + 1)
-                ,typeWell: '',
+                numWell: '№' + (this.cableSchem.GetWellsManager().wells.length + 1),
+                typeWell: '',
                 typeLuke: '',
                 wellPhotos: [],
                 wellSchemPhotos: [],
@@ -81,7 +81,23 @@ class CableLinesConstructor{
         }
         else{
             let index = manager.GetLastBigId() + 1;
-            well = manager.CreateWell({id: '',schemaName: "",schemaId: "", numWell: '№' + index,typeWell: '',typeLuke: '',wellPhotos: [], wellSchemPhotos: [],desc: '',additionalParameters: []}, coords, this.cableSchem.name, this.cableSchem.id, index);
+            well = manager.CreateWell(
+                    {
+                    id: '',
+                    schemaName: "",
+                    schemaId: "", 
+                    numWell: '№' + index,
+                    typeWell: '',
+                    typeLuke: '',
+                    wellPhotos: [], 
+                    wellSchemPhotos: [],
+                    desc: '',
+                    additionalParameters: []
+                }, 
+                coords, 
+                this.cableSchem.name, 
+                this.cableSchem.id, index
+            );
         }
         if(this.selectedPoint != null) this.createLine(well)
         this.selectedPoint = well;
