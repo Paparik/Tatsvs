@@ -6,7 +6,7 @@ class CableLinesConstructor{
 
     constructor(schem = null) {
         if(schem == null){
-            this.cableSchem = new CableSchema((cableSchemasManager.cableSchemas.length+1), "", [], [], []);
+            this.cableSchem = new CableSchema((cableSchemasManager.cableSchemas.length+1), "", [], [], [], []);
         }
         else this.cableSchem = schem;
     }

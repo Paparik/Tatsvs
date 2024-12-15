@@ -10,8 +10,6 @@ class Well{
         typeLuke: '',
         wellPhotos: [],
         wellSchemPhotos: [],
-        // imgWell: { reader: {name: null, path: null }, file: null},
-        // imgWellSchem: { reader: {name: null, path: null }, file: null},
         desc: '',
         additionalParameters: []
     };

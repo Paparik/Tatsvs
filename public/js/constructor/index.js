@@ -73,14 +73,14 @@ class ConstructorManager {
                 });
             break;
             case 1:
-                window.vueApp.setData(72, { edit: false, id: '', name: '', wells:[], kls:[], cableLines: [] });
+                window.vueApp.setData(72, { files: [], edit: false, id: '', name: '', wells:[], kls:[], cableLines: [] });
                 this.object = new CableLinesConstructor();
             break;
             case 2:
                 if(id != null){
                     let schem = cableSchemasManager.cableSchemas.find(x => x.id == id);
                     this.object = new CableLinesConstructor(schem);
-                    window.vueApp.setData(72, { edit: true, id: schem.id, name: schem.name, wells:schem.wells, kls:schem.channels, cableLines: schem.cableLines });
+                    window.vueApp.setData(72, { files: [], edit: true, id: schem.id, name: schem.name, wells:schem.wells, kls:schem.channels, cableLines: schem.cableLines });
                 }
             break;
             case 4:
