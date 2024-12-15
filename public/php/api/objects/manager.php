@@ -26,12 +26,6 @@
                 }
                 else $data = set($database, $payload);
                 break;
-            case "create":
-                if(!$access){
-                    return ['code' => 400, 'message' => 'No access'];
-                }
-                else $data = create($database, $payload);
-                break;
             case "createNewObject":
                 if(!$access){
                     return ['code' => 400, 'message' => 'No access'];
@@ -219,37 +213,6 @@
 
             LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Создан новый объект ".$obj[0]['name']]);
             return ['code' => 200, 'data' => $encryptedId, 'message' => 'Success!'];
-        } catch (PDOException $e) {
-            return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];
-        } catch (Exception $e) {
-            return ['code' => 500, 'message' => 'Internal Server Error', 'error' => $e->getMessage()];
-        }
-    }
-
-    function create($database, string $payload) {
-        try {
-            // $obj = json_decode($payload, true);
-            // if (!isset($obj[0], $obj[1], $obj[2])) {
-            //     return ['code' => 400, 'message' => 'Bad Request: Missing required parameters'];
-            // }
-            // $objectKey = generateKey();
-            // $database->executeNonQuery(
-            //     "INSERT INTO `objects` (`type`, `coords`, `data`, `key_for_decrypt`) VALUES (:type, :coords, :data, :key_for_decrypt);", 
-            //     [
-            //         'type' => $obj[0],
-            //         'coords' => json_encode($obj[1]),
-            //         'data' => json_encode($obj[2]),
-            //         'key_for_decrypt' => $objectKey
-            //     ]
-            // );
-            // $lastInsertId = $database->db->lastInsertId();
-            // $encryptedId = encrypt($lastInsertId, $objectKey);
-            // $database->executeNonQuery("UPDATE `objects` SET `encrypted_id`=:encrypted_id WHERE `id`=:id", ['id' => $lastInsertId, 'encrypted_id' => $encryptedId]);
-            
-            // CreateDirectory('../../database/uploads/objects/'.$lastInsertId);
-
-            // LogsInit("create", [$_SESSION['username'], "ОБЪЕКТЫ", "Создан новый объект ".$obj[0]]);
-            // return ['code' => 200, 'data' => $encryptedId, 'message' => 'Success!'];
         } catch (PDOException $e) {
             return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];
         } catch (Exception $e) {

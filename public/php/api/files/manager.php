@@ -34,6 +34,16 @@
                     $data = ['code' => 200]; 
                 }
                 break;
+            case "saveSchemaFiles":
+                $uploadDir = "../../database/uploads/schemas/".$id."/".$payload[2]."/".$payload[3];
+                deleteFilesOnlyByOld($uploadDir, $payload[4]);
+                if(count($files) !== 0){
+                    $data = UploadImages($files, $uploadDir);
+                }
+                else{
+                    $data = ['code' => 200];
+                }
+                break;
             default:
                 $data = ['code' => 400, 'message' => 'Invalid action'];
                 break;
@@ -92,7 +102,7 @@
     function getTypeFromAction(string $action): string {
         $actionToTypeMap = [
             "saveObjectFiles" => "objects_upd",
-            "saveObjectSchemFiles" => "objects_upd"
+            "saveSchemaFiles" => "cable_schemas"
         ];
         return $actionToTypeMap[$action] ?? '';
     }

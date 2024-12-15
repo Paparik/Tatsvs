@@ -11,7 +11,7 @@ class CableSchemasManager{
             let data = cables.data;
             if(data != null){
                 data.forEach(el => {
-                    let schem = new CableSchema(el.id, el.name, el.wells, el.channels, el.cableLines);
+                    let schem = new CableSchema(el.id, el.name, el.files, el.wells, el.channels, el.cableLines);
                     this.cableSchemas.push(schem);
                     window.vueApp.incrementCountKL()
                     // window.stateStore.state.countKl += 1;
@@ -69,75 +69,104 @@ class CableSchemasManager{
         }
     }
 
-    SaveCableSchem = async (object) =>{
-        let schem = this.cableSchemas.find(x => x.id == object.id);
-        object.wells = await this.SaveAllNewImages(object.wells, object.id);
-        schem.name = object.name;
-        schem.wells = object.wells;
-        schem.channels = object.channels;
-        schem.cableLines = object.cableLines;
-        await schem.destroy();
-        schem.SetWellsManager(new WellsManager(object.name, object.id, object.wells));
-        schem.SetCableChannelsManager(new CableChannelsManager(object.name, object.id, object.channels));
-        await apiManager.setData("setNew", "./php/api/cableSchemas/index.php", JSON.stringify(object));
-        constructorManager.LoadingPage(false)
+    SaveSchemSection = async (id, section, data) => {
+        if('wellSchemPhotos' in data){
+            data.wellSchemPhotos = await this.SetPhotos(id, data.wellSchemPhotos, section, "wellSchemPhotos");
+        }
+        if('wellPhotos' in data){
+            data.wellPhotos = await this.SetPhotos(id, data.wellPhotos, section, "wellPhotos");
+        }
+
+        apiManager.setData("set", "./php/api/cableSchemas/index.php", JSON.stringify([id, data, section]));
+
+        await constructorManager.LoadingPage(false)
     }
 
-    SaveAllNewImages = async (obj, id) => {
-        if(obj.length == 0) return;
-        for(let i = 0; i < obj.length; i++){
-            if(obj[i].wellObject.imgWell.file != null) {
-                let result = await apiManager.setDataWithFiles("editWell", "./php/api/files/index.php", JSON.stringify([id, i]), obj[i].wellObject.imgWell.file);
-                let newFilesResult = JSON.parse(result.files);
-                obj[i].wellObject.imgWell.file = null;
-                obj[i].wellObject.imgWell.reader = newFilesResult[0];
+    SaveSchemFiles = async (id, files) => {
+        files = await this.SetData(id, files, "schem", "files");
+        apiManager.setData("set", "./php/api/cableSchemas/index.php", JSON.stringify([id, files, 'files']));
+        return files;
+    }
+    
+    SetData = async (id, obj, section, type) => {
+        let oldDocsNames = [];
+        let oldDocs = [];
+        let newDocs = [];
+        obj.forEach(async (element) => {
+            if (element instanceof File) 
+                newDocs.push(element)
+            else{
+                oldDocsNames.push(element.name)
+                oldDocs.push(element)
             }
-            else if(obj[i].wellObject.imgWell.reader.path == null){
-                await apiManager.setDataWithFiles("deleteWell", "./php/api/files/index.php", JSON.stringify([id, i]));
-            }
-            if(obj[i].wellObject.imgWellSchem.file != null) {
-                let result2 = await apiManager.setDataWithFiles("editWellSchema", "./php/api/files/index.php", JSON.stringify([id, i]), obj[i].wellObject.imgWellSchem.file);
-                let newFilesResult2 = JSON.parse(result2.files);
-                obj[i].wellObject.imgWellSchem.file = null;
-                obj[i].wellObject.imgWellSchem.reader = newFilesResult2[0];
-            }
-            else if(obj[i].wellObject.imgWellSchem.reader.path == null){
-                await apiManager.setDataWithFiles("deleteWellSchema", "./php/api/files/index.php", JSON.stringify([id, i]));
-            }
+        });
+
+        let result = await apiManager.setDataWithFiles(
+            "saveSchemaFiles", 
+            "./php/api/files/index.php", 
+            JSON.stringify([id, "schem", section, type, oldDocsNames]),
+            newDocs
+        );
+
+        if('files' in result)
+            return JSON.parse(result.files).concat(oldDocs);
+        else{
+            return oldDocs;
         }
-        return obj;
+    }
+
+    SetPhotos = async (id, obj, section, type) => {
+        let oldDocsNames = [];
+        let oldDocs = [];
+        let newDocs = [];
+        obj.forEach(async (element) => {
+            if('file' in element)
+                newDocs.push(element.file)
+            else{
+                oldDocsNames.push(element.name)
+                oldDocs.push(element)
+            }
+        });
+
+        let result = await apiManager.setDataWithFiles(
+            "saveSchemaFiles", 
+            "./php/api/files/index.php", 
+            JSON.stringify([id, "schem", section, type, oldDocsNames]),
+            newDocs
+        );
+
+        if('files' in result)
+            return JSON.parse(result.files).concat(oldDocs);
+        else{
+            return oldDocs;
+        }
+    }
+
+    SaveCableSchem = async (object) =>{
+        // let schem = this.cableSchemas.find(x => x.id == object.id);
+        // object.wells = await this.SaveAllNewImages(object.wells, object.id);
+        // schem.name = object.name;
+        // schem.wells = object.wells;
+        // schem.channels = object.channels;
+        // schem.cableLines = object.cableLines;
+        // await schem.destroy();
+        // schem.SetWellsManager(new WellsManager(object.name, object.id, object.wells));
+        // schem.SetCableChannelsManager(new CableChannelsManager(object.name, object.id, object.channels));
+        // await apiManager.setData("setNew", "./php/api/cableSchemas/index.php", JSON.stringify(object));
+        // constructorManager.LoadingPage(false)
     }
 
     SaveNewCableSchem = async (object) =>{
-        let data = object.wells;
-        object.wells = [];
-        let result = await apiManager.setData("create", "./php/api/cableSchemas/index.php", JSON.stringify(object));
-        data = await this.SaveAllImages(data, result.data);
+        // let data = object.wells;
+        // object.wells = [];
+        // let result = await apiManager.setData("create", "./php/api/cableSchemas/index.php", JSON.stringify(object));
+        // data = await this.SaveAllImages(data, result.data);
 
-        await apiManager.setData("set", "./php/api/cableSchemas/index.php", JSON.stringify([result.data, data]));
-        let schem = new CableSchema(result.data, object.name, data, object.channels, object.cableLines);
-        this.cableSchemas.push(schem);
-        constructorManager.LoadingPage(false)
-        // window.vueApp.state.countKl += 1;
-        window.vueApp.incrementCountKL()
-    }
-
-    SaveAllImages = async (obj, id) => {
-        if(obj.length == 0) return;
-        for(let i = 0; i < obj.length; i++){
-            if(obj[i].wellObject.imgWell.file != null) {
-                let result = await apiManager.setDataWithFiles("saveWells", "./php/api/files/index.php", JSON.stringify([id, i]), obj[i].wellObject.imgWell.file);
-                let newFilesResult = JSON.parse(result.files);
-                obj[i].wellObject.imgWell.file = null;
-                obj[i].wellObject.imgWell.reader = newFilesResult[0];
-            }
-            if(obj[i].wellObject.imgWellSchem.file != null) {
-                let result2 = await apiManager.setDataWithFiles("saveWellsSchemas", "./php/api/files/index.php", JSON.stringify([id, i]), obj[i].wellObject.imgWellSchem.file);
-                let newFilesResult2 = JSON.parse(result2.files);
-                obj[i].wellObject.imgWellSchem.file = null;
-                obj[i].wellObject.imgWellSchem.reader = newFilesResult2[0];
-            }
-        }
-        return obj;
+        // await apiManager.setData("set", "./php/api/cableSchemas/index.php", JSON.stringify([result.data, data]));
+        // let schem = new CableSchema(result.data, object.name, data, object.channels, object.cableLines);
+        // this.cableSchemas.push(schem);
+        // constructorManager.LoadingPage(false)
+        // // window.vueApp.state.countKl += 1;
+        // window.vueApp.incrementCountKL()
     }
 }

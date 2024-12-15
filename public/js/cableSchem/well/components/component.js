@@ -110,7 +110,7 @@ export const wellobject = {
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M0.789228 0.89866C-0.263081 1.8925 -0.263081 3.50166 0.789228 4.49298L23.1009 25.5112C25.2082 27.4963 28.6268 27.4963 30.7341 25.5112L53.2104 4.34077C54.2519 3.35711 54.2654 1.76799 53.2373 0.771618C52.1877 -0.247653 50.4582 -0.257398 49.3924 0.744053L28.8265 20.1203C27.7715 21.1141 26.0635 21.1141 25.0085 20.1203L4.60452 0.89866C3.55221 -0.0951823 1.84153 -0.0951823 0.789228 0.89866Z" fill="#2E2E2E"/>
                                 </svg>    
                             </div>
-                            <div class="table__content" v-if="store.wellObj.wellPhotos.reader">
+                            <div class="table__content" v-if="store.wellObj.wellPhotos">
                                 <div class="photos-slider">
                                     <div class="photos-slider__btn" @click="prevImage(0)">
                                         <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -138,7 +138,7 @@ export const wellobject = {
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M0.789228 0.89866C-0.263081 1.8925 -0.263081 3.50166 0.789228 4.49298L23.1009 25.5112C25.2082 27.4963 28.6268 27.4963 30.7341 25.5112L53.2104 4.34077C54.2519 3.35711 54.2654 1.76799 53.2373 0.771618C52.1877 -0.247653 50.4582 -0.257398 49.3924 0.744053L28.8265 20.1203C27.7715 21.1141 26.0635 21.1141 25.0085 20.1203L4.60452 0.89866C3.55221 -0.0951823 1.84153 -0.0951823 0.789228 0.89866Z" fill="#2E2E2E"/>
                                 </svg>
                             </div>
-                            <div class="table__content " v-if="store.wellObj.wellSchemPhotos.reader">
+                            <div class="table__content " v-if="store.wellObj.wellSchemPhotos">
                                 <div class="photos-slider">
                                     <div class="photos-slider__btn" @click="prevImage(0)">
                                         <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">

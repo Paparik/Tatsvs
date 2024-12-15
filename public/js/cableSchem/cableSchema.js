@@ -1,15 +1,17 @@
 class CableSchema{
     id;
     name;
+    files;
     wells;
     channels;
     cableLines;
     #wellsManager;
     #cableChannelsManager;
 
-    constructor(id, name, wells, channels, cableLines){
+    constructor(id, name, files, wells, channels, cableLines){
         this.id = id;
         this.name = name;
+        this.files = files;
         this.wells = wells;
         this.channels = channels;
         this.cableLines = cableLines;
