@@ -27,6 +27,13 @@ function Init(string $act, mixed $load){
             }
             else $data = set($database, $load);
             break;
+        case "setName":
+            if(!$access){
+                $data = ['code' => 400, 'message' => 'No access'];
+                break;
+            }
+            else $data = setName($database, $load);
+            break;
         case "setNew":
             if(!$access){
                 $data = ['code' => 400, 'message' => 'No access'];
@@ -100,21 +107,61 @@ function setNew($database, mixed $payload) {
     }
 }
 
-function set($database, mixed $payload) {
+function setName($database, string $payload) {
     try {
         $obj = json_decode($payload, true);
-        if (!isset($obj[0]) || !isset($obj[1])) {
+        if (empty($obj) || !isset($obj[0], $obj[1], $obj[2])) {
             return ['code' => 400, 'message' => 'Bad Request: Missing required parameter'];
         }
-        $database->executeNonQuery(
-            "UPDATE `cable_schemas` SET `wells`=:wells WHERE `encrypted_id`=:encrypted_id", 
-            ['encrypted_id' => $obj[0], 'wells' => json_encode($obj[1])]
+        $allowedColumns = ['name'];
+        $column = $obj[2];
+        if (!in_array($column, $allowedColumns)) {
+            return ['code' => 400, 'message' => 'Bad Request: Invalid column name'];
+        }
+
+        $sql = "UPDATE `cable_schemas` SET `".$column."`=:value WHERE `encrypted_id` = :encrypted_id";
+
+        $database->executeNonQuery($sql, 
+            [
+                'encrypted_id' => $obj[0],
+                'value' => $obj[1]
+            ]
         );
+
         return ['code' => 200, 'message' => 'Success!'];
     } catch (PDOException $e) {
-        return ['code' => 500, 'message' => 'Database Error', 'error' => $e->getMessage()];
+        return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];
     } catch (Exception $e) {
-        return ['code' => 500, 'message' => 'Internal Server Error', 'error' => $e->getMessage()];
+        return ['code' => 500, 'message' => 'Internal Server Error set', 'error' => $e->getMessage()];
+    }
+}
+
+function set($database, string $payload) {
+    try {
+        $obj = json_decode($payload, true);
+        if (empty($obj) || !isset($obj[0], $obj[1], $obj[2])) {
+            return ['code' => 400, 'message' => 'Bad Request: Missing required parameter'];
+        }
+        $allowedColumns = ['wells', 'channels', 'cableLines', 'files'];
+        $column = $obj[2];
+        if (!in_array($column, $allowedColumns)) {
+            return ['code' => 400, 'message' => 'Bad Request: Invalid column name'];
+        }
+
+        $sql = "UPDATE `cable_schemas` SET `".$column."`=:value WHERE `encrypted_id` = :encrypted_id";
+
+        $database->executeNonQuery($sql, 
+            [
+                'encrypted_id' => $obj[0],
+                'value' => json_encode($obj[1])
+            ]
+        );
+
+        return ['code' => 200, 'message' => 'Success!'];
+    } catch (PDOException $e) {
+        return ['code' => 501, 'message' => 'Database Error', 'error' => $e->getMessage()];
+    } catch (Exception $e) {
+        return ['code' => 500, 'message' => 'Internal Server Error set', 'error' => $e->getMessage()];
     }
 }
 
@@ -141,7 +188,7 @@ function getAll($database){
         
         if ($result && count($result) > 0) {
             foreach ($result as $row) {
-                $schem = new CableSchema($row['encrypted_id'], $row["name"], json_decode($row['wells'], true), json_decode($row['channels'], true), json_decode($row['cableLines'], true));
+                $schem = new CableSchema($row['encrypted_id'], $row["name"], json_decode($row['files'], true), json_decode($row['wells'], true), json_decode($row['channels'], true), json_decode($row['cableLines'], true));
                 array_push($list, $schem);
             }
             return ['code' => 200, 'data' => $list, 'message' => 'Success!'];
@@ -158,18 +205,19 @@ function getAll($database){
 function create($database, mixed $payload){
     try {
         $obj = json_decode($payload, true);
-        if (!isset($obj["name"]) || !isset($obj["channels"])) {
+        if (!isset($obj[0])) {
             return ['code' => 400, 'message' => 'Invalid Payload', 'error' => 'Missing required fields'];
         }
         $schemaKey = generateKey();
         $database->executeNonQuery(
-            "INSERT INTO `cable_schemas` (`name`, `wells`, `channels`, `cableLines`, `key_for_decrypt`) VALUES (:name, :wells, :channels, :cableLines, :key_for_decrypt);", 
+            "INSERT INTO `cable_schemas` (`name`, `wells`, `channels`, `cableLines`, `key_for_decrypt`, `files`) VALUES (:name, :wells, :channels, :cableLines, :key_for_decrypt, :files);", 
             [
-                'name' => $obj["name"],
+                'name' => $obj[0],
                 'wells' => json_encode([]),
-                'channels' => json_encode($obj["channels"]),
-                'cableLines' => json_encode($obj["cableLines"]),
-                'key_for_decrypt' => $schemaKey
+                'channels' => json_encode([]),
+                'cableLines' => json_encode([]),
+                'key_for_decrypt' => $schemaKey,
+                'files' => json_encode([])
             ]
         );
         $lastInsertId = $database->db->lastInsertId();
@@ -177,7 +225,7 @@ function create($database, mixed $payload){
         $database->executeNonQuery("UPDATE `cable_schemas` SET `encrypted_id`=:encrypted_id WHERE `id`=:id", ['id' => $lastInsertId, 'encrypted_id' => $encryptedId]);
         CreateDirectory('../../database/uploads/schemas/'.$lastInsertId);
 
-        LogsInit("create", [$_SESSION['username'], "СХЕМЫ", "Создана новая кабельная схема ".$obj["name"]]);
+        LogsInit("create", [$_SESSION['username'], "СХЕМЫ", "Создана новая кабельная схема ".$obj[0]]);
         return ['code' => 200, 'data' => $encryptedId, 'message' => 'Success!'];
     } catch (PDOException $e) {
         return ['code' => 500, 'message' => 'Database Error', 'error' => $e->getMessage()];
