@@ -91,33 +91,28 @@
                         <div id="map" ></div> 
                     </div>
                 </div> 
-                <firstpage v-if="store.state.mainType==0" ></firstpage>
-                <homeobject v-if="store.state.mainType==1" ></homeobject>
+                <router-view name="primary"></router-view>
+                
+                <!-- 
                 <wellobject v-if="store.state.mainType==2" ></wellobject>
                 <kabchannel v-if="store.state.mainType==3" ></kabchannel>
                 <kablines v-if="store.state.mainType==4" ></kablines> 
-                <objectconstructor v-if="store.state.mainType==12"></objectconstructor>
                 <wellconstructor v-if="store.state.mainType==22"></wellconstructor>
                 <kkconstructor v-if="store.state.mainType==32"></kkconstructor>
                 <kablinesconstructor v-if="store.state.mainType==42"></kablinesconstructor>
+                <firstkkconstructor v-if="store.state.mainType==72"></firstkkconstructor> 
+                -->
                 
-                <firstkkconstructor v-if="store.state.mainType==72"></firstkkconstructor>
-                <!-- v-show store.state.mainType==72-->
 
                 <div class="loading-page" v-if="store.state.loading">
                     <svg width="800px" height="800px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="#000000" d="M512 64a32 32 0 0 1 32 32v192a32 32 0 0 1-64 0V96a32 32 0 0 1 32-32zm0 640a32 32 0 0 1 32 32v192a32 32 0 1 1-64 0V736a32 32 0 0 1 32-32zm448-192a32 32 0 0 1-32 32H736a32 32 0 1 1 0-64h192a32 32 0 0 1 32 32zm-640 0a32 32 0 0 1-32 32H96a32 32 0 0 1 0-64h192a32 32 0 0 1 32 32zM195.2 195.2a32 32 0 0 1 45.248 0L376.32 331.008a32 32 0 0 1-45.248 45.248L195.2 240.448a32 32 0 0 1 0-45.248zm452.544 452.544a32 32 0 0 1 45.248 0L828.8 783.552a32 32 0 0 1-45.248 45.248L647.744 692.992a32 32 0 0 1 0-45.248zM828.8 195.264a32 32 0 0 1 0 45.184L692.992 376.32a32 32 0 0 1-45.248-45.248l135.808-135.808a32 32 0 0 1 45.248 0zm-452.544 452.48a32 32 0 0 1 0 45.248L240.448 828.8a32 32 0 0 1-45.248-45.248l135.808-135.808a32 32 0 0 1 45.248 0z"/></svg>
                 </div>
             </main>
         </div>
-        <scheme v-if="store.state.mainType==5"></scheme>
-        <drc v-if="store.state.mainType==6"></drc>
+        <router-view name="secondary"></router-view>
 
 
-        <schemeconstructor v-if="store.state.mainType==52"></schemeconstructor>
-        <drcconstructor v-if="store.state.mainType==62"></drcconstructor>
 
-        <userlist v-if="store.state.mainType==8"></userlist> 
-        <logslist v-if="store.state.mainType==9"></logslist>
         <?php
             if(!$check){
                 echo '
@@ -154,7 +149,7 @@
             </script>";
         }
         ?>
-            </div>
+        </div>
     <!-- ==================Libraries================== -->
     <script type="importmap">
         {
@@ -163,6 +158,7 @@
                 "vue-demi": "https://unpkg.com/vue-demi/lib/index.mjs",
                 "@vue/devtools-api": "/js/pinia/fake-devtools-api.js",
                 "pinia": "https://unpkg.com/pinia@2.0.28/dist/pinia.esm-browser.js", 
+                "vue-router": "https://unpkg.com/vue-router@4/dist/vue-router.esm-browser.js",
                 "wellcomp": "/js/cableSchem/well/components/component.js",
                 "wellconstructor": "/js/cableSchem/well/components/component_constructor.js",
                 "homecomp": "/js/object/component.js",

@@ -136,6 +136,7 @@ class ConstructorManager {
 
     destroy = async (id) => {
         window.stateStore.state.mainType = 0;
+        window.vueApp.GetMainPage()
         await this.object.destroy(id);
         this.object = null;
     }

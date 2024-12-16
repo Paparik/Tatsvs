@@ -1,8 +1,11 @@
 import { ref, watch, reactive, computed } from 'vue'
 import { useStateStore } from '../../pinia/store.js'
+import { useRouter } from 'vue-router'
 export const schemeconstructor = {
     setup(){
         const store = useStateStore()
+        const router = useRouter();
+        
         const newscheme = store.objectForConstructor.houseschem.entrances
         const drc = store.objectForConstructor.houseschem.drc
 
@@ -96,6 +99,7 @@ export const schemeconstructor = {
                 for (let index = nowLenght; index < count; index++) {
                     drc.push(
                         {
+                            id: drc.length+1,
                             name: '',
                             photos: [],
                             desc: '',
@@ -211,7 +215,9 @@ export const schemeconstructor = {
         }
 
         function backTo(){
-            window.vueApp.back()
+            // window.vueApp.back()
+            store.state.mainType = 12
+            router.back()
         }
 
         function button(id, inx){

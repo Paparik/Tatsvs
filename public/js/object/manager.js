@@ -41,6 +41,7 @@ class ObjectsManager{
 
     OpenSchem = (obj) => {
         window.vueApp.setData(5, obj);
+        
     }
 
     OpenDrc = (obj) => {

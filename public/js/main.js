@@ -22,7 +22,9 @@
 
 import { createApp, reactive, computed, onMounted   } from 'vue'
 
+import { useRouter, createRouter, createWebHashHistory, useRoute } from 'vue-router';
 import { createPinia } from 'pinia';
+
 import { useStateStore } from '../js/pinia/store.js';
 
 import { wellobject } from 'wellcomp'
@@ -58,12 +60,88 @@ function callSetData(id,obj) {
 
 window.callSetData = callSetData;
 
+const routes = [
+    {
+        path: '/',
+        components: {
+            default: firstpage,
+            primary: firstpage, 
+        },
+    },
+    {
+        path: '/homeObject/:id',
+        name: 'Home',
+        components: {
+            primary: homeobject, 
+        },
+        props: { primary: true },
+    },
+    {
+        path: '/homeObject/:id/homeScheme',
+        components: {
+            secondary: scheme, 
+        },
+        props: { secondary: true },
+    },
+    {
+        path: '/homeObject/:id/homeScheme/drc/:id2',
+        components: {
+            secondary: drc, 
+        },
+        props: { secondary: true },
+    },
+    {
+        path: '/homeConstructor/:id',
+        name: 'HomeConstructor',
+        components: {
+            primary: objectconstructor, 
+        },
+        props:  { primary: true },
+    },
+    {
+        path: '/homeConstructor/:id/homeScheme',
+        components: {
+            secondary: schemeconstructor, 
+        },
+        props: { secondary: true },
+    },
+    {
+        path: '/homeConstructor/:id/homeScheme/drc/:id2',
+        components: {
+            secondary: drcconstructor, 
+        },
+        props: { secondary: true },
+    },
+    {
+        path: '/loglist',
+        components: {
+            secondary: logslist, 
+        },
+    },
+    {
+        path: '/userlist',
+        components: {
+            secondary: userlist, 
+        },
+    },
+
+
+];
+  
+const router = createRouter({
+    history: createWebHashHistory(),
+    routes,
+});
+  
+
+
 
 const app = createApp({
     setup() {
 
         const store = useStateStore()
-
+        const router = useRouter();
+        const route = useRoute();
 
         const setAllObjectsAndSchemas = (allObjectNames) => {
             store.state.allObjectsAndSchemas = allObjectNames
@@ -175,6 +253,7 @@ const app = createApp({
 
         function GetMainPage(){
             store.state.whereBack = 0;
+            router.push({ path: "/" });
             switch(store.state.mainType){
                 case 3:
                 case 2:
@@ -242,6 +321,7 @@ const app = createApp({
             switch(store.state.whereBack){
                 case 52:
                     store.state.whereBack = 12;
+
                 break;
                 case 3:
                     ResetPolylineCablines();
@@ -280,6 +360,8 @@ const app = createApp({
                     ResetPolyline();
                     ResetPolylineCablines();
                     store.objectHome = obj
+                    const encodedId = encodeURIComponent(store.objectHome.id);
+                    router.push({ path: `/homeObject/${encodedId}` });
                     break;
                 case 2: 
                     ResetWell();
@@ -303,7 +385,16 @@ const app = createApp({
                     ResetWell();
                     ResetPolyline();
                     ResetPolylineCablines();
-                    store.objectForConstructor = obj; 
+
+                    store.objectForConstructor = obj;
+                    
+                    if (obj?.id) {
+                        const encodedId = encodeURIComponent(store.objectForConstructor.id);
+                        router.push({ path: `/homeConstructor/${encodedId}` });
+                    } else {
+                        router.push({ path: '/homeConstructor' });
+                    }
+
                     break;
                 case 72:
                     ResetWell();
@@ -325,8 +416,10 @@ const app = createApp({
                     store.state.whereBack = 72;
                     break;
                 case 5:
-                    store.state.entrances=obj;
+                    // store.state.entrances=obj;
                     store.state.whereBack = 1
+                    // console.log(router);
+                    router.push({ path: `/homeObject/${encodeURIComponent(store.objectHome.id)}/homeScheme` })
                     setTimeout(() => {
                         $('.owl-carousel').owlCarousel({
                             loop:false,
@@ -337,24 +430,34 @@ const app = createApp({
                     break;
                 case 6:
                     store.drc=obj;
+                    // console.log(obj);
+                    
                     // console.log(store.drc);
                     // store.setDrc(obj)
-                    
+                    router.push({ path: `/homeObject/${encodeURIComponent(store.objectHome.id)}/homeScheme/drc/${obj.id}` })
                     store.state.whereBack = 5
                     break;
                 case 8:
                     store.userList=obj;
+                    router.push({ path: `/userlist` })
                     break;
                 case 9:
                     store.logs=obj;
+                    router.push({ path: `/loglist` })
                     break;
                 case 52:
-                    // obj.lenght = 0
+                    if (store.objectForConstructor ?.id) {
+                        router.push({ path: `/homeConstructor/${encodeURIComponent(store.objectForConstructor.id)}/homeScheme` });
+                    } else {
+                        router.push({ path: '/homeConstructor/homeScheme' });
+                    }
                     store.newSchemeObject = obj;
                     store.state.whereBack = 12
+                    
                     break;
                 case 62:
                     store.newDrc = obj[id];
+                    router.push({ path: `/homeConstructor/${encodeURIComponent(store.objectForConstructor.id)}/homeScheme/drc/${store.newDrc.id}` })
                     store.state.whereBack = 52
                     break;
                 default:
@@ -366,10 +469,6 @@ const app = createApp({
         function updateKabLines(newKabLines) {
             store.kkForConstructor.kabLines = newKabLines;
         }
-
-
-
-
 
 
         return {
@@ -426,6 +525,7 @@ const pinia = createPinia();
 window.pinia = pinia;
 
 app.use(pinia);
+app.use(router);
 
 window.vueApp = app.mount('.wrapper');
 

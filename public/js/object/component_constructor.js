@@ -1,15 +1,27 @@
 import { ref, nextTick,reactive, computed } from 'vue'
 import {Constructorinputadd} from '../library/constructorInputAdd.js'
 import { useStateStore } from '../pinia/store.js'
+import { useRouter } from 'vue-router'
 export const objectconstructor = {
-
+    props: ['id'],
     setup(props, {emit}){
-        const store = useStateStore()
 
+        const store = useStateStore()
+        const router = useRouter();
+        
         const steps = ref(0)
+
+        const decodedId = decodeURIComponent(props.id);
+
+        const homeData = computed(() => {
+            return store.objectForConstructor?.id === decodedId ? store.objectForConstructor : 'No Data Found';
+        });
+
+        const activeSpd = ref(false)
 
         if(store.state.whereBack == 12){
             steps.value = 1
+            activeSpd.value = true
         }
 
         const indexPhotoSliders = reactive([0,0]);
@@ -389,7 +401,8 @@ export const objectconstructor = {
             indexPhotoSliders,
             prevImage,
             nextImage,
-            getlength
+            getlength,
+            activeSpd
         }
     },
     components:{
@@ -504,7 +517,7 @@ export const objectconstructor = {
                     </div>
                 </div>
             </default-item-table>
-            <default-item-table name="Сеть передачи данных (СПД)">
+            <default-item-table name="Сеть передачи данных (СПД)" :active="activeSpd">
                 <div class="item-documents wrap">
                     <div class="item-slot item-slot_active">
                         <div class="item-slot__title" onclick="openItemSlot(this)">

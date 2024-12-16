@@ -1,8 +1,11 @@
 import { ref } from 'vue'
 import { useStateStore } from '../pinia/store.js'
+import { useRouter } from 'vue-router'
 export const userlist = {
     setup(){
-        const store = useStateStore()
+        const store = useStateStore()   
+        const router = useRouter();
+
         const users = store.userList
         const newuser = store.newUser
 
@@ -74,6 +77,7 @@ export const userlist = {
 
         function exit(){
             store.state.mainType=0
+            router.back()
         }
 
 

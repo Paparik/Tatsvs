@@ -1,9 +1,10 @@
 import { computed   } from 'vue'
 import { useStateStore } from '../../pinia/store.js'
+import { useRouter } from 'vue-router'
 export const scheme = {
     setup(){
         const store = useStateStore()
-
+        const router = useRouter();
 
         const closetsColor = computed(() => {
             let a = {}
@@ -31,10 +32,14 @@ export const scheme = {
 
         })
         function backTo(){
-            window.vueApp.back()
+            // window.vueApp.back()
+            store.state.mainType = 1
+            router.back()
         }
         function OpenDrc(name){
             objectsManager.OpenDrc(store.objectHome.houseschem.drc.find(x => x.name == name));
+            console.log(store.objectHome.houseschem.drc.find(x => x.name == name));
+            
         }
 
         return {

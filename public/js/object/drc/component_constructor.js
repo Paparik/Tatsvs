@@ -1,9 +1,11 @@
 import { ref, nextTick, computed } from 'vue'
 import { useStateStore } from '../../pinia/store.js'
+import { useRouter } from 'vue-router'
 export const drcconstructor = {
-
+    
     setup(props,{emit}){
         const store = useStateStore()
+        const router = useRouter();
 
         const indexPhoto = ref(0);
 
@@ -44,7 +46,9 @@ export const drcconstructor = {
         }
 
         function backTo(){
-            window.vueApp.back()
+            // window.vueApp.back()
+            store.state.mainType = 52
+            router.back()
         }
 
         function SelectPhoto(id){

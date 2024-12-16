@@ -1,11 +1,16 @@
 import { computed,ref } from 'vue'
 import { useStateStore } from '../../pinia/store.js'
+import { useRouter } from 'vue-router'
 export const drc = {
 
     setup(){
         const store = useStateStore()
+        const router = useRouter();
         function backTo(){
-            window.vueApp.back()
+            // window.vueApp.back()
+            store.state.mainType = 5
+            router.back()
+
         }
 
         const indexPhoto = ref(0);
@@ -23,14 +28,6 @@ export const drc = {
             return store.drc.photos[indexPhoto.value].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         })
 
-        // const wellImg = computed(() => {
-        //     if(store.drc.lastPhoto.reader.path != null && store.drc.lastPhoto.reader.path.includes("./php")){
-        //         return store.drc.lastPhoto.reader.path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        //     }
-        //     else if(store.drc.lastPhoto.reader.path != null && !store.drc.lastPhoto.reader.path.includes("./php")){
-        //         return store.drc.lastPhoto.reader.path;
-        //     }
-        // })
         
         const operators = computed(() => {
             const uniqueOperators = [];
@@ -111,9 +108,9 @@ export const drc = {
                                         c-0.085-0.029-0.172-0.047-0.262-0.053C30.54,8.312,30.522,8.301,30.5,8.301H14c-0.552,0-1,0.447-1,1v30c0,0.553,0.448,1,1,1H36z
                                         M31.5,11.685l2.054,2.017H31.5V11.685z M15,10.301h14.5v4.4c0,0.553,0.448,1,1,1H35v22.6H15V10.301z"/>
                                     </svg>                                    
-                                    <div class="photos-slider__date">
+                                    <!-- <div class="photos-slider__date">
                                         {{store.drc.photos[indexPhoto].date}}
-                                    </div>
+                                    </div> -->
                                     <img :src="drcImg" :alt="indexPhoto">
                                 </div>
                                 <div class="photos-slider__btn" @click="nextImage()">

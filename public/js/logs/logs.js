@@ -1,13 +1,14 @@
 import { useStateStore } from '../pinia/store.js'
-
+import { useRouter } from 'vue-router'
 export const logslist = {
 
     setup(props,{emit}){
         
         const store = useStateStore()
-        
+        const router = useRouter();
         function exit(){
             store.state.mainType=0
+            router.back()
         }
 
         function GetDate(log){

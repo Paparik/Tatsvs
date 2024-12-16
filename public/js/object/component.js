@@ -1,7 +1,15 @@
 import { ref, watch, computed, reactive  } from 'vue'
 import { useStateStore } from '../pinia/store.js'
 export const homeobject = {
-    setup(){
+    props: ['id'],
+    setup(props){
+
+        const decodedId = decodeURIComponent(props.id);
+
+        const homeData = computed(() => {
+            return store.objectHome?.id === decodedId ? store.objectHome : 'No Data Found';
+        });
+
         const store = useStateStore()
         const obj = store.objectHome
         const characteristics = ref(obj.characteristics);
@@ -18,7 +26,7 @@ export const homeobject = {
         function button(id, obj){
             switch(id){
                 case "openSchem":
-                    objectsManager.OpenSchem(obj)
+                    objectsManager.OpenSchem(store.objectHome)
                 break;
             }
         }
@@ -78,13 +86,13 @@ export const homeobject = {
             skudphoto,
             prevImage,
             nextImage,
-            indexPhotoSliders
+            indexPhotoSliders,
+            homeData
         }
 
     },
     template: `
     <div class="items" >
-
         <div class="mainkk-input" >
             <input readonly v-model="store.objectHome.name" style="background: #fff;box-shadow:0px 8px 22px 1px rgba(0, 0, 0, 0.25); text-align: center; padding-left: 0;" type="text" placeholder="Название объекта">
         </div>
