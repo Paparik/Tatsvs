@@ -1,4 +1,3 @@
-
 class CableSchemasManager{
     constructor(){
         this.cableSchemas = [];
@@ -70,16 +69,20 @@ class CableSchemasManager{
     }
 
     SaveSchemSection = async (id, section, data) => {
-        if('wellSchemPhotos' in data){
-            data.wellSchemPhotos = await this.SetPhotos(id, data.wellSchemPhotos, section, "wellSchemPhotos");
+        if (section === "wells") {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].wellObject.wellPhotos.length > 0) {
+                    data[i].wellObject.wellPhotos = await this.SetPhotos(id, data[i].wellObject.wellPhotos, section + "/" + i, "wellPhotos");
+                }
+                if (data[i].wellObject.wellSchemPhotos.length > 0) {
+                    data[i].wellObject.wellSchemPhotos = await this.SetPhotos(id, data[i].wellObject.wellSchemPhotos, section + "/" + i, "wellSchemPhotos");
+                }
+            }
         }
-        if('wellPhotos' in data){
-            data.wellPhotos = await this.SetPhotos(id, data.wellPhotos, section, "wellPhotos");
-        }
-
-        apiManager.setData("set", "./php/api/cableSchemas/index.php", JSON.stringify([id, data, section]));
-
-        await constructorManager.LoadingPage(false)
+    
+        await apiManager.setData("set", "./php/api/cableSchemas/index.php", JSON.stringify([id, data, section]));
+    
+        await constructorManager.LoadingPage(false);
     }
 
     SaveSchemFiles = async (id, files) => {
@@ -129,7 +132,7 @@ class CableSchemasManager{
         });
 
         let result = await apiManager.setDataWithFiles(
-            "saveSchemaFiles", 
+            "saveSchemaFiles",
             "./php/api/files/index.php", 
             JSON.stringify([id, "schem", section, type, oldDocsNames]),
             newDocs

@@ -3,19 +3,6 @@ import { useStateStore } from '../../../pinia/store.js'
 export const wellconstructor = {
     setup() {
         const store = useStateStore()
-        
-        store.wellForConstructor.wellPhotos.push(
-            {date: '123', path: '/maga/'}
-        )
-        store.wellForConstructor.wellPhotos.push(
-            {date: '123', path: '/maga/'}
-        )
-        store.wellForConstructor.wellSchemPhotos.push(
-            {date: '123', path: '/maga/'}
-        )
-        store.wellForConstructor.wellSchemPhotos.push(
-            {date: '123', path: '/maga/'}
-        )
 
         // СДЕЛАТЬ НАХУ
         
@@ -53,14 +40,14 @@ export const wellconstructor = {
         const indexPhotoSliders = reactive([0,0]);
 
         const getlength = (indx) => {
-            return indx ? store.wellForConstructor.wellPhotos.length : store.wellForConstructor.wellSchemPhotos.length
+            return indx ? store.wellForConstructor.wellSchemPhotos.length : store.wellForConstructor.wellPhotos.length
         }
 
         const nextImage = (indx) => {
             indexPhotoSliders[indx] = (indexPhotoSliders[indx] + 1) % getlength(indx);
         };
   
-        const prevImage = (indx) => {
+        const prevImage = (indx) => {   
             indexPhotoSliders[indx] =
                 (indexPhotoSliders[indx] - 1 + getlength(indx)) % getlength(indx);
         };
@@ -69,11 +56,17 @@ export const wellconstructor = {
         
 
         const wellImg = computed(() => {
-            return store.wellForConstructor.wellPhotos[indexPhotoSliders[0]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            if(!store.wellForConstructor.wellPhotos[indexPhotoSliders[0]].path.includes("data:image/")){
+                return store.wellForConstructor.wellPhotos[indexPhotoSliders[0]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+            return store.wellForConstructor.wellPhotos[indexPhotoSliders[0]].path;
         })
 
         const wellSchemImg = computed(() => {
-            return store.wellForConstructor.wellSchemPhotos[indexPhotoSliders[1]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            if(!store.wellForConstructor.wellSchemPhotos[indexPhotoSliders[1]].path.includes("data:image/")){
+                return store.wellForConstructor.wellSchemPhotos[indexPhotoSliders[1]].path + "&csrf_token=" + document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+            return store.wellForConstructor.wellSchemPhotos[indexPhotoSliders[1]].path;
         })
 
         function button(type) {
@@ -90,15 +83,10 @@ export const wellconstructor = {
         function delPhoto(id) {
             switch(id){
                 case 0:
-                    // indexPhotoSliders[0]
-
-                    // store.wellForConstructor.imgWell = { reader: {name: null, path: null }, file: null}
+                    store.wellForConstructor.wellPhotos.splice(indexPhotoSliders[0], 1)
                 break;
                 case 1:
-                    // // indexPhotoSliders[1]
-
-
-                    // store.wellForConstructor.imgWellSchem = { reader: {name: null, path: null }, file: null}
+                    store.wellForConstructor.wellSchemPhotos.splice(indexPhotoSliders[1], 1)
                 break;
             }
         }
@@ -107,25 +95,41 @@ export const wellconstructor = {
             obj[objec][key] = value
         }
         function SelectFiles(id){
-            const reader = new FileReader();
+            var currentdate = new Date()
             let fileManager = new FilesManager(true);
             fileManager.selectFiles().then(files => {
                 switch(id){
                     case "lastphoto":
-                        store.wellForConstructor.imgWell.file = files;
-                        reader.onload = e => {
-                            store.wellForConstructor.imgWell.reader.path = e.target.result;
-                        };
-                        reader.readAsDataURL(files[0]);
-                        nextTick();
+                        files.forEach(element => {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                const path = event.target.result;
+                                const obj = { 
+                                    name: element.name, 
+                                    date: currentdate.toLocaleDateString(), 
+                                    path: path,
+                                    file: element
+                                };
+                                store.wellForConstructor.wellPhotos.unshift(obj);
+                            };
+                            reader.readAsDataURL(element);
+                        });
                     break;
                     case "schema":
-                        store.wellForConstructor.imgWellSchem.file = files;
-                        reader.onload = e => {
-                            store.wellForConstructor.imgWellSchem.reader.path = e.target.result;
-                        };
-                        reader.readAsDataURL(files[0]);
-                        nextTick();
+                        files.forEach(element => {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                const path = event.target.result;
+                                const obj = { 
+                                    name: element.name, 
+                                    date: currentdate.toLocaleDateString(), 
+                                    path: path,
+                                    file: element
+                                };
+                                store.wellForConstructor.wellSchemPhotos.unshift(obj);
+                            };
+                            reader.readAsDataURL(element);
+                        });
                     break;
                 }
             });
@@ -149,7 +153,8 @@ export const wellconstructor = {
             isNumKabLineUsed,
             nextImage,
             prevImage,
-            indexPhotoSliders
+            indexPhotoSliders,
+            getlength
             
         }
     },
@@ -189,9 +194,9 @@ export const wellconstructor = {
                 <div class="table__title">
                     <p>Фото колодца</p>
                 </div>
-                <div class="sub-table__content">
+                <div class="sub-table__content" v-if="store.wellForConstructor.wellPhotos.length > 0">
                     <div class="photos-slider">
-                        <div class="photos-slider__btn" @click="prevImage(0)">
+                        <div class="photos-slider__btn" @click="prevImage(0)" v-if="store.wellForConstructor.wellPhotos.length > 1">
                             <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
                             </svg>
@@ -204,19 +209,19 @@ export const wellconstructor = {
                                 c-0.085-0.029-0.172-0.047-0.262-0.053C30.54,8.312,30.522,8.301,30.5,8.301H14c-0.552,0-1,0.447-1,1v30c0,0.553,0.448,1,1,1H36z
                                 M31.5,11.685l2.054,2.017H31.5V11.685z M15,10.301h14.5v4.4c0,0.553,0.448,1,1,1H35v22.6H15V10.301z"/>
                             </svg>  
-                            <div class="photos-slider__dell" @click="delPhoto(0)" v-if="store.wellForConstructor.wellPhotos[indexPhotoSliders[0]]">
+                            <div class="photos-slider__dell" @click="delPhoto(0)">
                                 <svg  width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
                                     <g id="SVGRepo_iconCarrier"> <path d="M16 8L8 16M8.00001 8L16 16" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </g>
                                 </svg>      
                             </div>                                  
-                            <div class="photos-slider__date" v-if="store.wellForConstructor.wellPhotos[indexPhotoSliders[0]]">
+                            <div class="photos-slider__date">
                                 {{store.wellForConstructor.wellPhotos[indexPhotoSliders[0]].date}}
                             </div>
-                            <img :src="wellImg" :alt="indexPhotoSliders[0]" v-if="store.wellForConstructor.wellPhotos[indexPhotoSliders[0]]">
+                            <img :src="wellImg" :alt="indexPhotoSliders[0]">
                         </div>
-                        <div class="photos-slider__btn" @click="nextImage(0)">
+                        <div class="photos-slider__btn" @click="nextImage(0)" v-if="store.wellForConstructor.wellPhotos.length > 1">
                             <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
                             </svg>
@@ -229,9 +234,9 @@ export const wellconstructor = {
                 <div class="table__title">
                     <p>Схема колодца</p>
                 </div>
-                <div class="sub-table__content">
+                <div class="sub-table__content" v-if="store.wellForConstructor.wellSchemPhotos.length > 0">
                     <div class="photos-slider">
-                        <div class="photos-slider__btn" @click="prevImage(0)">
+                        <div class="photos-slider__btn" @click="prevImage(0)" v-if="store.wellForConstructor.wellSchemPhotos.length > 1">
                             <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
                             </svg>
@@ -244,26 +249,26 @@ export const wellconstructor = {
                                 c-0.085-0.029-0.172-0.047-0.262-0.053C30.54,8.312,30.522,8.301,30.5,8.301H14c-0.552,0-1,0.447-1,1v30c0,0.553,0.448,1,1,1H36z
                                 M31.5,11.685l2.054,2.017H31.5V11.685z M15,10.301h14.5v4.4c0,0.553,0.448,1,1,1H35v22.6H15V10.301z"/>
                             </svg>  
-                            <div class="photos-slider__dell" @click="delPhoto(1)" v-if="store.wellForConstructor.wellSchemPhotos[indexPhotoSliders[1]]">
+                            <div class="photos-slider__dell" @click="delPhoto(1)">
                                 <svg  width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
                                     <g id="SVGRepo_iconCarrier"> <path d="M16 8L8 16M8.00001 8L16 16" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </g>
                                 </svg>      
                             </div>                                  
-                            <div class="photos-slider__date" v-if="store.wellForConstructor.wellSchemPhotos[indexPhotoSliders[1]]">
+                            <div class="photos-slider__date">
                                 {{store.wellForConstructor.wellSchemPhotos[indexPhotoSliders[1]].date}}
                             </div>
-                            <img :src="wellSchemImg" :alt="indexPhotoSliders[1]" v-if="store.wellForConstructor.wellSchemPhotos[indexPhotoSliders[1]]">
+                            <img :src="wellSchemImg" :alt="indexPhotoSliders[1]">
                         </div>
-                        <div class="photos-slider__btn" @click="nextImage(1)">
+                        <div class="photos-slider__btn" @click="nextImage(1)" v-if="store.wellForConstructor.wellSchemPhotos.length > 1">
                             <svg width="26" height="13" viewBox="0 0 26 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.38 0.432688C-0.126668 0.911205 -0.126668 1.68599 0.38 2.16328L11.1226 12.2831C12.1373 13.239 13.7833 13.239 14.7979 12.2831L25.6198 2.09C26.1213 1.61639 26.1278 0.851254 25.6328 0.371519C25.1274 -0.11924 24.2947 -0.123932 23.7815 0.358247L13.8794 9.68754C13.3715 10.1661 12.5491 10.1661 12.0411 9.68754L2.21699 0.432688C1.71032 -0.0458285 0.886666 -0.0458285 0.38 0.432688Z" fill="#2E2E2E"/>
                             </svg>
                         </div>
                     </div>
-                    <button class="add-photo" @click="SelectFiles('schema')">Добавить фото</button>
                 </div>
+                <button class="add-photo" @click="SelectFiles('schema')">Добавить фото</button>
             </div> 
             <default-column-slot name="Описание">
                 <textarea type="text" v-model="store.wellForConstructor.desc" placeholder="..."></textarea>
