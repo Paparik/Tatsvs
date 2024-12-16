@@ -24,7 +24,7 @@ export const firstkkconstructor = {
                     store.newScheme.files = await cableSchemasManager.SaveSchemFiles(store.newScheme.id, store.newScheme.files);
                 }
                 else{
-                    await apiManager.setData("set", "./php/api/cableSchemas/index.php", JSON.stringify([store.newScheme.id, store.newScheme.name, "name"]));
+                    await apiManager.setData("setName", "./php/api/cableSchemas/index.php", JSON.stringify([store.newScheme.id, store.newScheme.name, "name"]));
 
                     store.newScheme.files = await cableSchemasManager.SaveSchemFiles(store.newScheme.id, store.newScheme.files);
                 }

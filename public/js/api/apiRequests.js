@@ -35,13 +35,25 @@ class ApiManager {
         try {
             this.data.action = action;
             this.data.payload = payload;
-            const response = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(this.data) });
-            let clone = response.clone();
-            let jsonResult = null;
-            await response.json().then(result => { jsonResult = result; }).catch(async (error) => { let text = await clone.text(); console.log(text);});
-            return jsonResult;
+
+            const response = await fetch(path, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.data),
+            });
+
+            let responseClone = response.clone();
+    
+            try {
+                const jsonResult = await response.json();
+                return jsonResult;
+            } catch (jsonError) {
+                const errorText = await responseClone.text();
+                console.error('Failed to parse JSON. Response text:', errorText);
+                throw jsonError;
+            }
         } catch (error) {
-            console.error('Request failed:', error);    
+            console.error('Request failed:', error.message || error);
             return null;
         }
     }
